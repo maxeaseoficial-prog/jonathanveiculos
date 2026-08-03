@@ -34,7 +34,7 @@ function Index() {
       <Header />
       <main>
         <Hero />
-        <About />
+        
         <Stock />
         <Features />
         <Process />
