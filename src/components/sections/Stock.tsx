@@ -88,7 +88,7 @@ export function Stock() {
   const [tempSort, setTempSort] = useState<string>("recent");
   const [tempPriceRange, setTempPriceRange] = useState<[number, number]>([0, 1000000]);
   const [tempYearRange, setTempYearRange] = useState<[number, number]>([1990, new Date().getFullYear() + 1]);
-  const [tempKmMax, setTempKmMax] = useState<number>(500000);
+  const [tempKmRange, setTempKmRange] = useState<[number, number]>([0, 500000]);
 
   // Applied filters
   const [appliedFilters, setAppliedFilters] = useState({
@@ -97,7 +97,7 @@ export function Stock() {
     sort: "recent",
     priceRange: [0, 1000000] as [number, number],
     yearRange: [1990, new Date().getFullYear() + 1] as [number, number],
-    kmMax: 500000
+    kmRange: [0, 500000] as [number, number]
   });
 
   const brands = useMemo(() => {
@@ -124,7 +124,7 @@ export function Stock() {
       const price = v.price ?? 0;
       if (price < appliedFilters.priceRange[0] || price > appliedFilters.priceRange[1]) return false;
       if (v.year < appliedFilters.yearRange[0] || v.year > appliedFilters.yearRange[1]) return false;
-      if ((v.km ?? 0) > appliedFilters.kmMax) return false;
+      if ((v.km ?? 0) < appliedFilters.kmRange[0] || (v.km ?? 0) > appliedFilters.kmRange[1]) return false;
 
       if (!q) return true;
       const hay = `${v.brand} ${v.model} ${v.year}`.toLowerCase();
@@ -159,7 +159,7 @@ export function Stock() {
       sort: tempSort,
       priceRange: tempPriceRange,
       yearRange: tempYearRange,
-      kmMax: tempKmMax
+      kmRange: tempKmRange
     });
   };
 
@@ -170,15 +170,15 @@ export function Stock() {
       sort: "recent",
       priceRange: [0, maxPrice] as [number, number],
       yearRange: [minYear, new Date().getFullYear() + 1] as [number, number],
-      kmMax: 500000
+      kmRange: [0, 500000] as [number, number]
     };
     setTempBrand("all");
     setTempCategory("all");
     setTempSort("recent");
     setTempPriceRange([0, maxPrice]);
     setTempYearRange([minYear, new Date().getFullYear() + 1]);
-    setTempKmMax(500000);
-    setAppliedFilters(defaultFilters);
+    setTempKmRange([0, 500000]);
+    setAppliedFilters(defaultFilters as any);
   };
 
   useEffect(() => {
@@ -234,9 +234,9 @@ export function Stock() {
                 <select
                   value={filialFilter}
                   onChange={(e) => setFilialFilter(e.target.value)}
-                  className="w-full md:w-44 h-full pl-11 pr-8 rounded-2xl bg-surface border border-black/5 text-sm font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
+                  className="w-full md:w-32 h-full pl-11 pr-4 rounded-2xl bg-surface border border-black/5 text-sm font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
                 >
-                  <option value="all">Todas as Cidades</option>
+                  <option value="all">Cidades</option>
                   <option value="Porto União">Porto União</option>
                   <option value="Bituruna">Bituruna</option>
                 </select>
@@ -316,7 +316,7 @@ export function Stock() {
                       <div className="flex justify-between items-center">
                         <h4 className="text-xs font-bold uppercase tracking-widest text-brand-black/40">Faixa de Preço</h4>
                         <span className="text-xs font-bold text-brand-red">
-                          {priceFmt.format(tempPriceRange[0])} - {priceFmt.format(tempPriceRange[1])}
+                          {priceFmt.format(tempPriceRange[0])} — {priceFmt.format(tempPriceRange[1])}
                         </span>
                       </div>
                       <Slider
@@ -333,7 +333,7 @@ export function Stock() {
                       <div className="flex justify-between items-center">
                         <h4 className="text-xs font-bold uppercase tracking-widest text-brand-black/40">Ano</h4>
                         <span className="text-xs font-bold text-brand-red">
-                          {tempYearRange[0]} - {tempYearRange[1]}
+                          {tempYearRange[0]} — {tempYearRange[1]}
                         </span>
                       </div>
                       <Slider
@@ -342,22 +342,24 @@ export function Stock() {
                         min={minYear}
                         max={new Date().getFullYear() + 1}
                         step={1}
+                        minStepsBetweenThumbs={1}
                       />
                     </div>
 
-                    {/* KM Slider */}
+                    {/* KM Range */}
                     <div className="space-y-6">
                       <div className="flex justify-between items-center">
-                        <h4 className="text-xs font-bold uppercase tracking-widest text-brand-black/40">Quilometragem Máxima</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-widest text-brand-black/40">Quilometragem</h4>
                         <span className="text-xs font-bold text-brand-red">
-                          Até {kmFmt.format(tempKmMax)} KM
+                          {kmFmt.format(tempKmRange[0])} km — {kmFmt.format(tempKmRange[1])} km
                         </span>
                       </div>
                       <Slider
-                        value={[tempKmMax]}
-                        onValueChange={(val) => setTempKmMax(val[0])}
+                        value={tempKmRange}
+                        onValueChange={(val) => setTempKmRange(val as [number, number])}
                         max={500000}
                         step={1000}
+                        minStepsBetweenThumbs={1}
                       />
                     </div>
                   </div>
@@ -397,79 +399,84 @@ export function Stock() {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14">
             <AnimatePresence mode="popLayout">
-              {filtered.map((v, i) => (
-                <motion.article
+              {filtered.map((v) => (
+                <motion.div
                   key={v.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.4 }}
                   onClick={() => setSelectedId(v.id)}
-                  className="group cursor-pointer"
+                  className="group relative cursor-pointer"
                 >
-                  <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-card-premium group-hover:shadow-elegant transition-all duration-700">
+                  <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-surface shadow-card-premium transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
+                    {/* Badge Filial */}
+                    <div className="absolute top-6 left-6 z-10">
+                      <div className="px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/20 shadow-lg flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-brand-red animate-pulse" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-black">{v.filial}</span>
+                      </div>
+                    </div>
+
                     {v.image ? (
                       <img
                         src={v.image}
                         alt={`${v.brand} ${v.model}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                     ) : (
-                      <div className="w-full h-full bg-surface flex items-center justify-center text-brand-black/20 font-bold uppercase tracking-widest text-xs">
-                        Sem Imagem
+                      <div className="h-full w-full flex items-center justify-center bg-brand-black/5">
+                        <Search className="w-12 h-12 text-brand-black/10" />
                       </div>
                     )}
-                    <div className="absolute top-6 left-6 flex flex-col gap-2">
-                      <div className="px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-md shadow-sm text-[10px] font-bold uppercase tracking-widest text-brand-black">
-                        {v.brand}
+                    
+                    {/* Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+
+                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/60">{v.brand}</span>
+                        <h3 className="text-2xl font-bold leading-tight line-clamp-1">{v.model}</h3>
                       </div>
-                      <div className="px-4 py-2 rounded-full bg-brand-red text-white shadow-sm text-[10px] font-bold uppercase tracking-widest">
-                        {v.filial}
+                      
+                      <div className="mt-6 flex items-center justify-between">
+                        <div className="flex flex-col">
+                          {v.previous_price && (
+                            <span className="text-sm line-through text-white/40 mb-1">{priceFmt.format(v.previous_price)}</span>
+                          )}
+                          <span className="text-2xl font-bold text-brand-red">{priceFmt.format(v.price ?? 0)}</span>
+                        </div>
+                        <div className="w-12 h-12 rounded-full bg-brand-red flex items-center justify-center -rotate-45 group-hover:rotate-0 transition-transform duration-500">
+                          <ArrowUpRight className="w-6 h-6 text-white" />
+                        </div>
                       </div>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="absolute bottom-8 left-8 right-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                      <Button className="w-full h-14 rounded-2xl bg-white text-brand-black font-bold text-sm uppercase tracking-widest shadow-elegant">
-                        Ver Detalhes
-                      </Button>
                     </div>
                   </div>
 
-                  <div className="mt-8 px-2">
-                    <div className="flex justify-between items-start gap-4">
-                      <h3 className="text-2xl font-bold text-brand-black leading-tight group-hover:text-brand-red transition-colors">{v.model}</h3>
-                      <span className="text-2xl font-bold text-brand-black font-display whitespace-nowrap">
-                        {v.price != null ? priceFmt.format(Number(v.price)) : "Consulta"}
-                      </span>
+                  {/* Features Quick Look */}
+                  <div className="mt-6 px-4 flex items-center gap-6 text-brand-black/40">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <span className="text-sm font-bold">{v.year}</span>
                     </div>
-                    <div className="mt-4 flex items-center gap-6 text-[10px] font-bold text-brand-black/40 uppercase tracking-widest">
-                      <span className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-brand-red/50" /> {v.year}
-                      </span>
-                      {v.km != null && (
-                        <span className="flex items-center gap-2">
-                          <Gauge className="w-4 h-4 text-brand-red/50" /> {kmFmt.format(v.km)} KM
-                        </span>
-                      )}
+                    <div className="flex items-center gap-2">
+                      <Gauge className="w-4 h-4" />
+                      <span className="text-sm font-bold">{v.km ? `${kmFmt.format(v.km)} km` : "N/A"}</span>
                     </div>
                   </div>
-                </motion.article>
+                </motion.div>
               ))}
             </AnimatePresence>
           </div>
         )}
+
+        <VehicleDetailDialog
+          vehicleId={selectedId}
+          open={!!selectedId}
+          onOpenChange={(open) => !open && setSelectedId(null)}
+        />
       </div>
-      
-      <VehicleDetailDialog
-        vehicleId={selectedId}
-        open={!!selectedId}
-        onOpenChange={(o) => { if (!o) setSelectedId(null); }}
-      />
     </section>
   );
 }
-
-
-
