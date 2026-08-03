@@ -5,14 +5,17 @@ export const getAuditData = createServerFn({ method: "GET" })
   .handler(async () => {
     try {
       const { data: profiles, error: pError } = await supabaseAdmin.from("profiles").select("*");
-      const { data: roles, error: rError } = await supabaseAdmin.from("user_roles").select("*");
       
-      // Try to get count of auth.users via a direct check if possible, 
-      // or at least check if we can reach the profiles table
+      // Try to create the admin user via RPC if it exists, or just try to see if we can do ANY insert
+      // Note: we don't want to mess up the DB, but we need to know if it's reachable
+      
       return { 
         profiles: profiles || [], 
-        roles: roles || [],
-        errors: { profile: pError?.message, role: rError?.message }
+        env: {
+          hasAdminKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+          hasUrl: !!process.env.SUPABASE_URL
+        },
+        errors: { profile: pError }
       };
     } catch (e: any) {
       return { error: e.message };
