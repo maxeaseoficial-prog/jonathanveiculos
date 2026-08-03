@@ -491,7 +491,7 @@ export function StockManager() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
         <div>
-          <h2 className="font-[Sora] text-2xl md:text-3xl font-bold tracking-tight">Estoque de Veículos</h2>
+          <h2 className="font-[Sora] text-2xl md:text-3xl font-bold tracking-tight text-zinc-900">Estoque de Veículos</h2>
           <p className="text-sm text-zinc-500 mt-1">Gerencie todos os veículos cadastrados no site.</p>
         </div>
         <Button

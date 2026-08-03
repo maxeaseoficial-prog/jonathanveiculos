@@ -215,7 +215,7 @@ export function SettingsManager() {
         className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
       >
         <div className="flex items-center gap-2 mb-1">
-          <KeyRound className="h-4 w-4 text-[#E30613]" />
+          <KeyRound className="h-4 w-4 text-brand-red" />
           <h3 className="font-[Sora] text-lg font-semibold text-zinc-900">Conta de acesso</h3>
         </div>
         <p className="text-sm text-zinc-500 mb-5">

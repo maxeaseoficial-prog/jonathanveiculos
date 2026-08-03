@@ -393,7 +393,7 @@ export function CatalogManager() {
       {/* Grid */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-[#FFC400]" />
+          <Loader2 className="h-6 w-6 animate-spin text-brand-red" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-2xl border border-zinc-200 bg-white p-12 text-center">
