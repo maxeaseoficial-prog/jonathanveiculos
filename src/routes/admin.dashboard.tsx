@@ -283,7 +283,7 @@ function DashboardPage() {
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
-        <Loader2 className="h-6 w-6 animate-spin text-[#FFC400]" />
+        <Loader2 className="h-6 w-6 animate-spin text-brand-red" />
       </div>
     );
   }
@@ -326,9 +326,9 @@ function DashboardPage() {
   ];
 
   const cards: Array<{ label: string; value: number; icon: typeof Car; accent: string }> = [
-    { label: "Veículos totais", value: stats.total, icon: Car, accent: "#FFC400" },
+    { label: "Veículos totais", value: stats.total, icon: Car, accent: "#E30613" },
     { label: "Anúncios ativos", value: stats.activeCount, icon: Eye, accent: "#22c55e" },
-    { label: "Em destaque", value: stats.featuredCount, icon: TrendingUp, accent: "#FFC400" },
+    { label: "Em destaque", value: stats.featuredCount, icon: TrendingUp, accent: "#E30613" },
     { label: "Motos cadastradas", value: stats.motos, icon: Bike, accent: "#E30613" },
   ];
 
@@ -339,7 +339,7 @@ function DashboardPage() {
     config: { title: "Configurações", subtitle: "Dados da empresa e integrações" },
   };
 
-  const BRAND_COLORS = ["#0B0B0B", "#FFC400", "#E30613", "#22c55e", "#3b82f6", "#a855f7"];
+  const BRAND_COLORS = ["#0B0B0B", "#E30613", "#22c55e", "#3b82f6", "#a855f7"];
 
   return (
     <div className="min-h-screen bg-white text-zinc-900">
@@ -349,7 +349,7 @@ function DashboardPage() {
           <div className="px-3 py-4 mb-4">
             <img
               src={logoAsset.url}
-              alt="Excelência Multimarcas"
+              alt="Jonathan Veículos"
               className="h-16 w-auto object-contain"
             />
             <div className="mt-2 text-[10px] uppercase tracking-widest text-zinc-400">Painel Admin</div>
@@ -417,7 +417,7 @@ function DashboardPage() {
             </div>
             <Link
               to="/"
-              className="text-xs text-zinc-500 hover:text-[#E30613] transition-colors"
+              className="text-xs text-zinc-500 hover:text-brand-red transition-colors"
             >
               Ver site público →
             </Link>

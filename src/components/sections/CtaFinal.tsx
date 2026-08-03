@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, MessageCircle } from "lucide-react";
-import fachadaAsset from "@/assets/fachada.png.asset.json";
+import adminBgAsset from "@/assets/admin-bg.webp.asset.json";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
 
 export function CtaFinal() {
@@ -13,7 +13,7 @@ export function CtaFinal() {
           {/* Background Image with Overlay */}
           <div className="absolute inset-0 z-0">
             <img 
-              src={fachadaAsset.url} 
+              src={adminBgAsset.url} 
               alt="" 
               className="w-full h-full object-cover opacity-20 grayscale" 
             />
