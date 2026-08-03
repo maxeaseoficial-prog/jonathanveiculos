@@ -6,7 +6,7 @@ import { Stock } from "@/components/sections/Stock";
 import { Features } from "@/components/sections/Features";
 import { Process } from "@/components/sections/Process";
 import { Financing } from "@/components/sections/Financing";
-import { Testimonials } from "@/components/sections/Testimonials";
+
 import { CtaFinal } from "@/components/sections/CtaFinal";
 import { Footer } from "@/components/sections/Footer";
 import { title, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-meta";
@@ -39,7 +39,7 @@ function Index() {
         <Features />
         <Process />
         <Financing />
-        <Testimonials />
+        
         <CtaFinal />
       </main>
       <Footer />
