@@ -37,7 +37,7 @@ function getAuthErrorMessage(message: string) {
   }
 
   if (normalized.includes("email not confirmed") || normalized.includes("email_not_confirmed")) {
-    return "Seu cadastro foi criado com sucesso.";
+    return "Sua conta foi criada! Você já pode entrar usando seus dados.";
   }
 
   if (normalized.includes("user already registered") || normalized.includes("already registered")) {
@@ -245,9 +245,10 @@ function AdminLoginPage() {
 
         toast.success("Conta criada com sucesso!");
         setFormMessage({
-          type: "info",
-          text: "Conta criada com sucesso.",
+          type: "success",
+          text: "Sua conta foi criada! Você já pode entrar usando seus dados.",
         });
+        setMode("login");
         logAuth("Cadastro criado sem sessão imediata. Aguardando confirmação de e-mail.");
       }
     } catch (err) {
