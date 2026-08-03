@@ -499,7 +499,7 @@ export function StockManager() {
             setEditing(null);
             setDialogOpen(true);
           }}
-          className="bg-[#FFC400] hover:bg-[#e6b000] text-black font-semibold rounded-xl h-11 px-5 shadow-sm"
+          className="bg-brand-red hover:bg-brand-red/90 text-white font-semibold rounded-xl h-11 px-5 shadow-sm"
         >
           <Plus className="h-4 w-4 mr-2" /> Novo Veículo
         </Button>
