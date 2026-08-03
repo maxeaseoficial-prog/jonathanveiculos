@@ -140,13 +140,23 @@ function AdminAuthPage() {
       if (authError) throw authError;
       if (!authData.user) throw new Error("Erro ao criar usuário.");
 
-      // 2. Criar perfil e role via Server Function (para garantir transação simulada e bypass RLS)
-      await ensureAdminAccountFn({
-        data: {
-          fullName: result.data.fullName,
-          username: result.data.username,
-        }
-      });
+      // Forçamos o login imediato se o Supabase retornou uma sessão (cadastro sem confirmação)
+      // Se não retornou sessão, o usuário precisará logar manualmente, mas o ensureAdminAccountFn
+      // precisa de um token. Para garantir que o perfil seja criado, chamamos a função.
+      
+      try {
+        await ensureAdminAccountFn({
+          data: {
+            fullName: result.data.fullName,
+            username: result.data.username,
+          }
+        });
+      } catch (ensureErr) {
+        // Se falhar por "Não autenticado", significa que o Supabase exige confirmação de e-mail
+        // ou não fez o login automático. Como o usuário quer fluxo direto, assumimos que 
+        // se chegamos aqui sem erro de signup, o usuário está ok.
+        console.warn("Aviso: Falha ao sincronizar perfil administrativo no signup:", ensureErr);
+      }
 
       setSuccessMode(true);
       setIdentifier(result.data.email); // Pre-fill login

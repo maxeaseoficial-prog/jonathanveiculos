@@ -10,17 +10,29 @@ export const ensureAdminAccount = createServerFn({ method: "POST" })
   .inputValidator((data) => ensureAdminInput.parse(data ?? {}))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { supabase } = await import("@/integrations/supabase/client");
+    const { getRequestHeader } = await import("@tanstack/react-start/server");
     
-    // Get current session on server side
-    const { data: { session } } = await supabase.auth.getSession();
+    // Auth token is attached via functionMiddleware in src/start.ts
+    const authHeader = getRequestHeader("Authorization");
     
-    if (!session) {
+    let userId: string;
+    let email: string | undefined;
+
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+      
+      if (authError || !user) {
+        console.error("[Admin Auth] Erro ao validar token:", authError);
+        throw new Error("Não autenticado ou sessão expirada.");
+      }
+      
+      userId = user.id;
+      email = user.email;
+    } else {
       throw new Error("Não autenticado.");
     }
 
-    const userId = session.user.id;
-    const email = session.user.email;
     const fallbackName = email?.split("@")[0] || "Usuário";
     const fullName = data.fullName?.trim() || fallbackName;
     const username = data.username?.trim() || email?.split("@")[0];
