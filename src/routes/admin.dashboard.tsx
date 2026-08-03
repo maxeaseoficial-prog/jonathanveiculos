@@ -36,7 +36,7 @@ import { ensureAdminAccount } from "@/lib/admin-auth.functions";
 import { StockManager } from "@/components/admin/StockManager";
 import { CatalogManager } from "@/components/admin/CatalogManager";
 import { SettingsManager } from "@/components/admin/SettingsManager";
-import logoAsset from "@/assets/logo.png.asset.json";
+import logoAsset from "@/assets/logo.jpg.asset.json";
 
 const MOTO_CATEGORIES = new Set([
   "Street",
