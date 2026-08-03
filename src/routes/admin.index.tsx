@@ -245,9 +245,10 @@ function AdminLoginPage() {
 
         toast.success("Conta criada com sucesso!");
         setFormMessage({
-          type: "info",
-          text: "Conta criada com sucesso.",
+          type: "success",
+          text: "Sua conta foi criada! Você já pode entrar usando seus dados.",
         });
+        setMode("login");
         logAuth("Cadastro criado sem sessão imediata. Aguardando confirmação de e-mail.");
       }
     } catch (err) {
