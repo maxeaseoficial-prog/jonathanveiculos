@@ -1510,7 +1510,7 @@ function VehicleFormDialog({
                 }}
                 className={cn(
                   "rounded-2xl border-2 border-dashed p-8 text-center transition-colors cursor-pointer",
-                  dragOver ? "border-[#FFC400] bg-[#FFC400]/10" : "border-zinc-200 hover:border-zinc-300",
+                  dragOver ? "border-brand-red bg-brand-red/10" : "border-zinc-200 hover:border-zinc-300",
                 )}
                 onClick={() => fileInputRef.current?.click()}
               >
