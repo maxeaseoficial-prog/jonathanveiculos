@@ -190,7 +190,7 @@ function AdminAuthPage() {
         className="relative z-10 w-full max-w-[440px]"
       >
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold font-[Sora] tracking-tight">
+          <h1 className="text-4xl font-bold font-[Sora] tracking-tight text-white">
             Jonathan <span className="text-brand-red">Veículos</span>
           </h1>
           <p className="text-white/50 mt-2">Painel de Gestão Administrativa</p>
