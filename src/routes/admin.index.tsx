@@ -124,10 +124,10 @@ function AdminAuthPage() {
                 className="py-12 text-center"
               >
                 <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold">Conta criada com sucesso!</h2>
-                <p className="text-white/50 mt-2">Redirecionando para o login...</p>
+                <h2 className="text-2xl font-bold">Acesso autorizado!</h2>
+                <p className="text-white/50 mt-2">Entrando no painel...</p>
               </motion.div>
-            ) : mode === "login" ? (
+            ) : (
               <motion.div
                 key="login"
                 initial={{ opacity: 0, x: -20 }}
@@ -140,7 +140,7 @@ function AdminAuthPage() {
                     <Label htmlFor="id">E-mail ou Usuário</Label>
                     <Input
                       id="id"
-                      placeholder="admin ou email@exemplo.com"
+                      placeholder="admin ou admin@demo.com"
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
                       className="bg-white/5 border-white/10 focus:border-brand-red h-12"
@@ -179,12 +179,6 @@ function AdminAuthPage() {
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
           </AnimatePresence>
         </div>
       </motion.div>
