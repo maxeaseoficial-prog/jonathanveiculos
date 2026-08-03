@@ -160,12 +160,13 @@
   margin-bottom: 8rem;
 }
 
-@utility card-hover {
-  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@utility card-hover:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-elegant);
+@layer components {
+  .card-hover {
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-elegant);
+  }
 }
 
