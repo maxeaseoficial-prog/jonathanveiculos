@@ -254,7 +254,7 @@ function AdminAuthPage() {
                     disabled={loading}
                     className="w-full bg-brand-red hover:bg-brand-red/90 h-12 text-lg font-semibold"
                   >
-                    {loading ? <Loader2 className="animate-spin" /> : <><LogIn className="mr-2" size={20} /> Entrar no painel</>}
+                    {loading ? <Loader2 className="animate-spin" /> : <><LogIn className="mr-2" size={20} /> <span className="text-white">Entrar no painel</span></>}
                   </Button>
                 </form>
                 <div className="mt-6 pt-6 border-t border-white/10 text-center">
