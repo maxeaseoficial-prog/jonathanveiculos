@@ -217,7 +217,7 @@ function AdminAuthPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
               >
-                <h2 className="text-2xl font-bold mb-6">Entrar no painel</h2>
+                <h2 className="text-2xl font-bold mb-6 text-white">Entrar no painel</h2>
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div className="space-y-2">
                     <Label htmlFor="id">E-mail ou Usuário</Label>
