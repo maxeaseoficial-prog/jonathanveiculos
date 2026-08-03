@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.ensure_admin_account(text);

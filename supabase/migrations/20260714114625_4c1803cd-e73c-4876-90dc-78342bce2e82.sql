@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS set_vehicle_images_updated_at ON public.vehicle_images;
