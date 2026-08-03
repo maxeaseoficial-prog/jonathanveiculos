@@ -9,19 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogoIndexRouteImport } from './routes/catalogo.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as CatalogoSlugRouteImport } from './routes/catalogo.$slug'
-import { Route as ApiAuditRouteImport } from './routes/api/audit'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
-const AuditRoute = AuditRouteImport.update({
-  id: '/audit',
-  path: '/audit',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -42,11 +35,6 @@ const CatalogoSlugRoute = CatalogoSlugRouteImport.update({
   path: '/catalogo/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuditRoute = ApiAuditRouteImport.update({
-  id: '/api/audit',
-  path: '/api/audit',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/admin/dashboard',
   path: '/admin/dashboard',
@@ -55,18 +43,14 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/api/audit': typeof ApiAuditRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/catalogo/': typeof CatalogoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/api/audit': typeof ApiAuditRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin': typeof AdminIndexRoute
   '/catalogo': typeof CatalogoIndexRoute
@@ -74,9 +58,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/api/audit': typeof ApiAuditRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/catalogo/': typeof CatalogoIndexRoute
@@ -85,27 +67,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/audit'
     | '/admin/dashboard'
-    | '/api/audit'
     | '/catalogo/$slug'
     | '/admin/'
     | '/catalogo/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/audit'
-    | '/admin/dashboard'
-    | '/api/audit'
-    | '/catalogo/$slug'
-    | '/admin'
-    | '/catalogo'
+  to: '/' | '/admin/dashboard' | '/catalogo/$slug' | '/admin' | '/catalogo'
   id:
     | '__root__'
     | '/'
-    | '/audit'
     | '/admin/dashboard'
-    | '/api/audit'
     | '/catalogo/$slug'
     | '/admin/'
     | '/catalogo/'
@@ -113,9 +84,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuditRoute: typeof AuditRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
-  ApiAuditRoute: typeof ApiAuditRoute
   CatalogoSlugRoute: typeof CatalogoSlugRoute
   AdminIndexRoute: typeof AdminIndexRoute
   CatalogoIndexRoute: typeof CatalogoIndexRoute
@@ -123,13 +92,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/audit': {
-      id: '/audit'
-      path: '/audit'
-      fullPath: '/audit'
-      preLoaderRoute: typeof AuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -158,13 +120,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/audit': {
-      id: '/api/audit'
-      path: '/api/audit'
-      fullPath: '/api/audit'
-      preLoaderRoute: typeof ApiAuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/admin/dashboard'
@@ -177,9 +132,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuditRoute: AuditRoute,
   AdminDashboardRoute: AdminDashboardRoute,
-  ApiAuditRoute: ApiAuditRoute,
   CatalogoSlugRoute: CatalogoSlugRoute,
   AdminIndexRoute: AdminIndexRoute,
   CatalogoIndexRoute: CatalogoIndexRoute,
