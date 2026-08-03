@@ -672,7 +672,8 @@ export function StockManager() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200 uppercase">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200 uppercase">
+                        <span className="w-1.5 h-1.5 rounded-sm bg-brand-red" />
                         {v.filial}
                       </span>
                     </td>
