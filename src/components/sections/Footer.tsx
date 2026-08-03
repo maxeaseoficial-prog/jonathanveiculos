@@ -120,9 +120,6 @@ export function Footer() {
           <p className="text-sm font-bold text-brand-black/30 uppercase tracking-widest">
             © {new Date().getFullYear()} {SITE_NAME}
           </p>
-          <p className="text-sm font-bold text-brand-black/30 uppercase tracking-widest">
-            Design by Premium Agency
-          </p>
         </div>
       </div>
 
