@@ -5,16 +5,16 @@ import car4 from "@/assets/car-4.jpg";
 import car5 from "@/assets/car-5.jpg";
 import car6 from "@/assets/car-6.jpg";
 
-export const WHATSAPP_URL = "https://wa.me/5542999784395";
-export const PHONE_DISPLAY = "(42) 99978-4395";
-export const PHONE_TEL = "+5542999784395";
-export const INSTAGRAM_URL = "https://www.instagram.com/excelencia.multimarcas/";
-export const INSTAGRAM_HANDLE = "@excelencia.multimarcas";
+export const WHATSAPP_URL = "https://wa.me/5542998266142";
+export const PHONE_DISPLAY = "(42) 99826-6142";
+export const PHONE_TEL = "+5542998266142";
+export const INSTAGRAM_URL = "https://www.instagram.com/jonathanveiculos_/";
+export const INSTAGRAM_HANDLE = "@jonathanveiculos_";
 export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=100063737730879";
-export const ADDRESS_LINE_1 = "R. Pres. João Café Filho, 200";
-export const ADDRESS_LINE_2 = "São Basílio Magno, União da Vitória / PR";
-export const ADDRESS_CEP = "84600-658";
-export const ADDRESS_FULL = "R. Pres. João Café Filho, 200 - São Basílio Magno, União da Vitória - PR, 84600-658";
+export const ADDRESS_LINE_1 = "Av. João Pessoa, 2907";
+export const ADDRESS_LINE_2 = "São Pedro, Porto União / SC";
+export const ADDRESS_CEP = "89400-000";
+export const ADDRESS_FULL = "Av. João Pessoa, 2907 - São Pedro, Porto União - SC, 89400-000";
 export const MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(ADDRESS_FULL)}&output=embed`;
 
 export const vehicles = [
