@@ -739,7 +739,7 @@ export function StockManager() {
                     <div className="font-semibold text-sm">{BRL.format(v.price)}</div>
                   </div>
                   <div className="flex gap-1 mt-2">
-                    {v.featured && <Badge className="bg-[#FFC400] text-black hover:bg-[#FFC400] text-[10px]">Destaque</Badge>}
+                    {v.featured && <Badge className="bg-brand-red text-white hover:bg-brand-red/90 text-[10px]">Destaque</Badge>}
                     {v.on_sale && <Badge className="bg-[#E30613] hover:bg-[#E30613] text-[10px]">Promo</Badge>}
                   </div>
                   <div className="flex justify-end gap-1 mt-2">
