@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import adminBgAsset from "@/assets/admin-bg.webp.asset.json";
 import { ensureAdminAccount } from "@/lib/admin-auth.functions";
+import { resolveUsername } from "@/lib/resolve-username.functions";
 
 const AUTH_LOG_PREFIX = "[Admin Auth]";
 
@@ -97,6 +98,7 @@ export const Route = createFileRoute("/admin/")({
 function AdminLoginPage() {
   const navigate = useNavigate();
   const ensureAdminAccountFn = useServerFn(ensureAdminAccount);
+  const resolveUsernameFn = useServerFn(resolveUsername);
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -173,11 +175,22 @@ function AdminLoginPage() {
       if (mode === "login") {
         logAuth("Enviando credenciais de login...");
         
-        // Se não tiver @, assume que é um usuário e completa com um domínio fake para o Supabase Auth
-        // ou usa diretamente se for e-mail.
-        const authEmail = parsed.data.email.includes("@") 
-          ? parsed.data.email 
-          : `${parsed.data.email}@internal.local`;
+        let authEmail = parsed.data.email;
+        
+        if (!authEmail.includes("@")) {
+          logAuth("Resolvendo e-mail para o usuário:", authEmail);
+          const { email: resolvedEmail } = await resolveUsernameFn({ 
+            data: { username: authEmail } 
+          });
+          
+          if (resolvedEmail) {
+            logAuth("E-mail resolvido:", resolvedEmail);
+            authEmail = resolvedEmail;
+          } else {
+            logAuth("Não foi possível resolver o e-mail. Tentando fallback.");
+            authEmail = `${authEmail}@internal.local`;
+          }
+        }
 
         const { error } = await supabase.auth.signInWithPassword({
           email: authEmail,
