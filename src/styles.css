@@ -4,9 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Excelência Multimarcas — Premium Auto Dealership Design System
- * Palette: Preto (#0B0B0B) predominante, Amarelo (#FFC400) destaques,
- *          Vermelho (#E30613) CTAs importantes, Branco contraste.
+/* Jonathan Veículos — Premium Auto Dealership Design System
+ * Palette: Branco predominante, Vermelho (#E30613) principal,
+ *          Preto (#0B0B0B) títulos, Cinzas claros fundos.
  */
 
 @theme inline {
@@ -38,7 +38,6 @@
   --color-ring: var(--ring);
 
   --color-brand-black: var(--brand-black);
-  --color-brand-yellow: var(--brand-yellow);
   --color-brand-red: var(--brand-red);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
@@ -48,54 +47,52 @@
 }
 
 :root {
-  --radius: 1rem; /* 16px */
+  --radius: 1.5rem; /* Larger curves as requested */
 
   /* Brand */
   --brand-black: oklch(0.08 0 0);           /* #0B0B0B */
-  --brand-yellow: oklch(0.86 0.19 92);      /* #FFC400 */
   --brand-red: oklch(0.56 0.24 27);         /* #E30613 */
-  --surface: oklch(0.12 0 0);
-  --surface-elevated: oklch(0.16 0 0);
+  --surface: oklch(0.98 0 0);               /* Light gray background */
+  --surface-elevated: oklch(1 0 0);         /* Pure white */
 
   /* Semantic (light theme, brand-driven) */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.14 0 0);
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.08 0 0);            /* Dark titles */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.14 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.14 0 0);
-  --primary: oklch(0.08 0 0);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.14 0 0);
+  --primary: oklch(0.56 0.24 27);           /* Red as primary */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.08 0 0);
   --muted: oklch(0.96 0 0);
   --muted-foreground: oklch(0.45 0 0);
-  --accent: oklch(0.86 0.19 92);
-  --accent-foreground: oklch(0.08 0 0);
+  --accent: oklch(0.56 0.24 27);
+  --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.56 0.24 27);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0 0 0 / 8%);
-  --input: oklch(0 0 0 / 12%);
-  --ring: oklch(0.08 0 0 / 30%);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0 0 0 / 6%);
+  --input: oklch(0 0 0 / 8%);
+  --ring: oklch(0.56 0.24 27 / 20%);
 
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.14 0 0);
-  --sidebar-primary: oklch(0.08 0 0);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.56 0.24 27);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.96 0 0);
   --sidebar-accent-foreground: oklch(0.14 0 0);
-  --sidebar-border: oklch(0 0 0 / 8%);
-  --sidebar-ring: oklch(0.08 0 0 / 30%);
+  --sidebar-border: oklch(0 0 0 / 6%);
+  --sidebar-ring: oklch(0.56 0.24 27 / 20%);
 
   /* Gradients & shadows */
-  --gradient-hero: linear-gradient(180deg, oklch(0 0 0 / 0.15) 0%, oklch(0 0 0 / 0.35) 45%, oklch(0 0 0 / 0.75) 82%, oklch(0 0 0) 100%);
-  --gradient-yellow: linear-gradient(135deg, oklch(0.9 0.19 95) 0%, oklch(0.82 0.19 88) 100%);
+  --gradient-hero: linear-gradient(180deg, oklch(1 0 0 / 0) 0%, oklch(1 0 0 / 0.8) 100%);
   --gradient-red: linear-gradient(135deg, oklch(0.62 0.24 27) 0%, oklch(0.5 0.24 27) 100%);
-  --gradient-glow: radial-gradient(circle at 30% 20%, oklch(0.86 0.19 92 / 0.08), transparent 60%);
+  --gradient-glow: radial-gradient(circle at 30% 20%, oklch(0.56 0.24 27 / 0.03), transparent 60%);
 
-  --shadow-elegant: 0 20px 60px -20px oklch(0 0 0 / 0.25);
-  --shadow-yellow: 0 10px 40px -10px oklch(0.86 0.19 92 / 0.5);
-  --shadow-card: 0 8px 30px -14px oklch(0 0 0 / 0.15);
+  --shadow-elegant: 0 30px 60px -15px oklch(0 0 0 / 0.08);
+  --shadow-card: 0 10px 40px -12px oklch(0 0 0 / 0.06);
+  --shadow-red-glow: 0 15px 40px -10px oklch(0.56 0.24 27 / 0.25);
 }
 
 @layer base {
@@ -116,57 +113,30 @@
 
   h1, h2, h3, h4, h5 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    color: var(--brand-black);
   }
 }
 
 @utility glass {
-  background: color-mix(in oklab, oklch(1 0 0) 60%, transparent);
-  backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid oklch(0 0 0 / 0.06);
+  background: color-mix(in oklab, oklch(1 0 0) 80%, transparent);
+  backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid oklch(0 0 0 / 0.04);
 }
 
 @utility glass-strong {
-  background: color-mix(in oklab, oklch(1 0 0) 82%, transparent);
-  backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid oklch(0 0 0 / 0.08);
-}
-
-@utility glass-dark {
-  background: color-mix(in oklab, var(--brand-black) 55%, transparent);
-  backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid oklch(1 0 0 / 0.1);
-}
-
-
-
-@utility text-gradient-yellow {
-  background: var(--gradient-yellow);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  background: color-mix(in oklab, oklch(1 0 0) 90%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid oklch(0 0 0 / 0.05);
 }
 
 @utility text-brand-accent {
   color: var(--brand-red);
 }
 
-
-@utility highlight-yellow {
-  background: var(--gradient-yellow);
-  color: var(--brand-black);
-  padding: 0 0.4em;
-  border-radius: 0.4em;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
 @utility bg-gradient-hero {
   background: var(--gradient-hero);
-}
-
-@utility bg-gradient-yellow {
-  background: var(--gradient-yellow);
 }
 
 @utility bg-gradient-red {
@@ -177,10 +147,25 @@
   box-shadow: var(--shadow-elegant);
 }
 
-@utility shadow-yellow-glow {
-  box-shadow: var(--shadow-yellow);
+@utility shadow-red-glow {
+  box-shadow: var(--shadow-red-glow);
 }
 
 @utility shadow-card-premium {
   box-shadow: var(--shadow-card);
 }
+
+@utility section-spacing {
+  margin-top: 8rem;
+  margin-bottom: 8rem;
+}
+
+@utility card-hover {
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@utility card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-elegant);
+}
+
