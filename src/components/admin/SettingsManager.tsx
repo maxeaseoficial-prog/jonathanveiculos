@@ -307,7 +307,7 @@ export function SettingsManager() {
         className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
       >
         <div className="flex items-center gap-2 mb-1">
-          <Building2 className="h-4 w-4 text-[#FFC400]" />
+          <Building2 className="h-4 w-4 text-brand-red" />
           <h3 className="font-[Sora] text-lg font-semibold text-zinc-900">Informações da empresa</h3>
         </div>
         <p className="text-sm text-zinc-500 mb-5">
@@ -401,7 +401,7 @@ export function SettingsManager() {
           <Button
             onClick={handleSaveCompany}
             disabled={saving}
-            className="bg-[#FFC400] text-zinc-900 hover:bg-[#e6b000]"
+            className="bg-brand-red text-white hover:bg-brand-red/90 shadow-red-glow"
           >
             {saving ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />

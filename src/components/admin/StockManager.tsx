@@ -183,11 +183,11 @@ const STATUS_LABEL: Record<VehicleStatus, string> = {
 };
 
 const STATUS_COLOR: Record<VehicleStatus, string> = {
-  ativo: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30",
-  inativo: "bg-zinc-500/15 text-zinc-700 border-zinc-500/30",
-  vendido: "bg-red-500/15 text-red-700 border-red-500/30",
-  reservado: "bg-amber-500/15 text-amber-800 border-amber-500/30",
-  oculto: "bg-zinc-500/10 text-zinc-600 border-zinc-500/20",
+  ativo: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30",
+  inativo: "bg-zinc-500/15 text-zinc-500 border-zinc-500/30",
+  vendido: "bg-red-500/15 text-red-600 border-red-500/30",
+  reservado: "bg-amber-500/15 text-amber-700 border-amber-500/30",
+  oculto: "bg-zinc-500/10 text-zinc-500 border-zinc-500/20",
 };
 
 const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
