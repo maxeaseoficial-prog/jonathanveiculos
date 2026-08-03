@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogoIndexRouteImport } from './routes/catalogo.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as CatalogoSlugRouteImport } from './routes/catalogo.$slug'
+import { Route as ApiAuditRouteImport } from './routes/api/audit'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
 const AuditRoute = AuditRouteImport.update({
@@ -41,6 +42,11 @@ const CatalogoSlugRoute = CatalogoSlugRouteImport.update({
   path: '/catalogo/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuditRoute = ApiAuditRouteImport.update({
+  id: '/api/audit',
+  path: '/api/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/admin/dashboard',
   path: '/admin/dashboard',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/api/audit': typeof ApiAuditRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/catalogo/': typeof CatalogoIndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/api/audit': typeof ApiAuditRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin': typeof AdminIndexRoute
   '/catalogo': typeof CatalogoIndexRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/api/audit': typeof ApiAuditRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/catalogo/': typeof CatalogoIndexRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/audit'
     | '/admin/dashboard'
+    | '/api/audit'
     | '/catalogo/$slug'
     | '/admin/'
     | '/catalogo/'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/audit'
     | '/admin/dashboard'
+    | '/api/audit'
     | '/catalogo/$slug'
     | '/admin'
     | '/catalogo'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/audit'
     | '/admin/dashboard'
+    | '/api/audit'
     | '/catalogo/$slug'
     | '/admin/'
     | '/catalogo/'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuditRoute: typeof AuditRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  ApiAuditRoute: typeof ApiAuditRoute
   CatalogoSlugRoute: typeof CatalogoSlugRoute
   AdminIndexRoute: typeof AdminIndexRoute
   CatalogoIndexRoute: typeof CatalogoIndexRoute
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/audit': {
+      id: '/api/audit'
+      path: '/api/audit'
+      fullPath: '/api/audit'
+      preLoaderRoute: typeof ApiAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/admin/dashboard'
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuditRoute: AuditRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  ApiAuditRoute: ApiAuditRoute,
   CatalogoSlugRoute: CatalogoSlugRoute,
   AdminIndexRoute: AdminIndexRoute,
   CatalogoIndexRoute: CatalogoIndexRoute,
@@ -166,3 +187,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
