@@ -1,6 +1,8 @@
 import { MapPin, Phone, MessageCircle, Instagram, Facebook, Clock } from "lucide-react";
 import logoAsset from "@/assets/logo.png.asset.json";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
+import { SITE_NAME } from "@/lib/site-meta";
+
 
 const quickLinks = [
   { href: "#inicio", label: "Início" },
