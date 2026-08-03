@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogoIndexRouteImport } from './routes/catalogo.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as CatalogoSlugRouteImport } from './routes/catalogo.$slug'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/catalogo/$slug': typeof CatalogoSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -67,15 +76,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/audit'
     | '/admin/dashboard'
     | '/catalogo/$slug'
     | '/admin/'
     | '/catalogo/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin/dashboard' | '/catalogo/$slug' | '/admin' | '/catalogo'
+  to:
+    | '/'
+    | '/audit'
+    | '/admin/dashboard'
+    | '/catalogo/$slug'
+    | '/admin'
+    | '/catalogo'
   id:
     | '__root__'
     | '/'
+    | '/audit'
     | '/admin/dashboard'
     | '/catalogo/$slug'
     | '/admin/'
@@ -84,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuditRoute: typeof AuditRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   CatalogoSlugRoute: typeof CatalogoSlugRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -92,6 +110,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -132,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuditRoute: AuditRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   CatalogoSlugRoute: CatalogoSlugRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -140,3 +166,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
