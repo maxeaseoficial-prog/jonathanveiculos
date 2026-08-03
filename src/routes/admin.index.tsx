@@ -70,11 +70,14 @@ function getAuthErrorMessage(message: string) {
 }
 
 const loginSchema = z.object({
+  email: z.string().trim().min(1, "Informe seu e-mail ou usuário"),
+  password: z.string().min(1, "Informe sua senha"),
+});
+
+const signupSchema = z.object({
+  name: z.string().trim().min(2, "Informe seu nome completo").max(100),
   email: z.string().trim().min(1, "Informe seu e-mail").email("E-mail inválido").max(255),
   password: z.string().min(6, "A senha deve ter ao menos 6 caracteres").max(72),
-});
-const signupSchema = loginSchema.extend({
-  name: z.string().trim().min(2, "Informe seu nome completo").max(100),
 });
 
 import { title, SITE_NAME } from "@/lib/site-meta";
@@ -171,8 +174,15 @@ function AdminLoginPage() {
     try {
       if (mode === "login") {
         logAuth("Enviando credenciais de login...");
+        
+        // Se não tiver @, assume que é um usuário e completa com um domínio fake para o Supabase Auth
+        // ou usa diretamente se for e-mail.
+        const authEmail = parsed.data.email.includes("@") 
+          ? parsed.data.email 
+          : `${parsed.data.email}@internal.local`;
+
         const { error } = await supabase.auth.signInWithPassword({
-          email: parsed.data.email,
+          email: authEmail,
           password: parsed.data.password,
         });
         if (error) throw error;
@@ -192,11 +202,15 @@ function AdminLoginPage() {
         navigate({ to: "/admin/dashboard", replace: true });
       } else {
         logAuth("Criando usuário...");
+        const authEmail = parsed.data.email;
         const { error } = await supabase.auth.signUp({
-          email: parsed.data.email,
+          email: authEmail,
           password: parsed.data.password,
           options: {
-            data: { full_name: name.trim() },
+            data: { 
+              full_name: name.trim(),
+              username: authEmail.split('@')[0] // Guarda o usuário sugerido
+            },
             emailRedirectTo: `${window.location.origin}/admin`,
           },
         });
@@ -289,7 +303,7 @@ function AdminLoginPage() {
             </h2>
             <p className="mt-1 text-sm text-white/50">
               {mode === "login"
-                ? "Use seu e-mail e senha para acessar."
+                ? "Use seu e-mail ou usuário para acessar."
                 : "O primeiro cadastro se torna administrador."}
             </p>
             <div className="mt-4 p-3 rounded-lg border border-white/10 bg-white/5 text-xs text-white/40">
@@ -325,13 +339,16 @@ function AdminLoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white/80">E-mail</Label>
+              <Label htmlFor="email" className="text-white/80">
+                {mode === "login" ? "E-mail ou Usuário" : "E-mail"}
+              </Label>
               <Input
                 id="email"
-                type="email"
-                autoComplete="email"
+                type={mode === "login" ? "text" : "email"}
+                autoComplete={mode === "login" ? "username" : "email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder={mode === "login" ? "Digite seu e-mail ou usuário" : "exemplo@email.com"}
                 aria-invalid={!!errors.email}
                 className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-brand-red"
               />
