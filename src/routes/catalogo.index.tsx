@@ -115,15 +115,11 @@ function CatalogoPage() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <span className="text-xs uppercase tracking-[0.3em] text-brand-yellow font-semibold">
-              Catálogos
-            </span>
-            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-              Coleções <span className="text-brand-accent">selecionadas</span>.
+            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-brand-black">
+              Coleções <span className="text-brand-red decoration-brand-red/20 underline decoration-8 underline-offset-8">selecionadas</span>.
             </h1>
-            <p className="mt-4 text-foreground/70 text-lg">
-              Navegue pelos catálogos e descubra grupos de veículos organizados por coleção,
-              promoção ou segmento.
+            <p className="mt-8 text-brand-black/60 text-xl font-medium">
+              Explore nossos veículos organizados por estilo, <br className="hidden md:block" /> segmento e ofertas especiais.
             </p>
           </motion.div>
 
@@ -154,7 +150,7 @@ function CatalogoPage() {
                     <Link
                       to="/catalogo/$slug"
                       params={{ slug: c.slug }}
-                      className="group block bg-white rounded-3xl overflow-hidden border border-black/5 shadow-card-premium hover:shadow-elegant transition-shadow duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow"
+                      className="group block bg-white rounded-[2.5rem] overflow-hidden border border-black/5 shadow-card-premium hover:shadow-elegant transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-red"
                     >
                       <div className="relative aspect-[16/10] bg-muted overflow-hidden">
                         {c.cover_url ? (
@@ -180,7 +176,7 @@ function CatalogoPage() {
                         {c.description && (
                           <p className="mt-2 text-sm text-foreground/60 line-clamp-2">{c.description}</p>
                         )}
-                        <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-accent">
+                        <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-brand-red">
                           Ver catálogo <ArrowUpRight className="w-4 h-4" />
                         </div>
                       </div>

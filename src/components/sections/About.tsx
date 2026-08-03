@@ -32,66 +32,42 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
 
 export function About() {
   return (
-    <section id="sobre" className="relative py-28 lg:py-36 overflow-hidden">
-      <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-glow)" }} />
+    <section id="sobre" className="relative py-32 lg:py-48 bg-surface overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            <div className="relative rounded-3xl overflow-hidden shadow-elegant">
-              <img
-                src={fachadaAsset.url}
-                alt="Loja Excelência Multimarcas"
-                loading="lazy"
-                width={1200}
-                height={800}
-                className="w-full h-[520px] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-black/70 via-transparent to-transparent" />
-            </div>
-            
-          </motion.div>
+        <div className="grid lg:grid-cols-12 gap-16 items-center">
+          <div className="lg:col-span-12 text-center mb-16">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="text-4xl sm:text-6xl font-bold text-brand-black tracking-tight"
+            >
+              Nossa <span className="text-brand-red">História</span> em Números
+            </motion.h2>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span className="text-xs uppercase tracking-[0.3em] text-brand-yellow font-semibold">Sobre nós</span>
-            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.1]">
-              Mais de uma década movendo <span className="text-brand-accent">excelência</span>.
-            </h2>
-            <p className="mt-6 text-foreground/75 text-lg leading-relaxed">
-              A Excelência Multimarcas nasceu com um propósito claro: entregar a melhor experiência de compra de veículos da região. Combinamos padrão de concessionária premium com a flexibilidade de uma loja multimarcas, sem abrir mão de procedência, transparência e um atendimento que faz toda a diferença.
-            </p>
-            <p className="mt-4 text-foreground/60 leading-relaxed">
-              Cada veículo passa por rigorosa inspeção e revisão antes de compor nosso showroom. Nosso time acompanha você da escolha até a entrega das chaves.
-            </p>
-
-            <div className="mt-10 grid grid-cols-2 gap-4">
+          <div className="lg:col-span-12">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
               {stats.map((s, i) => (
                 <motion.div
                   key={s.label}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2 + i * 0.08 }}
-                  className="bg-white border border-black/5 rounded-2xl p-5 shadow-card-premium"
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="bg-white border border-black/5 rounded-[2.5rem] p-10 lg:p-14 shadow-card-premium text-center card-hover"
                 >
-                  <div className="text-3xl lg:text-4xl font-bold text-brand-accent font-display">
+                  <div className="text-5xl lg:text-7xl font-bold text-brand-black font-display tracking-tighter">
                     <Counter to={s.value} suffix={s.suffix} />
                   </div>
-                  <div className="mt-1 text-sm text-foreground/70">{s.label}</div>
+                  <div className="mt-4 text-sm font-bold uppercase tracking-[0.2em] text-brand-black/30">
+                    {s.label}
+                  </div>
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

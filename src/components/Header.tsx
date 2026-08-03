@@ -4,6 +4,7 @@ import { Menu, X, MessageCircle } from "lucide-react";
 import { Link, useLocation } from "@tanstack/react-router";
 import logoAsset from "@/assets/logo.png.asset.json";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
+import { SITE_NAME } from "@/lib/site-meta";
 
 type NavLink =
   | { kind: "hash"; hash: string; label: string }
@@ -39,20 +40,20 @@ export function Header() {
       return (
         <Link key={l.label} to={l.to} onClick={onClick} className={className}>
           {l.label}
-          <span className="absolute left-4 right-4 -bottom-0.5 h-px bg-brand-yellow scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+          <span className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 h-0.5 w-0 bg-brand-red group-hover:w-full transition-all duration-300" />
         </Link>
       );
     }
     return (
       <a key={l.label} href={hashHref(l.hash)} onClick={onClick} className={className}>
         {l.label}
-        <span className="absolute left-4 right-4 -bottom-0.5 h-px bg-brand-yellow scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+        <span className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 h-0.5 w-0 bg-brand-red group-hover:w-full transition-all duration-300" />
       </a>
     );
   };
 
   const desktopClass =
-    "relative px-4 py-2 text-sm font-medium transition-colors group text-white/85 hover:text-white";
+    "relative px-4 py-2 text-sm font-semibold transition-colors group text-brand-black/70 hover:text-brand-black";
 
   return (
     <motion.header
@@ -60,65 +61,66 @@ export function Header() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled || !isHome
-          ? "bg-brand-black/95 backdrop-blur-xl shadow-card-premium border-b border-white/5"
-          : "bg-transparent"
+        scrolled
+          ? "bg-white/90 backdrop-blur-xl shadow-elegant py-4"
+          : "bg-white py-6"
       }`}
     >
-      <div className={`mx-auto max-w-7xl px-5 lg:px-8 h-24 flex items-center justify-between text-white`}>
+      <div className="mx-auto max-w-7xl px-5 lg:px-8 flex items-center justify-between">
         {isHome ? (
           <a href="#inicio" className="flex items-center gap-3">
             <img
               src={logoAsset.url}
-              alt="Excelência Multimarcas"
-              className={`h-16 lg:h-20 w-auto transition-all duration-300 ${scrolled ? "" : "drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"}`}
-              width={240}
-              height={80}
+              alt={SITE_NAME}
+              className="h-12 lg:h-14 w-auto object-contain"
+              width={180}
+              height={56}
             />
           </a>
         ) : (
           <Link to="/" className="flex items-center gap-3">
             <img
               src={logoAsset.url}
-              alt="Excelência Multimarcas"
-              className="h-16 lg:h-20 w-auto"
-              width={240}
-              height={80}
+              alt={SITE_NAME}
+              className="h-12 lg:h-14 w-auto object-contain"
+              width={180}
+              height={56}
             />
           </Link>
         )}
 
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-2">
           {links.map((l) => renderNavLink(l, desktopClass))}
         </nav>
 
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-semibold text-sm shadow-[0_10px_30px_-10px_rgba(37,211,102,0.6)] transition-colors duration-300"
-        >
-          <MessageCircle className="w-4 h-4" />
-          Fale Conosco
-        </a>
+        <div className="flex items-center gap-4">
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand-red text-white font-bold text-sm shadow-red-glow hover:brightness-110 transition-all duration-300"
+          >
+            Fale Conosco
+          </a>
 
-        <button
-          className={`lg:hidden p-2 rounded-lg text-white hover:bg-white/10`}
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Menu"
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            {open ? (
-              <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                <X className="w-6 h-6" />
-              </motion.span>
-            ) : (
-              <motion.span key="m" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                <Menu className="w-6 h-6" />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </button>
+          <button
+            className="lg:hidden p-2 rounded-xl text-brand-black hover:bg-black/5"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Menu"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {open ? (
+                <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                  <X className="w-6 h-6" />
+                </motion.span>
+              ) : (
+                <motion.span key="m" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                  <Menu className="w-6 h-6" />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -128,13 +130,13 @@ export function Header() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden overflow-hidden bg-brand-black/95 backdrop-blur-xl border-t border-white/5 text-white"
+            className="lg:hidden overflow-hidden bg-white border-t border-black/5"
           >
-            <div className="px-5 py-6 flex flex-col gap-1">
+            <div className="px-5 py-8 flex flex-col gap-2">
               {links.map((l) =>
                 renderNavLink(
                   l,
-                  "relative px-4 py-3 rounded-xl text-base font-medium text-white/90 hover:bg-white/5 transition-colors",
+                  "relative px-4 py-4 rounded-2xl text-lg font-bold text-brand-black/80 hover:bg-black/5 transition-colors",
                   () => setOpen(false),
                 ),
               )}
@@ -142,9 +144,9 @@ export function Header() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-semibold transition-colors"
+                className="mt-4 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-brand-red text-white font-bold shadow-red-glow"
               >
-                <MessageCircle className="w-4 h-4" /> Fale Conosco
+                <MessageCircle className="w-5 h-5" /> Fale Conosco
               </a>
             </div>
           </motion.div>

@@ -196,10 +196,7 @@ function CatalogoDetalhePage() {
                 className="mt-6 grid gap-8 lg:grid-cols-[1.2fr_1fr] items-center"
               >
                 <div>
-                  <span className="text-xs uppercase tracking-[0.3em] text-brand-yellow font-semibold">
-                    Catálogo
-                  </span>
-                  <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+                  <h1 className="mt-3 text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-brand-black">
                     {data.name}
                   </h1>
                   {data.description && (
@@ -210,7 +207,7 @@ function CatalogoDetalhePage() {
                   </div>
                 </div>
                 {data.cover_url && (
-                  <div className="rounded-3xl overflow-hidden border border-black/5 shadow-card-premium aspect-[16/10]">
+                  <div className="rounded-[2.5rem] overflow-hidden border border-black/5 shadow-card-premium aspect-[16/10]">
                     <img
                       src={data.cover_url}
                       alt={data.name}
@@ -255,7 +252,7 @@ function CatalogoDetalhePage() {
                             setSelectedId(v.id);
                           }
                         }}
-                        className="group bg-white rounded-3xl overflow-hidden border border-black/5 shadow-card-premium hover:shadow-elegant transition-shadow duration-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow"
+                        className="group bg-white rounded-[2rem] overflow-hidden border border-black/5 shadow-card-premium hover:shadow-elegant transition-all duration-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-red"
                       >
                         <div className="relative overflow-hidden aspect-[4/3] bg-muted">
                           {v.image ? (
@@ -296,11 +293,11 @@ function CatalogoDetalhePage() {
                               {v.previous_price != null &&
                                 v.price != null &&
                                 Number(v.previous_price) > Number(v.price) && (
-                                  <div className="text-sm text-[#FFC400] font-semibold line-through leading-none">
+                                  <div className="text-sm text-brand-black/40 font-bold line-through leading-none">
                                     {priceFmt.format(Number(v.previous_price))}
                                   </div>
                                 )}
-                              <div className="text-2xl font-bold text-brand-accent font-display">
+                              <div className="text-2xl font-bold text-brand-red font-display">
                                 {v.price != null ? priceFmt.format(Number(v.price)) : "Sob consulta"}
                               </div>
                             </div>
@@ -310,7 +307,7 @@ function CatalogoDetalhePage() {
                                 e.stopPropagation();
                                 setSelectedId(v.id);
                               }}
-                              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-muted hover:bg-brand-yellow hover:text-brand-black text-sm font-semibold transition-all duration-300"
+                              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface hover:bg-brand-red hover:text-white text-xs font-bold transition-all duration-300"
                             >
                               Ver detalhes <ArrowUpRight className="w-3.5 h-3.5" />
                             </button>

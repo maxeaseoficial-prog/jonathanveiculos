@@ -162,190 +162,154 @@ export function Stock() {
 
 
   return (
-    <section id="estoque" className="relative py-28 lg:py-36">
+    <section id="estoque" className="relative py-32 lg:py-48 bg-white">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
+        <div className="flex flex-col gap-12 mb-20">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl"
           >
-            <span className="text-xs uppercase tracking-[0.3em] text-brand-yellow font-semibold">Estoque</span>
-            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
-              Destaques do <span className="text-brand-accent">showroom</span>.
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-brand-black tracking-tight">
+              Encontre o seu <span className="text-brand-red">próximo carro</span>.
             </h2>
-            <p className="mt-4 text-foreground/70 max-w-xl">
-              Uma seleção dos veículos mais procurados da semana. Todos revisados, com procedência garantida.
+            <p className="mt-6 text-brand-black/60 text-lg font-medium">
+              Veículos selecionados com o mais alto padrão de qualidade e procedência garantida.
             </p>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-6 flex flex-col sm:flex-row gap-3 max-w-3xl"
-            >
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Buscar por marca, modelo ou ano..."
-                  className="w-full h-12 pl-11 pr-10 rounded-full bg-white border border-black/10 shadow-sm text-sm placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition"
-                />
-                {query && (
-                  <button
-                    type="button"
-                    onClick={() => setQuery("")}
-                    aria-label="Limpar busca"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-foreground/50 hover:text-foreground hover:bg-muted transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-col lg:flex-row gap-4 items-center"
+          >
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-black/30" />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Qual veículo você procura?"
+                className="w-full h-16 pl-14 pr-12 rounded-2xl bg-surface border border-black/5 text-lg placeholder:text-brand-black/30 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all shadow-sm"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-xl text-brand-black/40 hover:bg-black/5"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+            
+            <div className="flex w-full lg:w-auto gap-3">
               <select
                 value={brandFilter}
                 onChange={(e) => setBrandFilter(e.target.value)}
-                className="h-12 px-4 rounded-full bg-white border border-black/10 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow"
+                className="flex-1 lg:w-48 h-16 px-6 rounded-2xl bg-surface border border-black/5 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
               >
-                <option value="all">Todas as marcas</option>
+                <option value="all">Todas as Marcas</option>
                 {brands.map((b) => (
                   <option key={b} value={b}>{b}</option>
                 ))}
               </select>
+              
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="h-12 px-4 rounded-full bg-white border border-black/10 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow"
+                className="flex-1 lg:w-48 h-16 px-6 rounded-2xl bg-surface border border-black/5 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
               >
-                <option value="recent">Mais recentes</option>
-                <option value="price-asc">Menor preço</option>
-                <option value="price-desc">Maior preço</option>
-                <option value="year-desc">Ano mais novo</option>
-                <option value="km-asc">Menor KM</option>
+                <option value="recent">Lançamentos</option>
+                <option value="price-asc">Menor Preço</option>
+                <option value="price-desc">Maior Preço</option>
+                <option value="year-desc">Mais Novos</option>
               </select>
-            </motion.div>
-
+            </div>
           </motion.div>
-          <motion.a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noreferrer"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="inline-flex items-center gap-2 self-start lg:self-auto px-5 py-3 rounded-full bg-brand-black text-white text-sm font-medium hover:bg-brand-black/85 transition-colors"
-          >
-            Ver estoque completo <ArrowUpRight className="w-4 h-4" />
-          </motion.a>
         </div>
 
         {isLoading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-3xl bg-white border border-black/5 shadow-card-premium overflow-hidden animate-pulse">
-                <div className="aspect-[4/3] bg-muted" />
-                <div className="p-6 space-y-3">
-                  <div className="h-5 bg-muted rounded w-2/3" />
-                  <div className="h-4 bg-muted rounded w-1/3" />
-                  <div className="h-8 bg-muted rounded w-1/2" />
-                </div>
-              </div>
+              <div key={i} className="rounded-[2.5rem] bg-surface aspect-[4/5] animate-pulse" />
             ))}
           </div>
         ) : displayed.length === 0 ? (
-          <div className="rounded-3xl border border-black/5 bg-white p-14 text-center shadow-card-premium">
-            <h3 className="text-xl font-semibold">
-              {vehicles.length === 0 ? "Estoque em atualização" : "Nenhum veículo encontrado"}
-            </h3>
-            <p className="mt-2 text-foreground/60 max-w-md mx-auto">
-              {vehicles.length === 0
-                ? "Novos veículos serão publicados em breve. Fale com nosso time para conhecer as opções disponíveis."
-                : "Tente ajustar a busca ou os filtros para ver mais opções."}
+          <div className="rounded-[3rem] border border-black/5 bg-surface p-20 text-center shadow-card-premium">
+            <h3 className="text-2xl font-bold">Nenhum veículo encontrado</h3>
+            <p className="mt-4 text-brand-black/50 max-w-md mx-auto">
+              Tente ajustar sua busca ou filtros para ver outras opções do nosso estoque.
             </p>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-brand-black text-white text-sm font-medium hover:bg-brand-black/85 transition-colors"
+            <button 
+              onClick={() => { setQuery(""); setBrandFilter("all"); setSortBy("recent"); }}
+              className="mt-8 px-8 py-4 rounded-full bg-brand-black text-white font-bold hover:brightness-125 transition-all"
             >
-              Falar no WhatsApp <ArrowUpRight className="w-4 h-4" />
-            </a>
+              Limpar Filtros
+            </button>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14">
             {displayed.map((v, i) => (
-
               <motion.article
                 key={v.id}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.6, delay: (i % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -6 }}
+                transition={{ duration: 0.8, delay: (i % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 onClick={() => setSelectedId(v.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedId(v.id); } }}
-                className="group bg-white rounded-3xl overflow-hidden border border-black/5 shadow-card-premium hover:shadow-elegant transition-shadow duration-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow"
-              
+                className="group cursor-pointer"
               >
-                <div className="relative overflow-hidden aspect-[4/3] bg-muted">
+                <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-card-premium group-hover:shadow-elegant transition-all duration-700">
                   {v.image ? (
                     <motion.img
                       src={v.image}
                       alt={`${v.brand} ${v.model}`}
                       loading="lazy"
-                      width={1200}
-                      height={800}
-                      className="w-full h-full object-cover"
-                      whileHover={{ scale: 1.06 }}
-                      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-foreground/40 text-sm">
-                      Sem imagem
+                    <div className="w-full h-full bg-surface flex items-center justify-center text-brand-black/20 font-bold uppercase tracking-widest text-xs">
+                      Sem Imagem
                     </div>
                   )}
-                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-brand-black/70 backdrop-blur text-[11px] uppercase tracking-widest font-semibold text-white">
+                  
+                  {/* Badge de Marca */}
+                  <div className="absolute top-6 left-6 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-md shadow-sm text-xs font-bold uppercase tracking-widest text-brand-black">
                     {v.brand}
+                  </div>
+
+                  {/* Overlay ao hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="absolute bottom-8 left-8 right-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                    <button className="w-full py-4 rounded-2xl bg-white text-brand-black font-bold text-sm uppercase tracking-widest shadow-elegant">
+                      Ver Detalhes
+                    </button>
                   </div>
                 </div>
 
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold leading-tight">{v.model}</h3>
-                  <div className="mt-3 flex items-center gap-4 text-xs text-foreground/60">
-                    <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {v.year}</span>
-                    {v.km != null && (
-                      <span className="inline-flex items-center gap-1.5"><Gauge className="w-3.5 h-3.5" /> {kmFmt.format(v.km)} km</span>
-                    )}
+                <div className="mt-8 px-2">
+                  <div className="flex justify-between items-start gap-4">
+                    <h3 className="text-2xl font-bold text-brand-black leading-tight group-hover:text-brand-red transition-colors">{v.model}</h3>
+                    <span className="text-2xl font-bold text-brand-black font-display whitespace-nowrap">
+                      {v.price != null ? priceFmt.format(Number(v.price)) : "Consulta"}
+                    </span>
                   </div>
-
-                  <div className="mt-5 flex items-end justify-between gap-3">
-                    <div>
-                      <div className="text-[11px] uppercase tracking-widest text-foreground/50">A partir de</div>
-                      {v.previous_price != null && v.price != null && Number(v.previous_price) > Number(v.price) && (
-                        <div className="text-sm text-[#FFC400] font-semibold line-through leading-none">
-                          {priceFmt.format(Number(v.previous_price))}
-                        </div>
-                      )}
-                      <div className="text-2xl font-bold text-brand-accent font-display">
-                        {v.price != null ? priceFmt.format(Number(v.price)) : "Sob consulta"}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); setSelectedId(v.id); }}
-
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-muted hover:bg-brand-yellow hover:text-brand-black text-sm font-semibold transition-all duration-300"
-                    >
-                      Ver detalhes <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-
+                  
+                  <div className="mt-4 flex items-center gap-6 text-sm font-bold text-brand-black/40 uppercase tracking-widest">
+                    <span className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" /> {v.year}
+                    </span>
+                    {v.km != null && (
+                      <span className="flex items-center gap-2">
+                        <Gauge className="w-4 h-4" /> {kmFmt.format(v.km)} KM
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.article>
@@ -353,6 +317,7 @@ export function Stock() {
           </div>
         )}
       </div>
+      
       <VehicleDetailDialog
         vehicleId={selectedId}
         open={!!selectedId}
@@ -360,5 +325,6 @@ export function Stock() {
       />
     </section>
   );
-
 }
+
+
