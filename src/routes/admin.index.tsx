@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import fachadaAsset from "@/assets/fachada.png.asset.json";
+import adminBgAsset from "@/assets/admin-bg.webp.asset.json";
 import { ensureAdminAccount } from "@/lib/admin-auth.functions";
 
 const AUTH_LOG_PREFIX = "[Admin Auth]";
@@ -239,7 +239,7 @@ function AdminLoginPage() {
   if (checking) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
-        <Loader2 className="h-6 w-6 animate-spin text-[#FFC400]" />
+        <Loader2 className="h-6 w-6 animate-spin text-brand-red" />
       </div>
     );
   }
@@ -249,20 +249,20 @@ function AdminLoginPage() {
       {/* Full-bleed store photo background */}
       <div className="absolute inset-0 z-0">
         <img
-          src={fachadaAsset.url}
-          alt="Fachada da loja Excelência Multimarcas"
+          src={adminBgAsset.url}
+          alt="Fachada da loja Jonathan Veículos"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/85" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,196,0,0.18),transparent_55%),radial-gradient(circle_at_80%_80%,rgba(227,6,19,0.15),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(227,6,19,0.18),transparent_55%),radial-gradient(circle_at_80%_80%,rgba(227,6,19,0.15),transparent_55%)]" />
       </div>
 
       {/* Left: brand panel — anchored to bottom-left */}
       <div className="relative z-10 hidden md:flex flex-col justify-center overflow-hidden p-12">
         <div className="relative">
           <h1 className="font-[Sora] text-5xl font-bold leading-tight tracking-tight [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
-            Painel <span className="text-[#FFC400]">Excelência</span>
-            <br />Multimarcas
+            Painel <span className="text-brand-red">Jonathan</span>
+            <br />Veículos
           </h1>
           <p className="mt-4 max-w-md text-white/70">
             Gerencie estoque, catálogos, leads e a operação inteira em um único lugar.
@@ -300,7 +300,7 @@ function AdminLoginPage() {
                   formMessage.type === "error"
                     ? "border-[#E30613]/40 bg-[#E30613]/10 text-white"
                     : formMessage.type === "success"
-                      ? "border-[#FFC400]/40 bg-[#FFC400]/10 text-white"
+                      ? "border-brand-red/40 bg-brand-red/10 text-white"
                       : "border-white/10 bg-white/5 text-white/70"
                 }`}
               >
@@ -315,7 +315,7 @@ function AdminLoginPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   aria-invalid={!!errors.name}
-                  className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-[#FFC400]"
+                  className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-brand-red"
                 />
                 {errors.name && <p className="text-xs text-[#E30613]">{errors.name}</p>}
               </div>
@@ -329,7 +329,7 @@ function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 aria-invalid={!!errors.email}
-                className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-[#FFC400]"
+                className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-brand-red"
               />
               {errors.email && <p className="text-xs text-[#E30613]">{errors.email}</p>}
             </div>
@@ -342,7 +342,7 @@ function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 aria-invalid={!!errors.password}
-                className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-[#FFC400]"
+                className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-brand-red"
               />
               {errors.password && <p className="text-xs text-[#E30613]">{errors.password}</p>}
             </div>
@@ -350,7 +350,7 @@ function AdminLoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#FFC400] text-black hover:bg-[#FFD84A] font-semibold h-11"
+              className="w-full bg-brand-red text-white hover:brightness-110 font-semibold h-11 shadow-red-glow"
             >
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
