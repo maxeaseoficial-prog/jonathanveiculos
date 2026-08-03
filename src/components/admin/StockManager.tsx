@@ -6,9 +6,10 @@ import {
   Search,
   Pencil,
   Trash2,
- Eye,
- Power,
-
+  Eye,
+  Power,
+  Car,
+  Bike,
   Loader2,
   ArrowUp,
   ArrowDown,
@@ -685,7 +686,7 @@ export function StockManager() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
-                        {v.featured && <Badge className="bg-[#FFC400] text-black hover:bg-[#FFC400]">Destaque</Badge>}
+                        {v.featured && <Badge className="bg-brand-red text-white hover:bg-brand-red/90">Destaque</Badge>}
                         {v.on_sale && <Badge className="bg-[#E30613] hover:bg-[#E30613]">Promo</Badge>}
                       </div>
                     </td>
@@ -738,7 +739,7 @@ export function StockManager() {
                     <div className="font-semibold text-sm">{BRL.format(v.price)}</div>
                   </div>
                   <div className="flex gap-1 mt-2">
-                    {v.featured && <Badge className="bg-[#FFC400] text-black hover:bg-[#FFC400] text-[10px]">Destaque</Badge>}
+                    {v.featured && <Badge className="bg-brand-red text-white hover:bg-brand-red/90 text-[10px]">Destaque</Badge>}
                     {v.on_sale && <Badge className="bg-[#E30613] hover:bg-[#E30613] text-[10px]">Promo</Badge>}
                   </div>
                   <div className="flex justify-end gap-1 mt-2">
@@ -1323,33 +1324,62 @@ function VehicleFormDialog({
 
           <div className="flex-1 overflow-y-auto px-6 py-5">
             <TabsContent value="basicos" className="mt-0 space-y-4">
-              <div>
-                <Label className="text-sm text-zinc-700 mb-2 block">Tipo de veículo</Label>
-                <div className="inline-flex rounded-xl border border-zinc-200 bg-zinc-50 p-1">
-                  {(["carro", "moto"] as VehicleType[]).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => {
-                        setVehicleType(t);
-                        // limpa categoria se não pertencer ao novo tipo
-                        const list = t === "moto" ? MOTO_CATEGORY_OPTIONS : CAR_CATEGORY_OPTIONS;
-                        if (form.category && !list.includes(form.category)) set("category", "");
-                        if (t === "moto") set("doors", null);
-                      }}
-                      className={cn(
-                        "px-4 py-1.5 text-sm rounded-lg transition-colors",
-                        vehicleType === t
-                          ? "bg-white text-zinc-900 shadow-sm font-medium"
-                          : "text-zinc-500 hover:text-zinc-800",
-                      )}
-                    >
-                      {t === "carro" ? "🚗 Carro" : "🏍️ Moto"}
-                    </button>
-                  ))}
+              <div className="space-y-3">
+                <Label className="text-sm text-zinc-700 block">Tipo de veículo</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {(["carro", "moto"] as VehicleType[]).map((t) => {
+                    const isActive = vehicleType === t;
+                    const Icon = t === "carro" ? Car : Bike;
+                    
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => {
+                          setVehicleType(t);
+                          // limpa categoria se não pertencer ao novo tipo
+                          const list = t === "moto" ? MOTO_CATEGORY_OPTIONS : CAR_CATEGORY_OPTIONS;
+                          if (form.category && !list.includes(form.category)) set("category", "");
+                          if (t === "moto") set("doors", null);
+                        }}
+                        className={cn(
+                          "relative flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 transition-all duration-200 group overflow-hidden",
+                          "w-full sm:w-[220px] h-[140px]",
+                          isActive
+                            ? "bg-brand-red/[0.03] border-brand-red text-brand-red"
+                            : "bg-white border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]"
+                        )}
+                      >
+                        <Icon className={cn(
+                          "w-10 h-10 transition-transform duration-200",
+                          isActive ? "scale-110" : "group-hover:scale-110"
+                        )} />
+                        <span className={cn(
+                          "font-semibold text-base capitalize tracking-wide",
+                          isActive ? "text-brand-red" : "text-zinc-600"
+                        )}>
+                          {t}
+                        </span>
+                        
+                        {isActive && (
+                          <motion.div 
+                            layoutId="active-type-indicator"
+                            className="absolute top-3 right-3"
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                          >
+                            <div className="bg-brand-red text-white p-1 rounded-full">
+                              <Check className="w-3 h-3" strokeWidth={3} />
+                            </div>
+                          </motion.div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+
+              <div className="grid md:grid-cols-2 gap-4 pt-2">
                 <Field label="Filial" required error={errors.filial}>
                   <Select value={form.filial ?? ""} onValueChange={(v) => set("filial", v)}>
                     <SelectTrigger className={cn(errors.filial && "border-red-400")}>
@@ -1481,7 +1511,7 @@ function VehicleFormDialog({
                 }}
                 className={cn(
                   "rounded-2xl border-2 border-dashed p-8 text-center transition-colors cursor-pointer",
-                  dragOver ? "border-[#FFC400] bg-[#FFC400]/10" : "border-zinc-200 hover:border-zinc-300",
+                  dragOver ? "border-brand-red bg-brand-red/10" : "border-zinc-200 hover:border-zinc-300",
                 )}
                 onClick={() => fileInputRef.current?.click()}
               >
@@ -1516,7 +1546,7 @@ function VehicleFormDialog({
                       >
                         <img src={p.preview} className="w-full aspect-square object-cover" />
                         {p.is_primary && (
-                          <div className="absolute top-2 left-2 bg-[#FFC400] text-black text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                          <div className="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
                             <Star className="h-3 w-3" /> Principal
                           </div>
                         )}
@@ -1559,7 +1589,7 @@ function VehicleFormDialog({
                       >
                         <img src={img.url} loading="lazy" className="w-full aspect-square object-cover" />
                         {img.is_primary && (
-                          <div className="absolute top-2 left-2 bg-[#FFC400] text-black text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                          <div className="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
                             <Star className="h-3 w-3" /> Principal
                           </div>
                         )}
@@ -1633,7 +1663,7 @@ function VehicleFormDialog({
 
         <DialogFooter className="p-4 border-t bg-zinc-50">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Cancelar</Button>
-          <Button onClick={save} disabled={saving} className="bg-[#FFC400] hover:bg-[#e6b000] text-black font-semibold">
+          <Button onClick={save} disabled={saving} className="bg-brand-red hover:bg-brand-red/90 text-white font-semibold">
             {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             {editing ? "Salvar alterações" : "Cadastrar veículo"}
           </Button>
