@@ -100,6 +100,7 @@ function AdminLoginPage() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const [formMessage, setFormMessage] = useState<{ type: "error" | "success" | "info"; text: string } | null>(null);
 
