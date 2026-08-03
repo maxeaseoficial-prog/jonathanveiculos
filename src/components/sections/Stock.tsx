@@ -410,12 +410,12 @@ export function Stock() {
                   onClick={() => setSelectedId(v.id)}
                   className="group relative cursor-pointer"
                 >
-                  <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-surface shadow-card-premium transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
-                    {/* Badge Filial */}
-                    <div className="absolute top-6 left-6 z-10">
-                      <div className="px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/20 shadow-lg flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-brand-red animate-pulse" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-black">{v.filial}</span>
+                  <div className="relative aspect-square rounded-3xl overflow-hidden bg-surface shadow-card-premium transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1">
+                    {/* Badge Filial (Discreta no canto) */}
+                    <div className="absolute top-4 left-4 z-10">
+                      <div className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-black/5 shadow-sm flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-brand-black">{v.filial}</span>
                       </div>
                     </div>
 
@@ -423,47 +423,41 @@ export function Stock() {
                       <img
                         src={v.image}
                         alt={`${v.brand} ${v.model}`}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     ) : (
                       <div className="h-full w-full flex items-center justify-center bg-brand-black/5">
-                        <Search className="w-12 h-12 text-brand-black/10" />
+                        <Search className="w-10 h-10 text-brand-black/10" />
                       </div>
                     )}
-                    
-                    {/* Overlay Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-
-                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/60">{v.brand}</span>
-                        <h3 className="text-2xl font-bold leading-tight line-clamp-1">{v.model}</h3>
-                      </div>
-                      
-                      <div className="mt-6 flex items-center justify-between">
-                        <div className="flex flex-col">
-                          {v.previous_price && (
-                            <span className="text-sm line-through text-white/40 mb-1">{priceFmt.format(v.previous_price)}</span>
-                          )}
-                          <span className="text-2xl font-bold text-brand-red">{priceFmt.format(v.price ?? 0)}</span>
-                        </div>
-                        <div className="w-12 h-12 rounded-full bg-brand-red flex items-center justify-center -rotate-45 group-hover:rotate-0 transition-transform duration-500">
-                          <ArrowUpRight className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
-                  {/* Features Quick Look */}
-                  <div className="mt-6 px-4 flex items-center gap-6 text-brand-black/40">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      <span className="text-sm font-bold">{v.year}</span>
+                  {/* Informações abaixo da foto */}
+                  <div className="mt-6 space-y-4">
+                    <div className="space-y-1">
+                      <h3 className="text-xl font-bold leading-tight text-brand-black group-hover:text-brand-red transition-colors duration-300">
+                        {v.brand} {v.model}
+                      </h3>
+                      <div className="flex items-center gap-2 text-brand-black/40">
+                        <span className="text-sm font-semibold">{v.year}</span>
+                        <span className="text-brand-black/20">•</span>
+                        <span className="text-sm font-semibold">{v.km ? `${kmFmt.format(v.km)} km` : "N/A"}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Gauge className="w-4 h-4" />
-                      <span className="text-sm font-bold">{v.km ? `${kmFmt.format(v.km)} km` : "N/A"}</span>
+
+                    <div className="flex flex-col">
+                      {v.previous_price && (
+                        <span className="text-xs line-through text-brand-black/30 mb-0.5">{priceFmt.format(v.previous_price)}</span>
+                      )}
+                      <span className="text-2xl font-black text-brand-black">{priceFmt.format(v.price ?? 0)}</span>
                     </div>
+
+                    <Button 
+                      className="w-full h-12 rounded-xl bg-brand-black text-white hover:bg-brand-red font-bold uppercase tracking-wider text-xs transition-all duration-300 shadow-sm"
+                    >
+                      Ver detalhes
+                      <ArrowUpRight className="ml-2 w-4 h-4" />
+                    </Button>
                   </div>
                 </motion.div>
               ))}
