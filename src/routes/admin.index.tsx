@@ -164,9 +164,7 @@ function AdminLoginPage() {
         if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
       }
       setErrors(fieldErrors);
-      setFormMessage({ type: "error", text: "Preencha os campos obrigatórios corretamente." });
-      toast.error("Preencha os campos corretamente.");
-      logAuth("Validação bloqueou o envio do formulário.", fieldErrors);
+      logAuth("Validação local bloqueou o envio.", fieldErrors);
       return;
     }
 
