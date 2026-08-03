@@ -38,9 +38,6 @@ export function Footer() {
               width={200} 
               height={56} 
             />
-            <p className="text-brand-black/50 text-lg font-medium leading-relaxed">
-              Excelência e transparência no mercado automotivo. Sua melhor escolha para veículos premium.
-            </p>
             <div className="flex gap-4">
               <a
                 href={INSTAGRAM_URL}
