@@ -178,7 +178,7 @@ export function Stock() {
     setTempPriceRange([0, maxPrice]);
     setTempYearRange([minYear, new Date().getFullYear() + 1]);
     setTempKmRange([0, 500000]);
-    setAppliedFilters(defaultFilters);
+    setAppliedFilters(defaultFilters as any);
   };
 
   useEffect(() => {
