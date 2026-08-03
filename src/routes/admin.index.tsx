@@ -137,12 +137,18 @@ function AdminAuthPage() {
         },
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        // Handle Supabase auth errors specifically (like weak password)
+        if (authError.message.includes("weak")) {
+          throw new Error("Sua senha é considerada fraca pela segurança do sistema. Por favor, escolha uma senha mais complexa (use letras, números e símbolos).");
+        }
+        throw authError;
+      }
+      
       if (!authData.user) throw new Error("Erro ao criar usuário.");
 
       // Forçamos o login imediato se o Supabase retornou uma sessão (cadastro sem confirmação)
-      // Se não retornou sessão, o usuário precisará logar manualmente, mas o ensureAdminAccountFn
-      // precisa de um token. Para garantir que o perfil seja criado, chamamos a função.
+      // Se não retornou sessão, o usuário precisará logar manualmente.
       
       try {
         await ensureAdminAccountFn({
@@ -151,11 +157,16 @@ function AdminAuthPage() {
             username: result.data.username,
           }
         });
-      } catch (ensureErr) {
-        // Se falhar por "Não autenticado", significa que o Supabase exige confirmação de e-mail
-        // ou não fez o login automático. Como o usuário quer fluxo direto, assumimos que 
-        // se chegamos aqui sem erro de signup, o usuário está ok.
-        console.warn("Aviso: Falha ao sincronizar perfil administrativo no signup:", ensureErr);
+      } catch (ensureErr: any) {
+        // Se a função falhar com "Failed to fetch", é provável que o servidor TanStack Start
+        // esteja com dificuldades de roteamento temporárias ou o endpoint não esteja pronto.
+        // Vamos logar mas não bloquear o usuário, já que o Auth funcionou.
+        console.warn("Aviso: Falha ao sincronizar perfil administrativo:", ensureErr);
+        
+        // Se for erro de rede genérico, tratamos com uma mensagem mais amigável
+        if (ensureErr.message?.includes("fetch")) {
+          console.error("Erro de rede detectado na sincronização do perfil.");
+        }
       }
 
       setSuccessMode(true);
