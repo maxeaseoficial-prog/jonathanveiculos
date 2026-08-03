@@ -686,7 +686,7 @@ export function StockManager() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
-                        {v.featured && <Badge className="bg-[#FFC400] text-black hover:bg-[#FFC400]">Destaque</Badge>}
+                        {v.featured && <Badge className="bg-brand-red text-white hover:bg-brand-red/90">Destaque</Badge>}
                         {v.on_sale && <Badge className="bg-[#E30613] hover:bg-[#E30613]">Promo</Badge>}
                       </div>
                     </td>
