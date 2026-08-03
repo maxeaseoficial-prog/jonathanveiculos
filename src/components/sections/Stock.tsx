@@ -124,7 +124,7 @@ export function Stock() {
       const price = v.price ?? 0;
       if (price < appliedFilters.priceRange[0] || price > appliedFilters.priceRange[1]) return false;
       if (v.year < appliedFilters.yearRange[0] || v.year > appliedFilters.yearRange[1]) return false;
-      if ((v.km ?? 0) > appliedFilters.kmMax) return false;
+      if ((v.km ?? 0) < appliedFilters.kmRange[0] || (v.km ?? 0) > appliedFilters.kmRange[1]) return false;
 
       if (!q) return true;
       const hay = `${v.brand} ${v.model} ${v.year}`.toLowerCase();
@@ -170,14 +170,14 @@ export function Stock() {
       sort: "recent",
       priceRange: [0, maxPrice] as [number, number],
       yearRange: [minYear, new Date().getFullYear() + 1] as [number, number],
-      kmMax: 500000
+      kmRange: [0, 500000] as [number, number]
     };
     setTempBrand("all");
     setTempCategory("all");
     setTempSort("recent");
     setTempPriceRange([0, maxPrice]);
     setTempYearRange([minYear, new Date().getFullYear() + 1]);
-    setTempKmMax(500000);
+    setTempKmRange([0, 500000]);
     setAppliedFilters(defaultFilters);
   };
 
