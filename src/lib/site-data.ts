@@ -10,7 +10,7 @@ export const PHONE_DISPLAY = "(42) 99826-6142";
 export const PHONE_TEL = "+5542998266142";
 export const INSTAGRAM_URL = "https://www.instagram.com/jonathanveiculos_/";
 export const INSTAGRAM_HANDLE = "@jonathanveiculos_";
-export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=100063737730879";
+export const FACEBOOK_URL = "https://www.facebook.com/jonathanveiculos.uva/?locale=pt_BR";
 export const ADDRESS_LINE_1 = "Av. João Pessoa, 2907";
 export const ADDRESS_LINE_2 = "São Pedro, Porto União / SC";
 export const ADDRESS_CEP = "89400-000";
