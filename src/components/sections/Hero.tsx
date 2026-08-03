@@ -1,16 +1,23 @@
 import { motion } from "framer-motion";
 import { ArrowRight, MessageCircle } from "lucide-react";
-import fachadaAsset from "@/assets/fachada.png.asset.json";
+import storeHeroAsset from "@/assets/store-hero.webp.asset.json";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
 
 export function Hero() {
   const { whatsappUrl: WHATSAPP_URL } = useCompanyContact();
 
   return (
-    <section id="inicio" className="relative min-h-[90vh] lg:min-h-screen w-full overflow-hidden bg-white flex items-center pt-24">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          {/* Lado esquerdo - Conteúdo */}
+    <section id="inicio" className="relative min-h-[90vh] lg:min-h-screen w-full overflow-hidden flex items-center">
+      <div className="absolute inset-0 z-0">
+        <img
+          src={storeHeroAsset.url}
+          alt="Jonathan Veículos"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-5 lg:px-8 w-full pt-24">
+        <div className="max-w-3xl">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -18,7 +25,7 @@ export function Hero() {
             className="flex flex-col items-start text-left z-10"
           >
             <motion.h1
-              className="text-5xl sm:text-7xl lg:text-8xl font-bold leading-[1.05] tracking-tight text-brand-black"
+              className="text-5xl sm:text-7xl lg:text-8xl font-bold leading-[1.05] tracking-tight text-white"
             >
               Encontre o <br />
               <span className="text-brand-red">veículo ideal</span> <br />
@@ -29,7 +36,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="mt-8 max-w-lg text-lg sm:text-xl text-brand-black/60 leading-relaxed font-medium"
+              className="mt-8 max-w-lg text-lg sm:text-xl text-white/80 leading-relaxed font-medium"
             >
               Qualidade, procedência e as melhores condições de financiamento do mercado. Seu próximo carro está na Jonathan Veículos.
             </motion.p>
@@ -55,7 +62,7 @@ export function Hero() {
                 rel="noreferrer"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-brand-red text-brand-red font-bold hover:bg-brand-red/5 transition-all"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-white text-white font-bold hover:bg-white/10 transition-all"
               >
                 Fale Conosco
               </motion.a>
