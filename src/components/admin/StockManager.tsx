@@ -730,8 +730,9 @@ export function StockManager() {
                     </span>
                   </div>
                   <div className="mt-1 text-xs text-zinc-500">{v.year} · {NUM.format(v.km)} km · {v.category || "—"}</div>
-                  <div className="mt-1 flex items-center gap-2">
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200 uppercase">
+                    <div className="mt-1 flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200 uppercase">
+                      <span className="w-1 h-1 rounded-sm bg-brand-red" />
                       {v.filial}
                     </span>
                     <div className="font-semibold text-sm">{BRL.format(v.price)}</div>

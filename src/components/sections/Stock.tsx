@@ -260,7 +260,7 @@ export function Stock() {
               Tente ajustar sua busca ou filtros para ver outras opções do nosso estoque.
             </p>
             <button 
-              onClick={() => { setQuery(""); setBrandFilter("all"); setSortBy("recent"); }}
+              onClick={() => { setQuery(""); setBrandFilter("all"); setFilialFilter("all"); setSortBy("recent"); }}
               className="mt-8 px-8 py-4 rounded-full bg-brand-black text-white font-bold hover:brightness-125 transition-all"
             >
               Limpar Filtros
