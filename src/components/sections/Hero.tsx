@@ -18,13 +18,13 @@ export function Hero() {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-5 lg:px-8 w-full pt-24">
-        <div className="max-w-3xl">
+      <div className="relative z-10 mx-auto max-w-7xl px-5 lg:px-8 w-full pt-24 flex flex-col items-center">
+        <div className="max-w-4xl w-full">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-start text-left"
+            className="flex flex-col items-center text-center"
           >
             <motion.h1
               className="text-5xl sm:text-7xl lg:text-8xl font-bold leading-[1.05] tracking-tight text-white"
@@ -38,7 +38,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="mt-8 max-w-lg text-lg sm:text-xl text-white/80 leading-relaxed font-medium"
+              className="mt-8 max-w-2xl text-lg sm:text-xl text-white/80 leading-relaxed font-medium"
             >
               Qualidade, procedência e as melhores condições de financiamento do mercado. Seu próximo carro está na Jonathan Veículos.
             </motion.p>
@@ -47,7 +47,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.45 }}
-              className="mt-10 flex flex-wrap gap-4"
+              className="mt-10 flex flex-wrap gap-4 justify-center"
             >
               <motion.a
                 href="#estoque"
