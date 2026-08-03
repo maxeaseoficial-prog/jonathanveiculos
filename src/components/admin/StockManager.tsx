@@ -1662,7 +1662,7 @@ function VehicleFormDialog({
 
         <DialogFooter className="p-4 border-t bg-zinc-50">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Cancelar</Button>
-          <Button onClick={save} disabled={saving} className="bg-[#FFC400] hover:bg-[#e6b000] text-black font-semibold">
+          <Button onClick={save} disabled={saving} className="bg-brand-red hover:bg-brand-red/90 text-white font-semibold">
             {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             {editing ? "Salvar alterações" : "Cadastrar veículo"}
           </Button>
