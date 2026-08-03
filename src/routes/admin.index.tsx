@@ -293,7 +293,7 @@ function AdminLoginPage() {
                 : "O primeiro cadastro se torna administrador."}
             </p>
             <div className="mt-4 p-3 rounded-lg border border-white/10 bg-white/5 text-xs text-white/40">
-              Consulte o arquivo <code className="text-brand-red">.lovable/admin-credentials.md</code> para ver ou definir suas credenciais padrão.
+              Gerencie suas credenciais no arquivo <code className="text-brand-red">.lovable/admin-credentials.md</code>.
             </div>
           </div>
 
