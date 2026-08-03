@@ -1324,8 +1324,8 @@ function VehicleFormDialog({
 
           <div className="flex-1 overflow-y-auto px-6 py-5">
             <TabsContent value="basicos" className="mt-0 space-y-4">
-              <div>
-                <Label className="text-sm text-zinc-700 mb-3 block">Tipo de veículo</Label>
+              <div className="space-y-3">
+                <Label className="text-sm text-zinc-700 block">Tipo de veículo</Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {(["carro", "moto"] as VehicleType[]).map((t) => {
                     const isActive = vehicleType === t;
@@ -1378,7 +1378,8 @@ function VehicleFormDialog({
                   })}
                 </div>
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+
+              <div className="grid md:grid-cols-2 gap-4 pt-2">
                 <Field label="Filial" required error={errors.filial}>
                   <Select value={form.filial ?? ""} onValueChange={(v) => set("filial", v)}>
                     <SelectTrigger className={cn(errors.filial && "border-red-400")}>
