@@ -37,7 +37,7 @@ function getAuthErrorMessage(message: string) {
   }
 
   if (normalized.includes("email not confirmed") || normalized.includes("email_not_confirmed")) {
-    return "Seu cadastro foi criado com sucesso.";
+    return "Sua conta foi criada! Você já pode entrar usando seus dados.";
   }
 
   if (normalized.includes("user already registered") || normalized.includes("already registered")) {
