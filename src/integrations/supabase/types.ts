@@ -186,6 +186,7 @@ export type Database = {
           full_name: string | null
           id: string
           updated_at: string
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -194,6 +195,7 @@ export type Database = {
           full_name?: string | null
           id: string
           updated_at?: string
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -202,6 +204,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -446,6 +449,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ensure_admin_account: {
+        Args: { _full_name?: string; _username?: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

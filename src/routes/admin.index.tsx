@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Eye, EyeOff, Loader2, LogIn, UserPlus, ArrowRight, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -13,252 +13,153 @@ import { Label } from "@/components/ui/label";
 import adminBgAsset from "@/assets/admin-bg.webp.asset.json";
 import { ensureAdminAccount } from "@/lib/admin-auth.functions";
 import { resolveUsername } from "@/lib/resolve-username.functions";
-
-const AUTH_LOG_PREFIX = "[Admin Auth]";
-
-function logAuth(message: string, details?: unknown) {
-  if (details === undefined) {
-    console.info(`${AUTH_LOG_PREFIX} ${message}`);
-    return;
-  }
-
-  console.info(`${AUTH_LOG_PREFIX} ${message}`, details);
-}
-
-function logAuthError(message: string, error: unknown) {
-  console.error(`${AUTH_LOG_PREFIX} ${message}`, error);
-}
-
-function getAuthErrorMessage(message: string) {
-  const normalized = message.toLowerCase();
-
-  if (normalized.includes("invalid login credentials") || normalized.includes("invalid credentials")) {
-    return "Dados de acesso não reconhecidos. Por favor, tente novamente.";
-  }
-
-  if (normalized.includes("email not confirmed") || normalized.includes("email_not_confirmed")) {
-    return "Sua conta foi criada! Você já pode entrar usando seus dados.";
-  }
-
-  if (normalized.includes("user already registered") || normalized.includes("already registered")) {
-    return "Este e-mail já possui cadastro. Use Entrar no painel.";
-  }
-
-  if (normalized.includes("password") && normalized.includes("weak")) {
-    return "Senha muito fraca. Use uma senha com letras, números e pelo menos 6 caracteres.";
-  }
-
-  if (
-    normalized.includes("password") &&
-    (normalized.includes("pwned") || normalized.includes("compromised") || normalized.includes("breached"))
-  ) {
-    return "Essa senha é muito comum ou já apareceu em vazamentos. Use uma senha mais forte e exclusiva.";
-  }
-
-  if (normalized.includes("signup") && normalized.includes("disabled")) {
-    return "O cadastro estava desativado no backend. Já foi reativado, tente criar a conta novamente.";
-  }
-
-  if (normalized.includes("email") && normalized.includes("invalid")) {
-    return "Informe um e-mail válido.";
-  }
-
-  if (normalized.includes("database") || normalized.includes("unexpected failure")) {
-    return "Não foi possível concluir o cadastro agora. Tente novamente em instantes.";
-  }
-
-  return message || "Não foi possível autenticar. Tente novamente.";
-}
+import { title, SITE_NAME } from "@/lib/site-meta";
 
 const loginSchema = z.object({
-  email: z.string().trim().min(1, "Informe seu e-mail ou usuário"),
+  identifier: z.string().trim().min(1, "Informe seu e-mail ou usuário"),
   password: z.string().min(1, "Informe sua senha"),
 });
 
 const signupSchema = z.object({
-  name: z.string().trim().min(2, "Informe seu nome completo").max(100),
-  email: z.string().trim().min(1, "Informe seu e-mail").email("E-mail inválido").max(255),
-  password: z.string().min(6, "A senha deve ter ao menos 6 caracteres").max(72),
+  fullName: z.string().trim().min(2, "Informe seu nome completo"),
+  username: z.string().trim().min(3, "O usuário deve ter ao menos 3 caracteres").regex(/^[a-zA-Z0-0._-]+$/, "Usuário inválido (use letras, números, pontos ou traços)"),
+  email: z.string().trim().email("E-mail inválido"),
+  password: z.string().min(6, "A senha deve ter ao menos 6 caracteres"),
 });
-
-import { title, SITE_NAME } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
     meta: [
-      { title: title("Painel Administrativo") },
-      { name: "description", content: `Acesso restrito da equipe ${SITE_NAME}.` },
+      { title: title("Acesso ao Painel") },
+      { name: "description", content: `Área restrita ${SITE_NAME}.` },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: AdminLoginPage,
+  component: AdminAuthPage,
 });
 
-
-function AdminLoginPage() {
+function AdminAuthPage() {
   const navigate = useNavigate();
   const ensureAdminAccountFn = useServerFn(ensureAdminAccount);
   const resolveUsernameFn = useServerFn(resolveUsername);
+
   const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
-  const [formMessage, setFormMessage] = useState<{ type: "error" | "success" | "info"; text: string } | null>(null);
+  const [successMode, setSuccessMode] = useState(false);
+
+  // Form states
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-    let active = true;
-
-    async function initializeAuth() {
-      logAuth("Inicializando autenticação...");
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) throw error;
-
-        if (!active) return;
-
-        if (data.session) {
-          logAuth("Sessão existente encontrada. Redirecionando...");
-          navigate({ to: "/admin/dashboard", replace: true });
-          return;
-        }
-
-        logAuth("Nenhuma sessão ativa encontrada.");
-        setChecking(false);
-      } catch (err) {
-        logAuthError("Erro encontrado ao inicializar autenticação:", err);
-        if (!active) return;
-        setFormMessage({
-          type: "error",
-          text: "Não foi possível verificar sua sessão agora. Tente entrar novamente.",
-        });
+    async function checkSession() {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate({ to: "/admin/dashboard", replace: true });
+      } else {
         setChecking(false);
       }
     }
-
-    void initializeAuth();
-
-    return () => {
-      active = false;
-    };
+    checkSession();
   }, [navigate]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
 
-    logAuth(mode === "login" ? "Iniciando login..." : "Iniciando criação de usuário...");
-    setErrors({});
-    setFormMessage(null);
-
-    const parsed =
-      mode === "login"
-        ? loginSchema.safeParse({ email, password })
-        : signupSchema.safeParse({ email, password, name });
-
-    if (!parsed.success) {
-      const fieldErrors: typeof errors = {};
-      for (const issue of parsed.error.issues) {
-        const key = issue.path[0] as keyof typeof errors;
-        if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
-      }
-      setErrors(fieldErrors);
-      logAuth("Validação local bloqueou o envio.", fieldErrors);
+    const result = loginSchema.safeParse({ identifier, password });
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
       return;
     }
 
     setLoading(true);
     try {
-      if (mode === "login") {
-        logAuth("Enviando credenciais de login...");
-        
-        let authEmail = parsed.data.email;
-        
-        if (!authEmail.includes("@")) {
-          logAuth("Resolvendo e-mail para o usuário:", authEmail);
-          const { email: resolvedEmail } = await resolveUsernameFn({ 
-            data: { username: authEmail } 
-          });
-          
-          if (resolvedEmail) {
-            logAuth("E-mail resolvido:", resolvedEmail);
-            authEmail = resolvedEmail;
-          } else {
-            logAuth("Não foi possível resolver o e-mail. Tentando fallback.");
-            authEmail = `${authEmail}@internal.local`;
-          }
+      let loginEmail = result.data.identifier;
+
+      // Se não for um e-mail, resolvemos o username
+      if (!loginEmail.includes("@")) {
+        const { email: resolvedEmail } = await resolveUsernameFn({
+          data: { identifier: loginEmail }
+        });
+        if (!resolvedEmail) {
+          throw new Error("Usuário ou e-mail não encontrado.");
         }
-
-        const { error } = await supabase.auth.signInWithPassword({
-          email: authEmail,
-          password: parsed.data.password,
-        });
-        if (error) throw error;
-        logAuth("Login realizado.");
-
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-        if (!sessionData.session) throw new Error("Sessão não foi criada após o login.");
-        logAuth("Sessão criada.", { userId: sessionData.session.user.id });
-
-        logAuth("Garantindo perfil e permissão administrativa...");
-        await ensureAdminAccountFn({ data: {} });
-        logAuth("Conta administrativa verificada.");
-        toast.success("Bem-vindo de volta!");
-        setFormMessage({ type: "success", text: "Login realizado com sucesso. Redirecionando..." });
-        logAuth("Redirecionando para o dashboard...");
-        navigate({ to: "/admin/dashboard", replace: true });
-      } else {
-        logAuth("Criando usuário...");
-        const authEmail = parsed.data.email;
-        const { error } = await supabase.auth.signUp({
-          email: authEmail,
-          password: parsed.data.password,
-          options: {
-            data: { 
-              full_name: name.trim(),
-              username: authEmail.split('@')[0] // Guarda o usuário sugerido
-            },
-            emailRedirectTo: `${window.location.origin}/admin`,
-          },
-        });
-        if (error) throw error;
-        logAuth("Cadastro solicitado com sucesso.");
-
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-
-        if (sessionData.session) {
-          logAuth("Sessão criada após cadastro.", { userId: sessionData.session.user.id });
-          logAuth("Garantindo perfil e permissão administrativa...");
-          await ensureAdminAccountFn({ data: { fullName: name.trim() } });
-          logAuth("Conta administrativa verificada.");
-          toast.success("Conta criada com sucesso!");
-          setFormMessage({ type: "success", text: "Conta criada com sucesso. Redirecionando..." });
-          logAuth("Redirecionando para o dashboard...");
-          navigate({ to: "/admin/dashboard", replace: true });
-          return;
-        }
-
-        toast.success("Conta criada com sucesso!");
-        setFormMessage({
-          type: "success",
-          text: "Sua conta foi criada! Você já pode entrar usando seus dados.",
-        });
-        setMode("login");
-        logAuth("Cadastro criado sem sessão imediata. Aguardando confirmação de e-mail.");
+        loginEmail = resolvedEmail;
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Erro ao autenticar";
-      const friendlyMessage = getAuthErrorMessage(msg);
-      logAuthError("Erro encontrado:", err);
-      setFormMessage({ type: "error", text: friendlyMessage });
-      toast.error(friendlyMessage);
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: result.data.password,
+      });
+
+      if (error) throw error;
+
+      // Garante que o perfil existe e tem role admin (para usuários legados ou novos)
+      await ensureAdminAccountFn({ data: {} });
+
+      toast.success("Acesso autorizado!");
+      navigate({ to: "/admin/dashboard", replace: true });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message === "Invalid login credentials" ? "Dados de acesso incorretos." : err.message);
     } finally {
-      logAuth("Finalizando operação de autenticação.");
+      setLoading(false);
+    }
+  }
+
+  async function handleSignup(e: React.FormEvent) {
+    e.preventDefault();
+    if (loading) return;
+
+    const result = signupSchema.safeParse({ fullName, username, email, password });
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // 1. Criar usuário no Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: result.data.email,
+        password: result.data.password,
+        options: {
+          data: {
+            full_name: result.data.fullName,
+            username: result.data.username,
+          },
+        },
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("Erro ao criar usuário.");
+
+      // 2. Criar perfil e role via Server Function (para garantir transação simulada e bypass RLS)
+      await ensureAdminAccountFn({
+        data: {
+          fullName: result.data.fullName,
+          username: result.data.username,
+        }
+      });
+
+      setSuccessMode(true);
+      setIdentifier(result.data.email); // Pre-fill login
+      
+      setTimeout(() => {
+        setSuccessMode(false);
+        setMode("login");
+      }, 1500);
+
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message);
+    } finally {
       setLoading(false);
     }
   }
@@ -272,153 +173,172 @@ function AdminLoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen grid md:grid-cols-2 bg-black text-white overflow-hidden">
-      {/* Full-bleed store photo background */}
+    <div className="relative min-h-screen flex items-center justify-center bg-black text-white overflow-hidden p-6">
+      {/* Background */}
       <div className="absolute inset-0 z-0">
         <img
           src={adminBgAsset.url}
-          alt="Fachada da loja Jonathan Veículos"
-          className="w-full h-full object-cover"
+          alt="Fachada"
+          className="w-full h-full object-cover opacity-50"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/85" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(227,6,19,0.18),transparent_55%),radial-gradient(circle_at_80%_80%,rgba(227,6,19,0.15),transparent_55%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black" />
       </div>
 
-      {/* Left: brand panel — anchored to bottom-left */}
-      <div className="relative z-10 hidden md:flex flex-col justify-center overflow-hidden p-12">
-        <div className="relative">
-          <h1 className="font-[Sora] text-5xl font-bold leading-tight tracking-tight text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
-            Painel <span className="text-brand-red">Jonathan</span>
-            <br />Veículos
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative z-10 w-full max-w-[440px]"
+      >
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold font-[Sora] tracking-tight">
+            Jonathan <span className="text-brand-red">Veículos</span>
           </h1>
-          <p className="mt-4 max-w-md text-white/70">
-            Gerencie estoque, catálogos, leads e a operação inteira em um único lugar.
-          </p>
-          <div className="mt-6 flex items-center gap-3 text-xs text-white/50">
-            <div className="h-px w-8 bg-white/30" />
-            Uso interno da equipe autorizada
-          </div>
+          <p className="text-white/50 mt-2">Painel de Gestão Administrativa</p>
         </div>
-      </div>
 
-      {/* Right: form */}
-      <div className="relative z-10 flex items-center justify-center p-6 md:p-12">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-sm rounded-2xl border border-white/10 bg-black/50 p-8 backdrop-blur-xl shadow-2xl"
-        >
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-white">
-              {mode === "login" ? "Entrar no painel" : "Criar acesso"}
-            </h2>
-            <p className="mt-1 text-sm text-white/50">
-              {mode === "login"
-                ? "Use seu e-mail ou usuário para acessar."
-                : "O primeiro cadastro se torna administrador."}
-            </p>
-            <div className="mt-4 p-3 rounded-lg border border-white/10 bg-white/5 text-xs text-white/40">
-              usuário: <span className="text-white/80">admin</span> - senha: <span className="text-white/80">admin</span>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            {formMessage && (
-              <div
-                className={`rounded-xl border px-3 py-2 text-sm ${
-                  formMessage.type === "error"
-                    ? "border-[#E30613]/40 bg-[#E30613]/10 text-white"
-                    : formMessage.type === "success"
-                      ? "border-brand-red/40 bg-brand-red/10 text-white"
-                      : "border-white/10 bg-white/5 text-white/70"
-                }`}
+        <div className="bg-black/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+          <AnimatePresence mode="wait">
+            {successMode ? (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.1 }}
+                className="py-12 text-center"
               >
-                {formMessage.text}
-              </div>
+                <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold">Conta criada com sucesso!</h2>
+                <p className="text-white/50 mt-2">Redirecionando para o login...</p>
+              </motion.div>
+            ) : mode === "login" ? (
+              <motion.div
+                key="login"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+              >
+                <h2 className="text-2xl font-bold mb-6">Entrar no painel</h2>
+                <form onSubmit={handleLogin} className="space-y-5">
+                  <div className="space-y-2">
+                    <Label htmlFor="id">E-mail ou Usuário</Label>
+                    <Input
+                      id="id"
+                      placeholder="admin ou email@exemplo.com"
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      className="bg-white/5 border-white/10 focus:border-brand-red h-12"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pass">Senha</Label>
+                    <div className="relative">
+                      <Input
+                        id="pass"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="bg-white/5 border-white/10 focus:border-brand-red h-12 pr-12"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white"
+                      >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-brand-red hover:bg-brand-red/90 h-12 text-lg font-semibold"
+                  >
+                    {loading ? <Loader2 className="animate-spin" /> : <><LogIn className="mr-2" size={20} /> Entrar no painel</>}
+                  </Button>
+                </form>
+                <div className="mt-6 pt-6 border-t border-white/10 text-center">
+                  <button
+                    onClick={() => setMode("signup")}
+                    className="text-white/50 hover:text-white flex items-center justify-center mx-auto transition-colors"
+                  >
+                    Não tem uma conta? <span className="text-brand-red ml-1 font-medium">Criar conta</span>
+                    <ArrowRight size={16} className="ml-1" />
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="signup"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+              >
+                <h2 className="text-2xl font-bold mb-6">Criar conta</h2>
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nome completo</Label>
+                    <Input
+                      id="name"
+                      placeholder="Seu nome"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="bg-white/5 border-white/10 focus:border-brand-red h-11"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="user">Nome de usuário</Label>
+                    <Input
+                      id="user"
+                      placeholder="ex: joao.veiculos"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      className="bg-white/5 border-white/10 focus:border-brand-red h-11"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">E-mail</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="email@exemplo.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="bg-white/5 border-white/10 focus:border-brand-red h-11"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new-pass">Senha</Label>
+                    <Input
+                      id="new-pass"
+                      type="password"
+                      placeholder="Mínimo 6 caracteres"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-white/5 border-white/10 focus:border-brand-red h-11"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-brand-red hover:bg-brand-red/90 h-11 font-semibold mt-2"
+                  >
+                    {loading ? <Loader2 className="animate-spin" /> : <><UserPlus className="mr-2" size={18} /> Criar conta</>}
+                  </Button>
+                </form>
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => setMode("login")}
+                    className="text-white/50 hover:text-white transition-colors"
+                  >
+                    Já tem uma conta? <span className="text-white font-medium">Fazer login</span>
+                  </button>
+                </div>
+              </motion.div>
             )}
-            {mode === "signup" && (
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-white/80">Nome</Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  aria-invalid={!!errors.name}
-                  className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-brand-red"
-                />
-                {errors.name && <p className="text-xs text-[#E30613]">{errors.name}</p>}
-              </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-white/80">
-                {mode === "login" ? "E-mail ou Usuário" : "E-mail"}
-              </Label>
-              <Input
-                id="email"
-                type={mode === "login" ? "text" : "email"}
-                autoComplete={mode === "login" ? "username" : "email"}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={mode === "login" ? "Digite seu e-mail ou usuário" : "exemplo@email.com"}
-                aria-invalid={!!errors.email}
-                className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-brand-red"
-              />
-              {errors.email && <p className="text-xs text-[#E30613]">{errors.email}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-white/80">Senha</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete={mode === "login" ? "current-password" : "new-password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  aria-invalid={!!errors.password}
-                  className="border-white/10 bg-white/5 text-white placeholder:text-white/30 focus-visible:ring-brand-red pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-0 top-0 h-full px-3 text-white/50 hover:text-white transition-colors z-20 flex items-center justify-center"
-                  aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-              {errors.password && <p className="text-xs text-[#E30613]">{errors.password}</p>}
-            </div>
-
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-brand-red text-white hover:brightness-110 font-semibold h-11 shadow-red-glow"
-            >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Entrar no painel
-                </>
-              )}
-            </Button>
-          </form>
-
-          <button
-            type="button"
-            onClick={() => setMode(mode === "login" ? "signup" : "login")}
-            className="mt-6 text-sm text-white/50 hover:text-white transition-colors"
-          >
-            {mode === "login" ? "Não tem acesso? Criar conta" : "Já tem conta? Entrar"}
-          </button>
-        </motion.div>
-      </div>
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </div>
   );
 }
