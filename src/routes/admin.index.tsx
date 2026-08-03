@@ -190,7 +190,7 @@ function AdminAuthPage() {
         className="relative z-10 w-full max-w-[440px]"
       >
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold font-[Sora] tracking-tight">
+          <h1 className="text-4xl font-bold font-[Sora] tracking-tight text-white">
             Jonathan <span className="text-brand-red">Veículos</span>
           </h1>
           <p className="text-white/50 mt-2">Painel de Gestão Administrativa</p>
@@ -217,7 +217,7 @@ function AdminAuthPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
               >
-                <h2 className="text-2xl font-bold mb-6">Entrar no painel</h2>
+                <h2 className="text-2xl font-bold mb-6 text-white">Entrar no painel</h2>
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div className="space-y-2">
                     <Label htmlFor="id">E-mail ou Usuário</Label>
@@ -254,7 +254,7 @@ function AdminAuthPage() {
                     disabled={loading}
                     className="w-full bg-brand-red hover:bg-brand-red/90 h-12 text-lg font-semibold"
                   >
-                    {loading ? <Loader2 className="animate-spin" /> : <><LogIn className="mr-2" size={20} /> Entrar no painel</>}
+                    {loading ? <Loader2 className="animate-spin" /> : <><LogIn className="mr-2" size={20} /> <span className="text-white">Entrar no painel</span></>}
                   </Button>
                 </form>
                 <div className="mt-6 pt-6 border-t border-white/10 text-center">
