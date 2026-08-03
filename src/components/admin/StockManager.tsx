@@ -6,9 +6,10 @@ import {
   Search,
   Pencil,
   Trash2,
- Eye,
- Power,
-
+  Eye,
+  Power,
+  Car,
+  Bike,
   Loader2,
   ArrowUp,
   ArrowDown,
