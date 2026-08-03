@@ -17,6 +17,7 @@ type StockVehicle = {
   price: number | null;
   previous_price: number | null;
   image: string | null;
+  filial: string;
   updated_at: string | null;
 };
 
@@ -39,7 +40,7 @@ async function fetchStockVehicles(): Promise<StockVehicle[]> {
   logPublicStock("Buscando veículos publicados no banco.");
   const { data, error } = await supabase
     .from("vehicles")
-    .select("id, brand, model, year, km, price, previous_price, featured, created_at, updated_at, vehicle_images(url, is_primary, display_order)")
+    .select("id, brand, model, year, km, price, previous_price, featured, filial, created_at, updated_at, vehicle_images(url, is_primary, display_order)")
     .eq("status", "ativo")
     .order("featured", { ascending: false })
     .order("created_at", { ascending: false });
@@ -63,6 +64,7 @@ async function fetchStockVehicles(): Promise<StockVehicle[]> {
       price: v.price,
       previous_price: v.previous_price ?? null,
       image: imgs[0]?.url ?? null,
+      filial: v.filial,
       updated_at: v.updated_at,
     };
   });
@@ -84,6 +86,7 @@ export function Stock() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [brandFilter, setBrandFilter] = useState<string>("all");
+  const [filialFilter, setFilialFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"recent" | "price-asc" | "price-desc" | "year-desc" | "km-asc">("recent");
 
   const brands = useMemo(() => {
@@ -96,6 +99,7 @@ export function Stock() {
     const q = query.trim().toLowerCase();
     const list = vehicles.filter((v) => {
       if (brandFilter !== "all" && v.brand !== brandFilter) return false;
+      if (filialFilter !== "all" && v.filial !== filialFilter) return false;
       if (!q) return true;
       const hay = `${v.brand} ${v.model} ${v.year}`.toLowerCase();
       return hay.includes(q);
@@ -208,6 +212,16 @@ export function Stock() {
             </div>
             
             <div className="flex w-full lg:w-auto gap-3">
+              <select
+                value={filialFilter}
+                onChange={(e) => setFilialFilter(e.target.value)}
+                className="flex-1 lg:w-48 h-16 px-6 rounded-2xl bg-surface border border-black/5 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
+              >
+                <option value="all">Todas as Filiais</option>
+                <option value="Porto União">Porto União</option>
+                <option value="Bituruna">Bituruna</option>
+              </select>
+
               <select
                 value={brandFilter}
                 onChange={(e) => setBrandFilter(e.target.value)}
