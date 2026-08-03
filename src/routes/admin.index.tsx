@@ -260,7 +260,7 @@ function AdminLoginPage() {
       {/* Left: brand panel — anchored to bottom-left */}
       <div className="relative z-10 hidden md:flex flex-col justify-center overflow-hidden p-12">
         <div className="relative">
-          <h1 className="font-[Sora] text-5xl font-bold leading-tight tracking-tight [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
+          <h1 className="font-[Sora] text-5xl font-bold leading-tight tracking-tight text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
             Painel <span className="text-brand-red">Jonathan</span>
             <br />Veículos
           </h1>
@@ -357,7 +357,7 @@ function AdminLoginPage() {
               ) : (
                 <>
                   <LogIn className="h-4 w-4 mr-2" />
-                  {mode === "login" ? "Entrar" : "Criar conta"}
+                  Entrar no painel
                 </>
               )}
             </Button>

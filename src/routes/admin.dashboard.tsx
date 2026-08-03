@@ -352,7 +352,7 @@ function DashboardPage() {
               alt="Jonathan Veículos"
               className="h-16 w-auto object-contain"
             />
-            <div className="mt-2 text-[10px] uppercase tracking-widest text-zinc-400">Painel Admin</div>
+            <div className="mt-2 text-[10px] uppercase tracking-widest text-white/70 font-semibold">Painel Admin</div>
           </div>
           <nav className="space-y-1 flex-1">
             {navItems.map((item) => {
