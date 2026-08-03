@@ -292,6 +292,9 @@ function AdminLoginPage() {
                 ? "Use seu e-mail e senha para acessar."
                 : "O primeiro cadastro se torna administrador."}
             </p>
+            <div className="mt-4 p-3 rounded-lg border border-white/10 bg-white/5 text-xs text-white/40">
+              Consulte o arquivo <code className="text-brand-red">.lovable/admin-credentials.md</code> para ver ou definir suas credenciais padrão.
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
