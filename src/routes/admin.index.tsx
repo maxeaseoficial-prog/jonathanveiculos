@@ -134,11 +134,12 @@ function AdminAuthPage() {
             full_name: result.data.fullName,
             username: result.data.username,
           },
+          // Garante que o usuário seja redirecionado ou logado sem confirmação se o projeto permitir
+          emailRedirectTo: window.location.origin + "/admin",
         },
       });
 
       if (authError) {
-        // Handle Supabase auth errors specifically (like weak password)
         if (authError.message.includes("weak")) {
           throw new Error("Sua senha é considerada fraca pela segurança do sistema. Por favor, escolha uma senha mais complexa (use letras, números e símbolos).");
         }
