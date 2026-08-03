@@ -62,14 +62,24 @@ export function Footer() {
           </div>
 
           <div className="lg:col-span-4">
-            <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-brand-black/30 mb-8">Informações</h4>
-            <div className="grid gap-10">
+            <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-brand-black/30 mb-8">Nossas Unidades</h4>
+            <div className="grid gap-8">
               <div className="flex gap-5">
                 <MapPin className="w-6 h-6 text-brand-red shrink-0" />
                 <div className="text-base font-bold text-brand-black/70 leading-relaxed">
+                  <span className="text-xs uppercase tracking-wider text-brand-black/40 block mb-1">Matriz: Porto União</span>
                   {ADDRESS_LINE_1}<br />
                   {ADDRESS_LINE_2}<br />
                   CEP {ADDRESS_CEP}
+                </div>
+              </div>
+              <div className="flex gap-5">
+                <MapPin className="w-6 h-6 text-brand-red shrink-0" />
+                <div className="text-base font-bold text-brand-black/70 leading-relaxed">
+                  <span className="text-xs uppercase tracking-wider text-brand-black/40 block mb-1">Filial: Bituruna</span>
+                  Av. Pref. Farid Abrahão, 546<br />
+                  Bituruna / PR<br />
+                  CEP 84640-000
                 </div>
               </div>
               <div className="flex gap-5">
