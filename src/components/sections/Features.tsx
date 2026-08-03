@@ -25,10 +25,6 @@ export function Features() {
               Por que escolher a <br />
               <span className="text-brand-red">Jonathan Veículos</span>.
             </h2>
-            <p className="mt-8 text-brand-black/60 text-lg font-medium leading-relaxed max-w-2xl mx-auto">
-              Nossa reputação é construída sobre transparência e excelência em cada detalhe. 
-              Oferecemos uma experiência de compra premium para clientes exigentes.
-            </p>
           </motion.div>
         </div>
 
