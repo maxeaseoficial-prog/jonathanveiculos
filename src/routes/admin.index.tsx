@@ -32,7 +32,7 @@ function getAuthErrorMessage(message: string) {
   const normalized = message.toLowerCase();
 
   if (normalized.includes("invalid login credentials") || normalized.includes("invalid credentials")) {
-    return "Credenciais de acesso incorretas. Verifique seu usuário e senha.";
+    return "Dados de acesso não reconhecidos. Por favor, tente novamente.";
   }
 
   if (normalized.includes("email not confirmed") || normalized.includes("email_not_confirmed")) {
