@@ -28,11 +28,11 @@ import {
   YAxis,
 } from "recharts";
 import { toast } from "sonner";
-import { useServerFn } from "@tanstack/react-start";
+
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ensureAdminAccount } from "@/lib/admin-auth.functions";
+
 import { StockManager } from "@/components/admin/StockManager";
 import { CatalogManager } from "@/components/admin/CatalogManager";
 import { SettingsManager } from "@/components/admin/SettingsManager";
@@ -91,7 +91,6 @@ type TabKey = "dashboard" | "estoque" | "catalogos" | "config";
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const ensureAdminAccountFn = useServerFn(ensureAdminAccount);
   const [authLoading, setAuthLoading] = useState(true);
   const [dataLoading, setDataLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -104,62 +103,21 @@ function DashboardPage() {
     let active = true;
 
     async function bootstrap() {
-      logDashboard("Dashboard iniciado.");
+      logDashboard("Dashboard iniciado (Modo Demo).");
       setAuthError(null);
 
-      let userId: string | null = null;
-      try {
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-        if (!sessionData.session) {
-          navigate({ to: "/admin", replace: true });
-          return;
-        }
-        userId = sessionData.session.user.id;
-        if (!active) return;
-        setUserEmail(sessionData.session.user.email ?? "");
-      } catch (err) {
-        logDashboardError("Falha ao carregar a sessão do usuário:", err);
-        if (active) {
-          setAuthError("Não foi possível verificar sua sessão. Faça login novamente.");
-          setAuthLoading(false);
-        }
+      // Demo session check
+      const demoSession = sessionStorage.getItem("demo_admin_session");
+      if (demoSession !== "true") {
+        navigate({ to: "/admin", replace: true });
         return;
       }
 
-      let admin = false;
-      let checkedAdminOnServer = false;
-      try {
-        const adminResult = await ensureAdminAccountFn({ data: {} });
-        admin = adminResult.isAdmin === true;
-        checkedAdminOnServer = true;
-      } catch (err) {
-        logDashboardError("Falha ao verificar conta administrativa:", err);
-      }
-
       if (!active) return;
-
-      if (!checkedAdminOnServer) {
-        try {
-          const { data: rolesData, error: rolesError } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", userId!);
-          if (rolesError) throw rolesError;
-          admin = rolesData?.some((r) => r.role === "admin") ?? false;
-        } catch (err) {
-          logDashboardError("Falha ao carregar permissões:", err);
-        }
-      }
-
-      if (!active) return;
-      setIsAdmin(admin);
+      
+      setUserEmail("admin@demo.com");
+      setIsAdmin(true);
       setAuthLoading(false);
-
-      if (!admin) {
-        setDataLoading(false);
-        return;
-      }
 
       try {
         const { data, error } = await supabase
@@ -179,17 +137,12 @@ function DashboardPage() {
     return () => {
       active = false;
     };
-  }, [ensureAdminAccountFn, navigate]);
+  }, [navigate]);
 
   async function handleLogout() {
-    try {
-      await supabase.auth.signOut();
-      toast.success("Sessão encerrada");
-      navigate({ to: "/admin", replace: true });
-    } catch (err) {
-      logDashboardError("Erro ao encerrar sessão:", err);
-      toast.error("Não foi possível sair agora. Tente novamente.");
-    }
+    sessionStorage.removeItem("demo_admin_session");
+    toast.success("Sessão encerrada");
+    navigate({ to: "/admin", replace: true });
   }
 
   const stats = useMemo(() => {
