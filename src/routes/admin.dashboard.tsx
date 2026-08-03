@@ -28,11 +28,11 @@ import {
   YAxis,
 } from "recharts";
 import { toast } from "sonner";
-import { useServerFn } from "@tanstack/react-start";
+
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ensureAdminAccount } from "@/lib/admin-auth.functions";
+
 import { StockManager } from "@/components/admin/StockManager";
 import { CatalogManager } from "@/components/admin/CatalogManager";
 import { SettingsManager } from "@/components/admin/SettingsManager";
