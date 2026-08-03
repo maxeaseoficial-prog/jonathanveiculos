@@ -283,7 +283,7 @@ function AdminLoginPage() {
           className="w-full max-w-sm rounded-2xl border border-white/10 bg-black/50 p-8 backdrop-blur-xl shadow-2xl"
         >
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold tracking-tight">
+            <h2 className="text-2xl font-semibold tracking-tight text-white">
               {mode === "login" ? "Entrar no painel" : "Criar acesso"}
             </h2>
             <p className="mt-1 text-sm text-white/50">
