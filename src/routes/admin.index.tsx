@@ -77,16 +77,19 @@ const signupSchema = loginSchema.extend({
   name: z.string().trim().min(2, "Informe seu nome completo").max(100),
 });
 
+import { title, SITE_NAME } from "@/lib/site-meta";
+
 export const Route = createFileRoute("/admin/")({
   head: () => ({
     meta: [
-      { title: "Painel Administrativo | Excelência Multimarcas" },
-      { name: "description", content: "Acesso restrito da equipe Excelência Multimarcas." },
+      { title: title("Painel Administrativo") },
+      { name: "description", content: `Acesso restrito da equipe ${SITE_NAME}.` },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: AdminLoginPage,
 });
+
 
 function AdminLoginPage() {
   const navigate = useNavigate();

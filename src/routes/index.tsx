@@ -9,25 +9,24 @@ import { Financing } from "@/components/sections/Financing";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { CtaFinal } from "@/components/sections/CtaFinal";
 import { Footer } from "@/components/sections/Footer";
+import { title, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Excelência Multimarcas | Seu próximo carro está aqui" },
-      {
-        name: "description",
-        content:
-          "Loja multimarcas com padrão premium: veículos revisados, procedência garantida, financiamento facilitado e as melhores condições da região.",
-      },
-      { property: "og:title", content: "Excelência Multimarcas | Seu próximo carro está aqui" },
-      { property: "og:description", content: "Loja multimarcas com padrão premium: veículos revisados, procedência garantida, financiamento facilitado e as melhores condições da região." },
+      { title: title() },
+      { name: "description", content: SITE_DESCRIPTION },
+      { property: "og:title", content: title() },
+      { property: "og:description", content: SITE_DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: SITE_NAME },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
 });
+
 
 function Index() {
   return (

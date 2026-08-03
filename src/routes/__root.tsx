@@ -73,21 +73,24 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+import { title, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE } from "@/lib/site-meta";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Excelência Multimarcas | Seu próximo carro está aqui" },
-      { name: "description", content: "Loja multimarcas com padrão premium: veículos revisados, procedência garantida, financiamento facilitado e as melhores condições da região." },
+      { title: title() },
+      { name: "description", content: SITE_DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: SITE_NAME },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "Excelência Multimarcas | Seu próximo carro está aqui" },
-      { name: "twitter:title", content: "Excelência Multimarcas | Seu próximo carro está aqui" },
-      { property: "og:description", content: "Loja multimarcas com padrão premium: veículos revisados, procedência garantida, financiamento facilitado e as melhores condições da região." },
-      { name: "twitter:description", content: "Loja multimarcas com padrão premium: veículos revisados, procedência garantida, financiamento facilitado e as melhores condições da região." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cf5e83bb-ce9b-491f-883c-40a8ca3227f0/id-preview-805b93ac--fdd09f19-f5bd-4339-874b-7523875a4009.lovable.app-1783953810897.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cf5e83bb-ce9b-491f-883c-40a8ca3227f0/id-preview-805b93ac--fdd09f19-f5bd-4339-874b-7523875a4009.lovable.app-1783953810897.png" },
+      { property: "og:title", content: title() },
+      { name: "twitter:title", content: title() },
+      { property: "og:description", content: SITE_DESCRIPTION },
+      { name: "twitter:description", content: SITE_DESCRIPTION },
+      { property: "og:image", content: OG_IMAGE },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -97,6 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
