@@ -1545,7 +1545,7 @@ function VehicleFormDialog({
                       >
                         <img src={p.preview} className="w-full aspect-square object-cover" />
                         {p.is_primary && (
-                          <div className="absolute top-2 left-2 bg-[#FFC400] text-black text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                          <div className="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
                             <Star className="h-3 w-3" /> Principal
                           </div>
                         )}
