@@ -8,14 +8,26 @@ import { Footer } from "@/components/sections/Footer";
 import { VehicleDetailDialog } from "@/components/sections/VehicleDetailDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
+import { title, SITE_NAME } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/catalogo/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `Catálogo ${params.slug} | Excelência Multimarcas` },
-      { property: "og:title", content: `Catálogo ${params.slug} | Excelência Multimarcas` },
-    ],
-  }),
+  head: ({ params }) => {
+    const pageTitle = title(`Catálogo ${params.slug}`);
+    const description = `Veículos do catálogo ${params.slug} na ${SITE_NAME}. Veja modelos, preços e entre em contato.`;
+    return {
+      meta: [
+        { title: pageTitle },
+        { name: "description", content: description },
+        { property: "og:title", content: pageTitle },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: SITE_NAME },
+        { property: "og:url", content: `/catalogo/${params.slug}` },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: `/catalogo/${params.slug}` }],
+    };
+  },
   component: CatalogoDetalhePage,
   notFoundComponent: CatalogNotFound,
   errorComponent: ({ reset }) => (
@@ -32,6 +44,7 @@ export const Route = createFileRoute("/catalogo/$slug")({
     </div>
   ),
 });
+
 
 const priceFmt = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 const kmFmt = new Intl.NumberFormat("pt-BR");

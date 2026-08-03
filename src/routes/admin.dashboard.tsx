@@ -64,15 +64,18 @@ function logDashboardError(message: string, error: unknown) {
   console.error(`${DASHBOARD_LOG_PREFIX} ${message}`, error);
 }
 
+import { title } from "@/lib/site-meta";
+
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard | Painel Excelência Multimarcas" },
+      { title: title("Dashboard") },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: DashboardPage,
 });
+
 
 type VehicleRow = {
   id: string;

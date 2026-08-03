@@ -6,28 +6,29 @@ import { ArrowUpRight, FolderKanban, Loader2, Car } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/sections/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { title, SITE_NAME } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/catalogo/")({
-  head: () => ({
-    meta: [
-      { title: "Catálogos | Excelência Multimarcas" },
-      {
-        name: "description",
-        content:
-          "Explore os catálogos de veículos da Excelência Multimarcas: coleções, promoções e destaques selecionados.",
-      },
-      { property: "og:title", content: "Catálogos | Excelência Multimarcas" },
-      {
-        property: "og:description",
-        content:
-          "Explore os catálogos de veículos da Excelência Multimarcas: coleções, promoções e destaques selecionados.",
-      },
-      { property: "og:type", content: "website" },
-    ],
-    links: [{ rel: "canonical", href: "/catalogo" }],
-  }),
+  head: () => {
+    const pageTitle = title("Catálogos");
+    const description = `Explore os catálogos de veículos da ${SITE_NAME}: coleções, promoções e destaques selecionados.`;
+    return {
+      meta: [
+        { title: pageTitle },
+        { name: "description", content: description },
+        { property: "og:title", content: pageTitle },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: SITE_NAME },
+        { property: "og:url", content: "/catalogo" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: "/catalogo" }],
+    };
+  },
   component: CatalogoPage,
 });
+
 
 type CatalogItem = {
   id: string;
