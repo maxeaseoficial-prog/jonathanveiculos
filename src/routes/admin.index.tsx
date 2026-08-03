@@ -159,15 +159,8 @@ function AdminAuthPage() {
           }
         });
       } catch (ensureErr: any) {
-        // Se a função falhar com "Failed to fetch", é provável que o servidor TanStack Start
-        // esteja com dificuldades de roteamento temporárias ou o endpoint não esteja pronto.
-        // Vamos logar mas não bloquear o usuário, já que o Auth funcionou.
+        // Se a função falhar, logamos mas não bloqueamos o usuário, já que o Auth funcionou.
         console.warn("Aviso: Falha ao sincronizar perfil administrativo:", ensureErr);
-        
-        // Se for erro de rede genérico, tratamos com uma mensagem mais amigável
-        if (ensureErr.message?.includes("fetch")) {
-          console.error("Erro de rede detectado na sincronização do perfil.");
-        }
       }
 
       setSuccessMode(true);
