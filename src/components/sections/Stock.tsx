@@ -325,4 +325,6 @@ export function Stock() {
       />
     </section>
   );
+}
+
 
