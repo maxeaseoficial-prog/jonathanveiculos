@@ -37,7 +37,7 @@ function getAuthErrorMessage(message: string) {
   }
 
   if (normalized.includes("email not confirmed") || normalized.includes("email_not_confirmed")) {
-    return "Seu cadastro foi criado, mas o e-mail ainda precisa ser confirmado antes do login.";
+    return "Seu cadastro foi criado com sucesso.";
   }
 
   if (normalized.includes("user already registered") || normalized.includes("already registered")) {
@@ -246,7 +246,7 @@ function AdminLoginPage() {
         toast.success("Conta criada com sucesso!");
         setFormMessage({
           type: "info",
-          text: "Conta criada. Confirme o e-mail e depois faça login para acessar o painel.",
+          text: "Conta criada com sucesso.",
         });
         logAuth("Cadastro criado sem sessão imediata. Aguardando confirmação de e-mail.");
       }
