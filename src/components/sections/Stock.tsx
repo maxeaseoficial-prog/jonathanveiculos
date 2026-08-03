@@ -475,7 +475,6 @@ export function Stock() {
           vehicleId={selectedId}
           open={!!selectedId}
           onOpenChange={(open) => !open && setSelectedId(null)}
-          whatsappUrl={WHATSAPP_URL}
         />
       </div>
     </section>
