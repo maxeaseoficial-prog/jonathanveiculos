@@ -312,6 +312,7 @@ export type Database = {
           doors: number | null
           engine: string | null
           featured: boolean
+          filial: string
           financeable: boolean | null
           first_owner: boolean | null
           fuel: Database["public"]["Enums"]["fuel_type"] | null
@@ -351,6 +352,7 @@ export type Database = {
           doors?: number | null
           engine?: string | null
           featured?: boolean
+          filial?: string
           financeable?: boolean | null
           first_owner?: boolean | null
           fuel?: Database["public"]["Enums"]["fuel_type"] | null
@@ -390,6 +392,7 @@ export type Database = {
           doors?: number | null
           engine?: string | null
           featured?: boolean
+          filial?: string
           financeable?: boolean | null
           first_owner?: boolean | null
           fuel?: Database["public"]["Enums"]["fuel_type"] | null

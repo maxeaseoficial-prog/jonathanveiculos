@@ -90,6 +90,7 @@ interface Vehicle {
   price: number;
   previous_price: number | null;
   status: VehicleStatus;
+  filial: string;
   featured: boolean;
   on_sale: boolean;
   is_new_arrival: boolean;
@@ -122,6 +123,8 @@ interface PendingImage {
 
 type QuickFilter = "todos" | "ativos" | "inativos" | "destaque" | "promocao" | "vendidos" | "reservados";
 type SortKey = "recent" | "old" | "price_desc" | "price_asc" | "km_asc" | "km_desc" | "alpha";
+
+const FILIAL_OPTIONS = ["Porto União", "Bituruna"];
 
 const FUEL_OPTIONS: { value: FuelType; label: string }[] = [
   { value: "flex", label: "Flex" },
@@ -278,7 +281,7 @@ function emptyForm(): Partial<Vehicle> {
     doors: null,
     plate_end: "",
     price: undefined as any,
-
+    filial: "Porto União",
     previous_price: null,
     status: "ativo",
     featured: false,
@@ -307,6 +310,7 @@ export function StockManager() {
   const [brandFilter, setBrandFilter] = useState<string>("todas");
   const [yearFilter, setYearFilter] = useState<string>("todos");
   const [categoryFilter, setCategoryFilter] = useState<string>("todas");
+  const [filialFilter, setFilialFilter] = useState<string>("todas");
   const [sortKey, setSortKey] = useState<SortKey>("recent");
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -416,6 +420,7 @@ export function StockManager() {
       if (brandFilter !== "todas" && v.brand !== brandFilter) return false;
       if (yearFilter !== "todos" && String(v.year) !== yearFilter) return false;
       if (categoryFilter !== "todas" && v.category !== categoryFilter) return false;
+      if (filialFilter !== "todas" && v.filial !== filialFilter) return false;
       return true;
     });
 
@@ -551,6 +556,17 @@ export function StockManager() {
                 ))}
               </SelectContent>
             </Select>
+            <Select value={filialFilter} onValueChange={setFilialFilter}>
+              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[140px]">
+                <SelectValue placeholder="Filial" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todas">Todas as filiais</SelectItem>
+                {FILIAL_OPTIONS.map((f) => (
+                  <SelectItem key={f} value={f}>{f}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sortKey} onValueChange={(v) => setSortKey(v as SortKey)}>
               <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[160px]">
                 <SelectValue />
@@ -623,6 +639,7 @@ export function StockManager() {
                   <th className="text-left font-semibold px-4 py-3">Ano</th>
                   <th className="text-left font-semibold px-4 py-3">KM</th>
                   <th className="text-left font-semibold px-4 py-3">Preço</th>
+                  <th className="text-left font-semibold px-4 py-3">Filial</th>
                   <th className="text-left font-semibold px-4 py-3">Categoria</th>
                   <th className="text-left font-semibold px-4 py-3">Status</th>
                   <th className="text-left font-semibold px-4 py-3">Flags</th>
@@ -653,6 +670,12 @@ export function StockManager() {
                       {v.previous_price && v.previous_price > v.price && (
                         <div className="text-[11px] text-zinc-400 line-through">{BRL.format(v.previous_price)}</div>
                       )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200 uppercase">
+                        <span className="w-1.5 h-1.5 rounded-sm bg-brand-red" />
+                        {v.filial}
+                      </span>
                     </td>
                     <td className="px-4 py-3 text-zinc-700">{v.category || "—"}</td>
                     <td className="px-4 py-3">
@@ -707,7 +730,13 @@ export function StockManager() {
                     </span>
                   </div>
                   <div className="mt-1 text-xs text-zinc-500">{v.year} · {NUM.format(v.km)} km · {v.category || "—"}</div>
-                  <div className="mt-1 font-semibold text-sm">{BRL.format(v.price)}</div>
+                    <div className="mt-1 flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200 uppercase">
+                      <span className="w-1 h-1 rounded-sm bg-brand-red" />
+                      {v.filial}
+                    </span>
+                    <div className="font-semibold text-sm">{BRL.format(v.price)}</div>
+                  </div>
                   <div className="flex gap-1 mt-2">
                     {v.featured && <Badge className="bg-[#FFC400] text-black hover:bg-[#FFC400] text-[10px]">Destaque</Badge>}
                     {v.on_sale && <Badge className="bg-[#E30613] hover:bg-[#E30613] text-[10px]">Promo</Badge>}
@@ -929,6 +958,7 @@ function VehicleFormDialog({
     if (form.km == null || form.km < 0) e.km = "KM inválida";
     if (!form.price || form.price <= 0) e.price = "Preço obrigatório";
     if (!form.category?.trim()) e.category = "Obrigatório";
+    if (!form.filial?.trim()) e.filial = "Obrigatório";
     setErrors(e);
     if (Object.keys(e).length) {
       const first = Object.keys(e)[0];
@@ -984,6 +1014,7 @@ function VehicleFormDialog({
         owner_manual: !!form.owner_manual,
         spare_key: !!form.spare_key,
         warranty: !!form.warranty,
+        filial: form.filial || "Porto União",
       };
 
       let vId: string;
@@ -1319,6 +1350,18 @@ function VehicleFormDialog({
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
+                <Field label="Filial" required error={errors.filial}>
+                  <Select value={form.filial ?? ""} onValueChange={(v) => set("filial", v)}>
+                    <SelectTrigger className={cn(errors.filial && "border-red-400")}>
+                      <SelectValue placeholder="Selecione a filial" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FILIAL_OPTIONS.map((f) => (
+                        <SelectItem key={f} value={f}>{f}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
                 <Field label="Marca" required error={errors.brand}>
                   <Input value={form.brand ?? ""} onChange={(e) => set("brand", e.target.value)} className={cn(errors.brand && "border-red-400")} />
                 </Field>
