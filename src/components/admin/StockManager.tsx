@@ -1378,7 +1378,6 @@ function VehicleFormDialog({
                   })}
                 </div>
               </div>
-              </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <Field label="Filial" required error={errors.filial}>
                   <Select value={form.filial ?? ""} onValueChange={(v) => set("filial", v)}>
