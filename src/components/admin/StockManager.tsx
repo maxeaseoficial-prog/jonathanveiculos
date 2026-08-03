@@ -1348,6 +1348,18 @@ function VehicleFormDialog({
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
+                <Field label="Filial" required error={errors.filial}>
+                  <Select value={form.filial ?? ""} onValueChange={(v) => set("filial", v)}>
+                    <SelectTrigger className={cn(errors.filial && "border-red-400")}>
+                      <SelectValue placeholder="Selecione a filial" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FILIAL_OPTIONS.map((f) => (
+                        <SelectItem key={f} value={f}>{f}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
                 <Field label="Marca" required error={errors.brand}>
                   <Input value={form.brand ?? ""} onChange={(e) => set("brand", e.target.value)} className={cn(errors.brand && "border-red-400")} />
                 </Field>
