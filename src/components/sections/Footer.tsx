@@ -23,100 +23,106 @@ export function Footer() {
     mapsEmbedUrl: MAPS_EMBED_URL,
     businessHours,
   } = useCompanyContact();
+
   return (
-    <footer id="contato" className="relative pt-24 pb-10 border-t border-white/5 bg-brand-black text-white/85">
+    <footer id="contato" className="relative pt-32 pb-12 bg-white border-t border-black/5">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-4">
-            <img src={logoAsset.url} alt="Excelência Multimarcas" className="h-12 w-auto" width={200} height={48} />
-            <p className="mt-5 text-white/70 text-sm max-w-xs leading-relaxed">
-              Padrão premium de atendimento, com a flexibilidade e variedade que só uma loja multimarcas oferece.
+        <div className="grid lg:grid-cols-12 gap-20">
+          <div className="lg:col-span-4 flex flex-col items-start gap-8">
+            <img 
+              src={logoAsset.url} 
+              alt={SITE_NAME} 
+              className="h-14 w-auto object-contain" 
+              width={200} 
+              height={56} 
+            />
+            <p className="text-brand-black/50 text-lg font-medium leading-relaxed">
+              Excelência e transparência no mercado automotivo. Sua melhor escolha para veículos premium.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="flex gap-4">
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Instagram"
-                className="inline-flex items-center justify-center w-14 h-14 rounded-full glass-dark hover:bg-white/10 hover:text-brand-yellow transition-colors"
+                className="w-14 h-14 rounded-2xl bg-surface border border-black/5 flex items-center justify-center text-brand-black hover:bg-brand-red hover:text-white transition-all duration-300"
               >
-                <Instagram className="w-7 h-7" />
+                <Instagram className="w-6 h-6" />
               </a>
               <a
                 href={FACEBOOK_URL}
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Facebook"
-                className="inline-flex items-center justify-center w-14 h-14 rounded-full glass-dark hover:bg-white/10 hover:text-brand-yellow transition-colors"
+                className="w-14 h-14 rounded-2xl bg-surface border border-black/5 flex items-center justify-center text-brand-black hover:bg-brand-red hover:text-white transition-all duration-300"
               >
-                <Facebook className="w-7 h-7" />
+                <Facebook className="w-6 h-6" />
               </a>
             </div>
           </div>
 
-          <div className="lg:col-span-3">
-            <h4 className="text-sm uppercase tracking-[0.2em] text-brand-yellow font-semibold">Contato</h4>
-            <ul className="mt-5 space-y-4 text-sm text-white/75">
-              <li className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 mt-0.5 text-brand-yellow shrink-0" />
-                <span>{ADDRESS_LINE_1}<br />{ADDRESS_LINE_2}<br />CEP {ADDRESS_CEP}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-brand-yellow shrink-0" />
-                <a href={`tel:${PHONE_TEL}`} className="hover:text-brand-yellow">{PHONE_DISPLAY}</a>
-              </li>
-              <li className="flex items-center gap-3">
-                <MessageCircle className="w-4 h-4 text-brand-yellow shrink-0" />
-                <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hover:text-brand-yellow">WhatsApp</a>
-              </li>
-              <li className="flex items-start gap-3">
-                <Clock className="w-4 h-4 mt-0.5 text-brand-yellow shrink-0" />
-                <span className="whitespace-pre-line">{businessHours}</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="lg:col-span-2">
-            <h4 className="text-sm uppercase tracking-[0.2em] text-brand-yellow font-semibold">Links</h4>
-            <ul className="mt-5 space-y-3 text-sm text-white/75">
-              {quickLinks.map((l) => (
-                <li key={l.href}>
-                  <a href={l.href} className="hover:text-brand-yellow transition-colors">{l.label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="lg:col-span-3">
-            <h4 className="text-sm uppercase tracking-[0.2em] text-brand-yellow font-semibold">Localização</h4>
-            <div className="mt-5 rounded-2xl overflow-hidden border border-white/10 aspect-video">
-              <iframe
-                title="Mapa Excelência Multimarcas"
-                src={MAPS_EMBED_URL}
-                loading="lazy"
-                className="w-full h-full"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+          <div className="lg:col-span-4">
+            <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-brand-black/30 mb-8">Informações</h4>
+            <div className="grid gap-10">
+              <div className="flex gap-5">
+                <MapPin className="w-6 h-6 text-brand-red shrink-0" />
+                <div className="text-base font-bold text-brand-black/70 leading-relaxed">
+                  {ADDRESS_LINE_1}<br />
+                  {ADDRESS_LINE_2}<br />
+                  CEP {ADDRESS_CEP}
+                </div>
+              </div>
+              <div className="flex gap-5">
+                <Clock className="w-6 h-6 text-brand-red shrink-0" />
+                <div className="text-base font-bold text-brand-black/70 whitespace-pre-line">
+                  {businessHours}
+                </div>
+              </div>
             </div>
           </div>
 
+          <div className="lg:col-span-4">
+            <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-brand-black/30 mb-8">Navegação</h4>
+            <ul className="grid grid-cols-2 gap-6">
+              {quickLinks.map((l) => (
+                <li key={l.href}>
+                  <a 
+                    href={l.href} 
+                    className="text-lg font-bold text-brand-black/70 hover:text-brand-red transition-colors"
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a 
+                  href={`tel:${PHONE_TEL}`}
+                  className="text-lg font-bold text-brand-black/70 hover:text-brand-red transition-colors"
+                >
+                  {PHONE_DISPLAY}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
-          <p>© {new Date().getFullYear()} Excelência Multimarcas. Todos os direitos reservados.</p>
-          <p>Desenvolvido com padrão premium.</p>
+        <div className="mt-32 pt-12 border-t border-black/5 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-sm font-bold text-brand-black/30 uppercase tracking-widest">
+            © {new Date().getFullYear()} {SITE_NAME}
+          </p>
+          <p className="text-sm font-bold text-brand-black/30 uppercase tracking-widest">
+            Design by Premium Agency
+          </p>
         </div>
       </div>
 
-      {/* Floating WhatsApp */}
+      {/* Botão flutuante WhatsApp atualizado */}
       <a
         href={WHATSAPP_URL}
         target="_blank"
         rel="noreferrer"
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white flex items-center justify-center shadow-[0_15px_35px_-10px_rgba(37,211,102,0.7)] hover:scale-110 transition-all"
+        className="fixed bottom-8 right-8 z-40 w-16 h-16 rounded-[1.5rem] bg-brand-red text-white flex items-center justify-center shadow-red-glow hover:scale-110 active:scale-95 transition-all duration-300 group"
         aria-label="WhatsApp"
       >
-        <MessageCircle className="w-6 h-6" />
+        <MessageCircle className="w-8 h-8 transition-transform group-hover:rotate-12" />
       </a>
     </footer>
   );
