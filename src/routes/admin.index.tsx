@@ -292,6 +292,9 @@ function AdminLoginPage() {
                 ? "Use seu e-mail e senha para acessar."
                 : "O primeiro cadastro se torna administrador."}
             </p>
+            <div className="mt-4 p-3 rounded-lg border border-white/10 bg-white/5 text-xs text-white/40">
+              Gerencie suas credenciais no arquivo <code className="text-brand-red">.lovable/admin-credentials.md</code>.
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
@@ -349,7 +352,7 @@ function AdminLoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+                  className="absolute right-0 top-0 h-full px-3 text-white/50 hover:text-white transition-colors z-20 flex items-center justify-center"
                   aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
                 >
                   {showPassword ? (
