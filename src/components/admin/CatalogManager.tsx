@@ -384,8 +384,7 @@ export function CatalogManager() {
           />
         </div>
         <Button
-          onClick={openNew}
-          className="bg-[#FFC400] text-black hover:bg-[#FFC400]/90 font-semibold"
+          className="bg-brand-red text-white hover:bg-brand-red/90 font-semibold"
         >
           <Plus className="h-4 w-4 mr-2" /> Novo catálogo
         </Button>
@@ -394,7 +393,7 @@ export function CatalogManager() {
       {/* Grid */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-[#FFC400]" />
+          <Loader2 className="h-6 w-6 animate-spin text-brand-red" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-2xl border border-zinc-200 bg-white p-12 text-center">
@@ -403,7 +402,7 @@ export function CatalogManager() {
           <p className="text-sm text-zinc-500 mt-1 mb-4">
             Crie catálogos para agrupar veículos por coleção, promoção ou segmento.
           </p>
-          <Button onClick={openNew} className="bg-[#FFC400] text-black hover:bg-[#FFC400]/90 font-semibold">
+          <Button onClick={openNew} className="bg-brand-red text-white hover:bg-brand-red/90 font-semibold">
             <Plus className="h-4 w-4 mr-2" /> Criar primeiro catálogo
           </Button>
         </div>
@@ -460,7 +459,7 @@ export function CatalogManager() {
                       size="sm"
                       variant="outline"
                       onClick={() => openEdit(c)}
-                      className="flex-1 border-zinc-200 bg-zinc-50 text-zinc-900 hover:bg-zinc-100 hover:text-[#FFC400]"
+                      className="flex-1 border-zinc-200 bg-zinc-50 text-zinc-900 hover:bg-zinc-100 hover:text-brand-red"
                     >
                       <Pencil className="h-3.5 w-3.5 mr-1.5" /> Editar
                     </Button>
