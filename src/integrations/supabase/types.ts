@@ -97,6 +97,8 @@ export type Database = {
           state: string | null
           updated_at: string
           whatsapp: string | null
+          whatsapp_bituruna: string | null
+          whatsapp_porto_uniao: string | null
         }
         Insert: {
           address?: string | null
@@ -114,6 +116,8 @@ export type Database = {
           state?: string | null
           updated_at?: string
           whatsapp?: string | null
+          whatsapp_bituruna?: string | null
+          whatsapp_porto_uniao?: string | null
         }
         Update: {
           address?: string | null
@@ -131,6 +135,8 @@ export type Database = {
           state?: string | null
           updated_at?: string
           whatsapp?: string | null
+          whatsapp_bituruna?: string | null
+          whatsapp_porto_uniao?: string | null
         }
         Relationships: []
       }

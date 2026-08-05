@@ -6,6 +6,8 @@ import * as fallback from "@/lib/site-data";
 export interface CompanyContact {
   name: string;
   whatsappUrl: string;
+  whatsappPortoUniaoUrl: string;
+  whatsappBiturunaUrl: string;
   phoneDisplay: string;
   phoneTel: string;
   instagramUrl: string;
@@ -99,6 +101,8 @@ export function useCompanyContact(): CompanyContact {
   });
 
   const whatsappUrl = toWhatsappUrl(data?.whatsapp);
+  const whatsappPortoUniaoUrl = toWhatsappUrl(data?.whatsapp_porto_uniao);
+  const whatsappBiturunaUrl = toWhatsappUrl(data?.whatsapp_bituruna);
   const instagramUrl = toSocialUrl(data?.instagram, "https://www.instagram.com/", fallback.INSTAGRAM_URL);
   const facebookUrl = toSocialUrl(data?.facebook, "https://www.facebook.com/", fallback.FACEBOOK_URL);
 
@@ -112,6 +116,8 @@ export function useCompanyContact(): CompanyContact {
   return {
     name: data?.name || "Excelência Multimarcas",
     whatsappUrl,
+    whatsappPortoUniaoUrl,
+    whatsappBiturunaUrl,
     phoneDisplay: formatPhoneDisplay(data?.phone),
     phoneTel: toTel(data?.phone),
     instagramUrl,

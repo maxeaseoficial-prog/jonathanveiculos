@@ -70,7 +70,11 @@ async function fetchStockVehicles(): Promise<StockVehicle[]> {
 }
 
 export function Stock() {
-  const { whatsappUrl: WHATSAPP_URL } = useCompanyContact();
+  const { 
+    whatsappUrl: WHATSAPP_URL, 
+    whatsappPortoUniaoUrl, 
+    whatsappBiturunaUrl 
+  } = useCompanyContact();
   const queryClient = useQueryClient();
   const { data: vehicles = [], isLoading } = useQuery({
     queryKey: ["public-stock-vehicles"],

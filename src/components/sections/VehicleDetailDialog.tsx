@@ -62,7 +62,11 @@ function splitList(text?: string | null): string[] {
 }
 
 export function VehicleDetailDialog({ vehicleId, open, onOpenChange }: Props) {
-  const { whatsappUrl: WHATSAPP_URL } = useCompanyContact();
+  const { 
+    whatsappUrl: WHATSAPP_URL,
+    whatsappPortoUniaoUrl,
+    whatsappBiturunaUrl
+  } = useCompanyContact();
   const queryClient = useQueryClient();
   const { data: vehicle, isLoading } = useQuery({
     queryKey: ["vehicle-detail", vehicleId],
@@ -140,7 +144,8 @@ export function VehicleDetailDialog({ vehicleId, open, onOpenChange }: Props) {
   const waMessage = vehicle
     ? `Olá! Tenho interesse no ${vehicle.brand} ${vehicle.model}${vehicle.year ? ` ${vehicle.year}` : ""}. Poderia me passar mais informações?`
     : "";
-  const waLink = vehicle ? `${WHATSAPP_URL}?text=${encodeURIComponent(waMessage)}` : WHATSAPP_URL;
+  const activeWaUrl = vehicle?.filial === "Bituruna" ? whatsappBiturunaUrl : (vehicle?.filial === "Porto União" ? whatsappPortoUniaoUrl : WHATSAPP_URL);
+  const waLink = vehicle ? `${activeWaUrl}?text=${encodeURIComponent(waMessage)}` : activeWaUrl;
 
   const standardItems = splitList(vehicle?.standard_items);
   const optionalItems = splitList(vehicle?.optional_items);
