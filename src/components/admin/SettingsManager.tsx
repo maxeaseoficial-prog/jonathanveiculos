@@ -15,6 +15,8 @@ interface CompanySettings {
   name: string;
   phone: string;
   whatsapp: string;
+  whatsapp_porto_uniao: string;
+  whatsapp_bituruna: string;
   email: string;
   address: string;
   cep: string;
@@ -29,6 +31,8 @@ const EMPTY: CompanySettings = {
   name: "",
   phone: "",
   whatsapp: "",
+  whatsapp_porto_uniao: "",
+  whatsapp_bituruna: "",
   email: "",
   address: "",
   cep: "",
@@ -83,6 +87,8 @@ export function SettingsManager() {
             name: data.name ?? "",
             phone: data.phone ?? "",
             whatsapp: data.whatsapp ?? "",
+            whatsapp_porto_uniao: data.whatsapp_porto_uniao ?? "",
+            whatsapp_bituruna: data.whatsapp_bituruna ?? "",
             email: data.email ?? "",
             address: data.address ?? "",
             cep: data.cep ?? "",
@@ -116,6 +122,8 @@ export function SettingsManager() {
         name: company.name.trim(),
         phone: company.phone.trim() || null,
         whatsapp: company.whatsapp.trim() || null,
+        whatsapp_porto_uniao: company.whatsapp_porto_uniao.trim() || null,
+        whatsapp_bituruna: company.whatsapp_bituruna.trim() || null,
         email: company.email.trim() || null,
         address: company.address.trim() || null,
         cep: company.cep.trim() || null,
@@ -337,11 +345,25 @@ export function SettingsManager() {
               placeholder="(00) 0000-0000"
             />
           </Field>
-          <Field label="WhatsApp">
+          <Field label="WhatsApp (Geral)">
             <Input
               value={company.whatsapp}
               onChange={(e) => setCompany({ ...company, whatsapp: e.target.value })}
               placeholder="(00) 00000-0000"
+            />
+          </Field>
+          <Field label="WhatsApp Porto União">
+            <Input
+              value={company.whatsapp_porto_uniao}
+              onChange={(e) => setCompany({ ...company, whatsapp_porto_uniao: e.target.value })}
+              placeholder="(42) 00000-0000"
+            />
+          </Field>
+          <Field label="WhatsApp Bituruna">
+            <Input
+              value={company.whatsapp_bituruna}
+              onChange={(e) => setCompany({ ...company, whatsapp_bituruna: e.target.value })}
+              placeholder="(42) 00000-0000"
             />
           </Field>
           <Field label="Instagram">
