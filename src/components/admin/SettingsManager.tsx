@@ -327,7 +327,7 @@ export function SettingsManager() {
             <Input
               value={company.name}
               onChange={(e) => setCompany({ ...company, name: e.target.value })}
-              placeholder="Excelência Multimarcas"
+              placeholder="Jonathan Veículos"
             />
           </Field>
           <Field label="E-mail de contato">
