@@ -114,7 +114,7 @@ export function useCompanyContact(): CompanyContact {
   const addressFull = `${address}${line2 ? ` - ${line2}` : ""}${cep ? `, ${cep}` : ""}`;
 
   return {
-    name: data?.name || "Excelência Multimarcas",
+    name: data?.name || "Jonathan Veículos",
     whatsappUrl,
     whatsappPortoUniaoUrl,
     whatsappBiturunaUrl,
