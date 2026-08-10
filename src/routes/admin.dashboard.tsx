@@ -303,7 +303,7 @@ function DashboardPage() {
             <img
               src={logoAsset.url}
               alt="Jonathan Veículos"
-              className="h-16 w-auto object-contain"
+              className="h-16 w-auto object-contain brightness-0 invert"
             />
             <div className="mt-2 text-[10px] uppercase tracking-widest text-white/70 font-semibold">Painel Admin</div>
           </div>
