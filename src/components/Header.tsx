@@ -20,18 +20,10 @@ const links: NavLink[] = [
 ];
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const isHome = pathname === "/";
   const { whatsappUrl: WHATSAPP_URL } = useCompanyContact();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const hashHref = (hash: string) => (isHome ? `#${hash}` : `/#${hash}`);
 
