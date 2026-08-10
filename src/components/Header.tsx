@@ -53,18 +53,14 @@ export function Header() {
   };
 
   const desktopClass =
-    "relative px-4 py-2 text-sm font-semibold transition-colors group text-brand-black/70 hover:text-brand-black";
+    "relative px-4 py-2 text-sm font-semibold transition-colors group text-white/90 hover:text-white";
 
   return (
     <motion.header
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/90 backdrop-blur-xl shadow-elegant py-4"
-          : "bg-white py-6"
-      }`}
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 bg-brand-red py-4 shadow-elegant`}
     >
       <div className="mx-auto max-w-7xl px-5 lg:px-8 flex items-center justify-between">
         {isHome ? (
