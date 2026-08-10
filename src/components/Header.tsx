@@ -52,7 +52,7 @@ export function Header() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 bg-brand-red py-4 shadow-elegant`}
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 bg-black py-4 shadow-elegant`}
     >
       <div className="mx-auto max-w-7xl px-5 lg:px-8 flex items-center justify-between">
         {isHome ? (
@@ -86,7 +86,7 @@ export function Header() {
             href={WHATSAPP_URL}
             target="_blank"
             rel="noreferrer"
-            className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-brand-red font-bold text-sm shadow-lg hover:bg-white/90 transition-all duration-300"
+            className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand-red text-white font-bold text-sm shadow-lg hover:bg-brand-red/90 transition-all duration-300"
           >
             Fale Conosco
           </a>
@@ -118,7 +118,7 @@ export function Header() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden overflow-hidden bg-brand-red border-t border-white/10"
+            className="lg:hidden overflow-hidden bg-black border-t border-white/10"
           >
             <div className="px-5 py-8 flex flex-col gap-2">
               {links.map((l) =>
@@ -132,7 +132,7 @@ export function Header() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white text-brand-red font-bold shadow-lg"
+                className="mt-4 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-brand-red text-white font-bold shadow-lg"
               >
                 <MessageCircle className="w-5 h-5" /> Fale Conosco
               </a>
