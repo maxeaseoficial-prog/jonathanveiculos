@@ -60,7 +60,7 @@ export function Header() {
             <img
               src={logoAsset.url}
               alt={SITE_NAME}
-              className="h-12 lg:h-14 w-auto object-contain brightness-0 invert"
+              className="h-12 lg:h-14 w-auto object-contain"
               width={180}
               height={56}
             />
@@ -70,7 +70,7 @@ export function Header() {
             <img
               src={logoAsset.url}
               alt={SITE_NAME}
-              className="h-12 lg:h-14 w-auto object-contain brightness-0 invert"
+              className="h-12 lg:h-14 w-auto object-contain"
               width={180}
               height={56}
             />
