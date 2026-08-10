@@ -36,7 +36,7 @@ import { Button } from "@/components/ui/button";
 import { StockManager } from "@/components/admin/StockManager";
 import { CatalogManager } from "@/components/admin/CatalogManager";
 import { SettingsManager } from "@/components/admin/SettingsManager";
-import logoAsset from "@/assets/logo-crest.png.asset.json";
+import logoAsset from "@/assets/logo-new.png.asset.json";
 
 const MOTO_CATEGORIES = new Set([
   "Street",
