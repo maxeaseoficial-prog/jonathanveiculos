@@ -40,14 +40,14 @@ export function Header() {
       return (
         <Link key={l.label} to={l.to} onClick={onClick} className={className}>
           {l.label}
-          <span className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 h-0.5 w-0 bg-brand-red group-hover:w-full transition-all duration-300" />
+          <span className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 h-0.5 w-0 bg-white group-hover:w-full transition-all duration-300" />
         </Link>
       );
     }
     return (
       <a key={l.label} href={hashHref(l.hash)} onClick={onClick} className={className}>
         {l.label}
-        <span className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 h-0.5 w-0 bg-brand-red group-hover:w-full transition-all duration-300" />
+        <span className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 h-0.5 w-0 bg-white group-hover:w-full transition-all duration-300" />
       </a>
     );
   };
