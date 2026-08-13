@@ -274,7 +274,7 @@ function DashboardPage() {
         <div className="max-w-md text-center">
           <h1 className="text-2xl font-semibold">Acesso negado</h1>
           <p className="mt-2 text-zinc-500 text-sm">
-            Sua conta ({userEmail}) não possui permissão de administrador.
+            Sua conta ({userName}) não possui permissão de administrador.
           </p>
           <Button onClick={handleLogout} variant="outline" className="mt-6 border-zinc-200 bg-white text-zinc-900 hover:bg-zinc-50">
             <LogOut className="h-4 w-4 mr-2" /> Sair
@@ -342,7 +342,7 @@ function DashboardPage() {
           <div className="border-t border-zinc-200 pt-4 mt-4">
             <div className="px-3 pb-3">
               <div className="text-xs text-zinc-400">Logado como</div>
-              <div className="text-sm truncate text-zinc-700">{userEmail}</div>
+              <div className="text-sm truncate text-zinc-700">{userName}</div>
             </div>
             <button
               onClick={handleLogout}
