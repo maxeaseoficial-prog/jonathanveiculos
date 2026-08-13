@@ -144,6 +144,34 @@ function CatalogoDetalhePage() {
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const veiculoId = params.get("veiculo");
+    if (veiculoId) {
+      setSelectedId(veiculoId);
+    }
+
+    const handlePopState = () => {
+      const currentParams = new URLSearchParams(window.location.search);
+      const id = currentParams.get("veiculo");
+      setSelectedId(id);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const handleOpenDetail = (id: string | null) => {
+    setSelectedId(id);
+    const url = new URL(window.location.href);
+    if (id) {
+      url.searchParams.set("veiculo", id);
+    } else {
+      url.searchParams.delete("veiculo");
+    }
+    window.history.pushState({}, "", url.toString());
+  };
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["public-catalog", slug],
     queryFn: () => fetchCatalog(slug),
@@ -243,7 +271,7 @@ function CatalogoDetalhePage() {
                         viewport={{ once: true, margin: "-60px" }}
                         transition={{ duration: 0.6, delay: (i % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
                         whileHover={{ y: -6 }}
-                        onClick={() => setSelectedId(v.id)}
+                        onClick={() => handleOpenDetail(v.id)}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
@@ -305,7 +333,7 @@ function CatalogoDetalhePage() {
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedId(v.id);
+                                handleOpenDetail(v.id);
                               }}
                               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface hover:bg-brand-red hover:text-white text-xs font-bold transition-all duration-300"
                             >
@@ -327,7 +355,7 @@ function CatalogoDetalhePage() {
         vehicleId={selectedId}
         open={!!selectedId}
         onOpenChange={(o) => {
-          if (!o) setSelectedId(null);
+          if (!o) handleOpenDetail(null);
         }}
       />
     </div>

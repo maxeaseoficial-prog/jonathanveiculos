@@ -15,7 +15,9 @@ import {
   ChevronRight,
   MessageCircle,
   X,
+  Link2,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
@@ -176,6 +178,25 @@ export function VehicleDetailDialog({ vehicleId, open, onOpenChange }: Props) {
       ].filter((b) => b.on)
     : [];
 
+  const handleCopyLink = async () => {
+    if (!vehicle) return;
+    const url = new URL("/", window.location.origin);
+    url.searchParams.set("veiculo", vehicle.id);
+    
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      toast.success("Link copiado! Agora é só enviar pelo WhatsApp.");
+    } catch (err) {
+      const input = document.createElement("input");
+      input.value = url.toString();
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      toast.success("Link copiado!");
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -198,8 +219,18 @@ export function VehicleDetailDialog({ vehicleId, open, onOpenChange }: Props) {
         </button>
 
         <div className="overflow-y-auto" style={{ maxHeight: "92vh" }}>
-          {isLoading || !vehicle ? (
+          {isLoading ? (
             <div className="p-16 text-center text-zinc-500">Carregando…</div>
+          ) : !vehicle ? (
+            <div className="p-16 text-center">
+              <p className="text-zinc-500 text-lg">Este veículo não está mais disponível.</p>
+              <button
+                onClick={() => onOpenChange(false)}
+                className="mt-4 px-6 py-2 rounded-full bg-brand-red text-white font-bold"
+              >
+                Ver outros veículos
+              </button>
+            </div>
           ) : (
             <div className="grid lg:grid-cols-[1.15fr_1fr]">
               {/* Gallery */}
@@ -366,12 +397,19 @@ export function VehicleDetailDialog({ vehicleId, open, onOpenChange }: Props) {
                   </div>
                 )}
 
-                <div className="mt-8 sticky bottom-0 -mx-6 -mb-6 lg:-mx-8 lg:-mb-8 px-6 lg:px-8 py-4 bg-white/95 backdrop-blur border-t border-zinc-100">
+                <div className="mt-8 sticky bottom-0 -mx-6 -mb-6 lg:-mx-8 lg:-mb-8 px-6 lg:px-8 py-4 bg-white/95 backdrop-blur border-t border-zinc-100 flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={handleCopyLink}
+                    className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-zinc-100 hover:bg-zinc-200 text-black font-bold text-base transition-colors border border-zinc-200"
+                  >
+                    <Link2 className="h-5 w-5" />
+                    Copiar link
+                  </button>
                   <a
                     href={waLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-base shadow-lg shadow-[#25D366]/25 transition-colors"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-base shadow-lg shadow-[#25D366]/25 transition-colors"
                   >
                     <MessageCircle className="h-5 w-5" />
                     Falar no WhatsApp sobre este veículo
