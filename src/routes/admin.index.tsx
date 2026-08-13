@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
 import { resolveUsername } from "@/lib/resolve-username.functions";
+import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +69,9 @@ function AdminAuthPage() {
 
     setLoading(true);
     try {
+      // 1. Check Rate Limit
+      await checkRateLimit({ data: { username: result.data.username } });
+
       const { email } = await resolveUsername({
         data: { username: result.data.username },
       }).catch(() => ({ email: null as string | null }));
@@ -88,6 +92,9 @@ function AdminAuthPage() {
         setLoading(false);
         return;
       }
+
+      // Success - Reset Rate Limit
+      await resetRateLimit({ data: { username: result.data.username } });
 
       setSuccessMode(true);
       toast.success("Acesso autorizado!");
