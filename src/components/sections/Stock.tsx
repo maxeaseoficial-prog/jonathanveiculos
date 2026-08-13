@@ -83,6 +83,34 @@ export function Stock() {
   });
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const veiculoId = params.get("veiculo");
+    if (veiculoId) {
+      setSelectedId(veiculoId);
+    }
+
+    const handlePopState = () => {
+      const currentParams = new URLSearchParams(window.location.search);
+      const id = currentParams.get("veiculo");
+      setSelectedId(id);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const handleOpenDetail = (id: string | null) => {
+    setSelectedId(id);
+    const url = new URL(window.location.href);
+    if (id) {
+      url.searchParams.set("veiculo", id);
+    } else {
+      url.searchParams.delete("veiculo");
+    }
+    window.history.pushState({}, "", url.toString());
+  };
   const [query, setQuery] = useState("");
   const [filialFilter, setFilialFilter] = useState<string>("all");
   
