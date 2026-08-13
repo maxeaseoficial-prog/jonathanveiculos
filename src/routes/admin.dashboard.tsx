@@ -94,7 +94,7 @@ function DashboardPage() {
   const [authLoading, setAuthLoading] = useState(true);
   const [dataLoading, setDataLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [userEmail, setUserEmail] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
   const [activeTab, setActiveTab] = useState<TabKey>("dashboard");
   const [vehicles, setVehicles] = useState<VehicleRow[]>([]);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -103,21 +103,34 @@ function DashboardPage() {
     let active = true;
 
     async function bootstrap() {
-      logDashboard("Dashboard iniciado (Modo Demo).");
+      logDashboard("Dashboard iniciado.");
       setAuthError(null);
 
-      // Demo session check
-      const demoSession = sessionStorage.getItem("demo_admin_session");
-      if (demoSession !== "true") {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (!active) return;
+
+      if (userError || !userData.user) {
         navigate({ to: "/admin", replace: true });
         return;
       }
 
+      const userId = userData.user.id;
+
+      const [{ data: roleRows }, { data: profile }] = await Promise.all([
+        supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin"),
+        supabase.from("profiles").select("username").eq("id", userId).maybeSingle(),
+      ]);
+
       if (!active) return;
-      
-      setUserEmail("admin@demo.com");
-      setIsAdmin(true);
+
+      setUserName(profile?.username ?? "");
+      setIsAdmin((roleRows ?? []).length > 0);
       setAuthLoading(false);
+
+      if ((roleRows ?? []).length === 0) {
+        setDataLoading(false);
+        return;
+      }
 
       try {
         const { data, error } = await supabase
@@ -140,7 +153,7 @@ function DashboardPage() {
   }, [navigate]);
 
   async function handleLogout() {
-    sessionStorage.removeItem("demo_admin_session");
+    await supabase.auth.signOut();
     toast.success("Sessão encerrada");
     navigate({ to: "/admin", replace: true });
   }
@@ -261,7 +274,7 @@ function DashboardPage() {
         <div className="max-w-md text-center">
           <h1 className="text-2xl font-semibold">Acesso negado</h1>
           <p className="mt-2 text-zinc-500 text-sm">
-            Sua conta ({userEmail}) não possui permissão de administrador.
+            Sua conta ({userName}) não possui permissão de administrador.
           </p>
           <Button onClick={handleLogout} variant="outline" className="mt-6 border-zinc-200 bg-white text-zinc-900 hover:bg-zinc-50">
             <LogOut className="h-4 w-4 mr-2" /> Sair
@@ -329,7 +342,7 @@ function DashboardPage() {
           <div className="border-t border-zinc-200 pt-4 mt-4">
             <div className="px-3 pb-3">
               <div className="text-xs text-zinc-400">Logado como</div>
-              <div className="text-sm truncate text-zinc-700">{userEmail}</div>
+              <div className="text-sm truncate text-zinc-700">{userName}</div>
             </div>
             <button
               onClick={handleLogout}
