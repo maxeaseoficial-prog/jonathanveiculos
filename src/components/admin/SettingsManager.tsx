@@ -48,7 +48,12 @@ const passwordSchema = z
   .min(8, "A senha deve ter pelo menos 8 caracteres")
   .max(72, "A senha deve ter no máximo 72 caracteres");
 
-const emailSchema = z.string().trim().email("E-mail inválido").max(255);
+const usernameSchema = z
+  .string()
+  .trim()
+  .min(3, "O usuário deve ter pelo menos 3 caracteres")
+  .max(50, "O usuário deve ter no máximo 50 caracteres")
+  .regex(/^[a-zA-Z0-9._-]+$/, "Use apenas letras, números, ponto, hífen ou underline");
 
 export function SettingsManager() {
   const [loading, setLoading] = useState(true);
