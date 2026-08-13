@@ -17,7 +17,10 @@ const BLOCK_WINDOW = 15 * 60 * 1000; // 15 minutes
 
 export const checkRateLimit = createServerFn({ method: "POST" })
   .inputValidator((data) => loginAttemptInput.parse(data))
-  .handler(async ({ data, request }) => {
+  .handler(async ({ data }) => {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const request = getRequest();
+    
     // Get client IP from headers
     const ip = request.headers.get("x-forwarded-for") || 
                request.headers.get("cf-connecting-ip") || 
@@ -49,7 +52,10 @@ export const checkRateLimit = createServerFn({ method: "POST" })
 
 export const resetRateLimit = createServerFn({ method: "POST" })
   .inputValidator((data) => loginAttemptInput.parse(data))
-  .handler(async ({ data, request }) => {
+  .handler(async ({ data }) => {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const request = getRequest();
+    
     const ip = request.headers.get("x-forwarded-for") || 
                request.headers.get("cf-connecting-ip") || 
                "unknown";
