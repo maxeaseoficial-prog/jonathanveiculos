@@ -1666,7 +1666,7 @@ function VehicleFormDialog({
           </div>
         </Tabs>
 
-        <DialogFooter className="p-4 border-t bg-zinc-50">
+        <DialogFooter className="shrink-0 p-4 border-t bg-zinc-50">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Cancelar</Button>
           <Button onClick={save} disabled={saving} className="bg-brand-red hover:bg-brand-red/90 text-white font-semibold">
             {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
@@ -1678,24 +1678,49 @@ function VehicleFormDialog({
   );
 }
 
-function Field({
-  label,
-  children,
-  required,
-  error,
-}: {
-  label: string;
-  children: React.ReactNode;
-  required?: boolean;
-  error?: string;
-}) {
+function Field({ label, children, error, required, className }: { label: string; children: React.ReactNode; error?: string; required?: boolean; className?: string }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-xs font-medium text-zinc-600">
-        {label} {required && <span className="text-[#E30613]">*</span>}
+    <div className={cn("space-y-1.5", className)}>
+      <Label className="text-sm font-medium text-zinc-700 flex items-center gap-1">
+        {label}
+        {required && <span className="text-brand-red font-bold">*</span>}
       </Label>
       {children}
-      {error && <div className="text-[11px] text-[#E30613]">{error}</div>}
+      {error && <p className="text-[11px] text-red-500 font-medium animate-in fade-in slide-in-from-top-1">{error}</p>}
+    </div>
+  );
+}
+
+function BRLInput({ value, onChange, className }: { value: number; onChange: (v: number) => void; className?: string }) {
+  const [displayValue, setDisplayValue] = useState("");
+
+  const format = (val: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    }).format(val);
+  };
+
+  useEffect(() => {
+    setDisplayValue(format(value || 0));
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    const numericValue = Number(raw) / 100;
+    onChange(numericValue);
+  };
+
+  return (
+    <div className="relative">
+      <Input
+        type="text"
+        inputMode="decimal"
+        value={displayValue}
+        onChange={handleChange}
+        className={cn("font-medium", className)}
+      />
     </div>
   );
 }
