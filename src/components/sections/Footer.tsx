@@ -24,6 +24,9 @@ export function Footer() {
     addressCep: ADDRESS_CEP,
     mapsEmbedUrl: MAPS_EMBED_URL,
     businessHours,
+    biturunaAddress,
+    biturunaLine2,
+    biturunaCep,
   } = useCompanyContact();
 
   return (
@@ -74,9 +77,9 @@ export function Footer() {
                 <MapPin className="w-6 h-6 text-brand-red shrink-0" />
                 <div className="text-base font-bold text-brand-black/70 leading-relaxed">
                   <span className="text-xs uppercase tracking-wider text-brand-black/40 block mb-1">Filial: Bituruna</span>
-                  Av. Pref. Farid Abrahão, 546<br />
-                  Bituruna / PR<br />
-                  CEP 84640-000
+                  {biturunaAddress}<br />
+                  {biturunaLine2}<br />
+                  CEP {biturunaCep}
                 </div>
               </div>
               <div className="flex gap-5">

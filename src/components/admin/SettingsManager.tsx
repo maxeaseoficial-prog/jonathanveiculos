@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import * as fallback from "@/lib/site-data";
 
 interface CompanySettings {
   id?: string;
@@ -95,19 +96,36 @@ export function SettingsManager() {
         if (mounted && data) {
           setCompany({
             id: data.id,
-            name: data.name ?? "",
-            phone: data.phone ?? "",
-            whatsapp: data.whatsapp ?? "",
-            whatsapp_porto_uniao: data.whatsapp_porto_uniao ?? "",
-            whatsapp_bituruna: data.whatsapp_bituruna ?? "",
-            email: data.email ?? "",
-            address: data.address ?? "",
-            cep: data.cep ?? "",
-            city: data.city ?? "",
-            state: data.state ?? "",
-            instagram: data.instagram ?? "",
-            facebook: data.facebook ?? "",
-            business_hours: data.business_hours ?? "",
+            name: data.name ?? "Jonathan Veículos",
+            phone: data.phone ?? fallback.PHONE_DISPLAY,
+            whatsapp: data.whatsapp ?? fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || "",
+            whatsapp_porto_uniao: data.whatsapp_porto_uniao ?? fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || "",
+            whatsapp_bituruna: data.whatsapp_bituruna ?? "42998266142",
+            email: data.email ?? fallback.EMAIL,
+            address: data.address ?? fallback.ADDRESS_LINE_1,
+            cep: data.cep ?? fallback.ADDRESS_CEP,
+            city: data.city ?? "Porto União",
+            state: data.state ?? "SC",
+            instagram: data.instagram ?? fallback.INSTAGRAM_HANDLE,
+            facebook: data.facebook ?? fallback.FACEBOOK_URL,
+            business_hours: data.business_hours ?? fallback.BUSINESS_HOURS,
+          });
+        } else if (mounted) {
+          // Fallback values if no data exists
+          setCompany({
+            name: "Jonathan Veículos",
+            phone: fallback.PHONE_DISPLAY,
+            whatsapp: fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || "",
+            whatsapp_porto_uniao: fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || "",
+            whatsapp_bituruna: "42998266142",
+            email: fallback.EMAIL,
+            address: fallback.ADDRESS_LINE_1,
+            cep: fallback.ADDRESS_CEP,
+            city: "Porto União",
+            state: "SC",
+            instagram: fallback.INSTAGRAM_HANDLE,
+            facebook: fallback.FACEBOOK_URL,
+            business_hours: fallback.BUSINESS_HOURS,
           });
         }
       } catch (err) {
@@ -386,108 +404,133 @@ export function SettingsManager() {
           Dados institucionais usados no site e nos contatos com clientes.
         </p>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Nome da empresa *">
-            <Input
-              value={company.name}
-              onChange={(e) => setCompany({ ...company, name: e.target.value })}
-              placeholder="Jonathan Veículos"
-            />
-          </Field>
-          <Field label="E-mail de contato">
-            <Input
-              type="email"
-              value={company.email}
-              onChange={(e) => setCompany({ ...company, email: e.target.value })}
-              placeholder="contato@empresa.com"
-            />
-          </Field>
-          <Field label="Telefone">
-            <Input
-              value={company.phone}
-              onChange={(e) => setCompany({ ...company, phone: e.target.value })}
-              placeholder="(00) 0000-0000"
-            />
-          </Field>
-          <Field label="WhatsApp (Geral)">
-            <Input
-              value={company.whatsapp}
-              onChange={(e) => setCompany({ ...company, whatsapp: e.target.value })}
-              placeholder="(00) 00000-0000"
-            />
-          </Field>
-          <Field label="WhatsApp Porto União">
-            <Input
-              value={company.whatsapp_porto_uniao}
-              onChange={(e) => setCompany({ ...company, whatsapp_porto_uniao: e.target.value })}
-              placeholder="(42) 00000-0000"
-            />
-          </Field>
-          <Field label="WhatsApp Bituruna">
-            <Input
-              value={company.whatsapp_bituruna}
-              onChange={(e) => setCompany({ ...company, whatsapp_bituruna: e.target.value })}
-              placeholder="(42) 00000-0000"
-            />
-          </Field>
-          <Field label="Instagram">
-            <Input
-              value={company.instagram}
-              onChange={(e) => setCompany({ ...company, instagram: e.target.value })}
-              placeholder="@usuario ou URL completa"
-            />
-          </Field>
-          <Field label="Facebook">
-            <Input
-              value={company.facebook}
-              onChange={(e) => setCompany({ ...company, facebook: e.target.value })}
-              placeholder="URL da página"
-            />
-          </Field>
-          <Field label="Endereço" className="md:col-span-2">
-            <Input
-              value={company.address}
-              onChange={(e) => setCompany({ ...company, address: e.target.value })}
-              placeholder="Rua, número, bairro"
-            />
-          </Field>
-          <Field label="CEP">
-            <Input
-              value={company.cep}
-              onChange={(e) => setCompany({ ...company, cep: e.target.value })}
-              placeholder="00000-000"
-            />
-          </Field>
-          <Field label="Cidade">
-            <Input
-              value={company.city}
-              onChange={(e) => setCompany({ ...company, city: e.target.value })}
-              placeholder="Cidade"
-            />
-          </Field>
-          <Field label="Estado">
-            <Input
-              value={company.state}
-              onChange={(e) => setCompany({ ...company, state: e.target.value })}
-              placeholder="UF"
-              maxLength={2}
-            />
-          </Field>
-          <Field label="Horário de funcionamento" className="md:col-span-2">
-            <Textarea
-              value={company.business_hours}
-              onChange={(e) => setCompany({ ...company, business_hours: e.target.value })}
-              placeholder="Seg a Sex: 8h às 18h&#10;Sáb: 8h às 13h"
-              rows={3}
-            />
-          </Field>
+        <div className="space-y-8">
+          {/* Dados Gerais */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-zinc-400 mb-4 border-b pb-2">Dados gerais</h4>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Nome da empresa *">
+                <Input
+                  value={company.name}
+                  onChange={(e) => setCompany({ ...company, name: e.target.value })}
+                  placeholder="Jonathan Veículos"
+                />
+              </Field>
+              <Field label="E-mail de contato">
+                <Input
+                  type="email"
+                  value={company.email}
+                  onChange={(e) => setCompany({ ...company, email: e.target.value })}
+                  placeholder="contato@empresa.com"
+                />
+              </Field>
+              <Field label="Telefone">
+                <Input
+                  value={company.phone}
+                  onChange={(e) => setCompany({ ...company, phone: e.target.value })}
+                  placeholder="(00) 0000-0000"
+                />
+              </Field>
+              <Field label="WhatsApp (Geral)">
+                <Input
+                  value={company.whatsapp}
+                  onChange={(e) => setCompany({ ...company, whatsapp: e.target.value })}
+                  placeholder="(00) 00000-0000"
+                />
+              </Field>
+              <Field label="WhatsApp Porto União">
+                <Input
+                  value={company.whatsapp_porto_uniao}
+                  onChange={(e) => setCompany({ ...company, whatsapp_porto_uniao: e.target.value })}
+                  placeholder="(42) 00000-0000"
+                />
+              </Field>
+              <Field label="WhatsApp Bituruna">
+                <Input
+                  value={company.whatsapp_bituruna}
+                  onChange={(e) => setCompany({ ...company, whatsapp_bituruna: e.target.value })}
+                  placeholder="(42) 00000-0000"
+                />
+              </Field>
+            </div>
+          </div>
+
+          {/* Redes Sociais */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-zinc-400 mb-4 border-b pb-2">Redes sociais</h4>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Instagram">
+                <Input
+                  value={company.instagram}
+                  onChange={(e) => setCompany({ ...company, instagram: e.target.value })}
+                  placeholder="@usuario ou URL completa"
+                />
+              </Field>
+              <Field label="Facebook">
+                <Input
+                  value={company.facebook}
+                  onChange={(e) => setCompany({ ...company, facebook: e.target.value })}
+                  placeholder="URL da página"
+                />
+              </Field>
+            </div>
+          </div>
+
+          {/* Unidade Porto União */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-zinc-400 mb-4 border-b pb-2">Unidade Porto União</h4>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Endereço" className="md:col-span-2">
+                <Input
+                  value={company.address}
+                  onChange={(e) => setCompany({ ...company, address: e.target.value })}
+                  placeholder="Rua, número, bairro"
+                />
+              </Field>
+              <Field label="CEP">
+                <Input
+                  value={company.cep}
+                  onChange={(e) => setCompany({ ...company, cep: e.target.value })}
+                  placeholder="00000-000"
+                />
+              </Field>
+              <Field label="Cidade">
+                <Input
+                  value={company.city}
+                  onChange={(e) => setCompany({ ...company, city: e.target.value })}
+                  placeholder="Cidade"
+                />
+              </Field>
+              <Field label="Estado">
+                <Input
+                  value={company.state}
+                  onChange={(e) => setCompany({ ...company, state: e.target.value })}
+                  placeholder="UF"
+                  maxLength={2}
+                />
+              </Field>
+            </div>
+          </div>
+
+          {/* Horário */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-zinc-400 mb-4 border-b pb-2">Atendimento</h4>
+            <Field label="Horário de funcionamento" className="md:col-span-2">
+              <Textarea
+                value={company.business_hours}
+                onChange={(e) => setCompany({ ...company, business_hours: e.target.value })}
+                placeholder="Seg a Sex: 8h às 18h&#10;Sáb: 8h às 13h"
+                rows={3}
+              />
+            </Field>
+          </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-8 flex justify-end">
           <Button
             onClick={handleSaveCompany}
             disabled={saving}
-            className="bg-brand-red text-white hover:bg-brand-red/90 shadow-red-glow"
+            className="bg-brand-red text-white hover:bg-brand-red/90 shadow-red-glow h-12 px-8"
           >
             {saving ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />

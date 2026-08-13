@@ -17,6 +17,9 @@ export interface CompanyContact {
   addressLine2: string;
   addressCep: string;
   addressFull: string;
+  biturunaAddress: string;
+  biturunaLine2: string;
+  biturunaCep: string;
   mapsEmbedUrl: string;
   businessHours: string;
   email: string;
@@ -127,8 +130,11 @@ export function useCompanyContact(): CompanyContact {
     addressLine2: line2,
     addressCep: cep,
     addressFull,
+    biturunaAddress: data?.city === "Bituruna" ? (data?.address || fallback.BITURUNA_ADDRESS) : fallback.BITURUNA_ADDRESS,
+    biturunaLine2: data?.city === "Bituruna" ? `${data?.city || "Bituruna"} / ${data?.state || "PR"}` : fallback.BITURUNA_LINE2,
+    biturunaCep: data?.city === "Bituruna" ? (data?.cep || fallback.BITURUNA_CEP) : fallback.BITURUNA_CEP,
     mapsEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(addressFull)}&output=embed`,
-    businessHours: data?.business_hours || "Seg a Sex: 08:00 às 18:30\nSáb: 08:00 às 15:00\nDom: Fechado",
-    email: data?.email || "",
+    businessHours: data?.business_hours || fallback.BUSINESS_HOURS,
+    email: data?.email || fallback.EMAIL,
   };
 }
