@@ -1,4 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+const MOTO_CATEGORIES = new Set([
+  "Street",
+  "Naked",
+  "Custom",
+  "Esportiva",
+  "Trail / Big Trail",
+  "Scooter",
+  "Cub",
+  "Off-Road",
+  "Touring",
+]);
 import { motion, AnimatePresence } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -497,8 +508,24 @@ export function StockManager() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
         <div>
-          <h2 className="font-[Sora] text-2xl md:text-3xl font-bold tracking-tight text-zinc-900">Estoque de Veículos</h2>
-          <p className="text-sm text-zinc-500 mt-1">Gerencie todos os veículos cadastrados no site.</p>
+          <div className="flex flex-col gap-2">
+            <h2 className="font-[Sora] text-2xl md:text-3xl font-bold tracking-tight text-zinc-900">Estoque de Veículos</h2>
+            <div className="flex flex-wrap items-center gap-4 mt-1">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 rounded-lg border border-zinc-200">
+                <Car className="h-4 w-4 text-zinc-600" />
+                <span className="text-sm font-semibold text-zinc-700">
+                  {vehicles.filter(v => !MOTO_CATEGORIES.has(v.category || "")).length} Carros
+                </span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 rounded-lg border border-zinc-200">
+                <Bike className="h-4 w-4 text-zinc-600" />
+                <span className="text-sm font-semibold text-zinc-700">
+                  {vehicles.filter(v => MOTO_CATEGORIES.has(v.category || "")).length} Motos
+                </span>
+              </div>
+              <p className="text-sm text-zinc-500 ml-1">Gerencie todos os veículos cadastrados.</p>
+            </div>
+          </div>
         </div>
         <Button
           onClick={() => {
