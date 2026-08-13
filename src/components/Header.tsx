@@ -85,7 +85,7 @@ export function Header() {
           <a
             href={WHATSAPP_URL}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand-red text-white font-bold text-sm shadow-lg hover:bg-brand-red/90 transition-all duration-300"
           >
             Fale Conosco
@@ -131,7 +131,7 @@ export function Header() {
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-brand-red text-white font-bold shadow-lg"
               >
                 <MessageCircle className="w-5 h-5" /> Fale Conosco

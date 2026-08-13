@@ -45,7 +45,7 @@ export function Footer() {
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-14 h-14 rounded-2xl bg-surface border border-black/5 flex items-center justify-center text-brand-black hover:bg-brand-red hover:text-white transition-all duration-300"
               >
                 <Instagram className="w-6 h-6" />
@@ -53,7 +53,7 @@ export function Footer() {
               <a
                 href={FACEBOOK_URL}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-14 h-14 rounded-2xl bg-surface border border-black/5 flex items-center justify-center text-brand-black hover:bg-brand-red hover:text-white transition-all duration-300"
               >
                 <Facebook className="w-6 h-6" />
@@ -127,7 +127,7 @@ export function Footer() {
       <a
         href={WHATSAPP_URL}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-40 w-16 h-16 rounded-[1.5rem] bg-brand-red text-white flex items-center justify-center shadow-red-glow hover:scale-110 active:scale-95 transition-all duration-300 group"
         aria-label="WhatsApp"
       >

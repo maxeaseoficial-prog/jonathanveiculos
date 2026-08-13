@@ -408,7 +408,7 @@ export function VehicleDetailDialog({ vehicleId, open, onOpenChange }: Props) {
                   <a
                     href={waLink}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-base shadow-lg shadow-[#25D366]/25 transition-colors"
                   >
                     <MessageCircle className="h-5 w-5" />
