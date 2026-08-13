@@ -1449,10 +1449,10 @@ function VehicleFormDialog({
             <TabsContent value="valores" className="mt-0 space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <Field label="Preço atual" required error={errors.price}>
-                  <BRLInput value={form.price ?? 0} onChange={(v) => set("price", v)} className={cn(errors.price && "border-red-400")} />
+                  <BRLInput value={form.price ?? 0} onChange={(v) => set("price", v || 0)} className={cn(errors.price && "border-red-400")} />
                 </Field>
                 <Field label="Preço anterior (opcional)">
-                  <BRLInput value={form.previous_price ?? 0} onChange={(v) => set("previous_price", v || null)} />
+                  <BRLInput value={form.previous_price ?? 0} onChange={(v) => set("previous_price", v)} />
                 </Field>
               </div>
               {discount && (
