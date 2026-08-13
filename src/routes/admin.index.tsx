@@ -5,6 +5,8 @@ import { Eye, EyeOff, Loader2, LogIn, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { supabase } from "@/integrations/supabase/client";
+import { resolveUsername } from "@/lib/resolve-username.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +14,7 @@ import adminBgAsset from "@/assets/admin-bg.webp.asset.json";
 import { title, SITE_NAME } from "@/lib/site-meta";
 
 const loginSchema = z.object({
-  identifier: z.string().trim().min(1, "Informe seu e-mail ou usuário"),
+  username: z.string().trim().min(1, "Informe seu usuário"),
   password: z.string().min(1, "Informe sua senha"),
 });
 
@@ -35,50 +37,68 @@ function AdminAuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [successMode, setSuccessMode] = useState(false);
 
-  // Form states
-  const [identifier, setIdentifier] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    // Demo session check
-    const demoSession = sessionStorage.getItem("demo_admin_session");
-    if (demoSession === "true") {
-      navigate({ to: "/admin/dashboard", replace: true });
-    } else {
-      setChecking(false);
-    }
+    let active = true;
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!active) return;
+      if (data.session) {
+        navigate({ to: "/admin/dashboard", replace: true });
+      } else {
+        setChecking(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
   }, [navigate]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
 
-    const result = loginSchema.safeParse({ identifier, password });
+    const result = loginSchema.safeParse({ username, password });
     if (!result.success) {
       toast.error(result.error.issues[0].message);
       return;
     }
 
     setLoading(true);
-    
-    // Demo credentials check
-    const isValidUser = result.data.identifier === "admin" || result.data.identifier === "admin@demo.com";
-    const isValidPass = result.data.password === "admin";
+    try {
+      const { email } = await resolveUsername({
+        data: { username: result.data.username },
+      }).catch(() => ({ email: null as string | null }));
 
-    setTimeout(() => {
-      if (isValidUser && isValidPass) {
-        sessionStorage.setItem("demo_admin_session", "true");
-        setSuccessMode(true);
-        toast.success("Acesso autorizado!");
-        
-        setTimeout(() => {
-          navigate({ to: "/admin/dashboard", replace: true });
-        }, 1000);
-      } else {
+      if (!email) {
         toast.error("Usuário ou senha inválidos.");
         setLoading(false);
+        return;
       }
-    }, 800);
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password: result.data.password,
+      });
+
+      if (error) {
+        toast.error("Usuário ou senha inválidos.");
+        setLoading(false);
+        return;
+      }
+
+      setSuccessMode(true);
+      toast.success("Acesso autorizado!");
+      setTimeout(() => {
+        navigate({ to: "/admin/dashboard", replace: true });
+      }, 900);
+    } catch (err) {
+      console.error("[Admin Auth] Falha no login", err);
+      toast.error("Não foi possível entrar. Tente novamente.");
+      setLoading(false);
+    }
   }
 
   if (checking) {
@@ -137,12 +157,13 @@ function AdminAuthPage() {
                 <h2 className="text-2xl font-bold mb-6 text-white">Entrar no painel</h2>
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div className="space-y-2">
-                    <Label htmlFor="id">E-mail ou Usuário</Label>
+                    <Label htmlFor="id">Usuário</Label>
                     <Input
                       id="id"
-                      placeholder="admin ou admin@demo.com"
-                      value={identifier}
-                      onChange={(e) => setIdentifier(e.target.value)}
+                      autoComplete="username"
+                      placeholder="Digite seu usuário"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       className="bg-white/5 border-white/10 focus:border-brand-red h-12"
                     />
                   </div>
@@ -152,6 +173,7 @@ function AdminAuthPage() {
                       <Input
                         id="pass"
                         type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -175,7 +197,7 @@ function AdminAuthPage() {
                   </Button>
                 </form>
                 <div className="mt-6 pt-6 border-t border-white/10 text-center text-xs text-white/30">
-                  Acesso Restrito - Demonstração
+                  Acesso restrito
                 </div>
               </motion.div>
             )}
