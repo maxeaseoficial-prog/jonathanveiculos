@@ -493,7 +493,7 @@ export function StockManager() {
   }
 
   return (
-    <div className="bg-white text-zinc-900 rounded-3xl border border-zinc-200/70 shadow-sm p-5 md:p-8">
+    <div className="bg-white text-zinc-900 rounded-3xl border border-zinc-200/70 shadow-sm p-5 md:p-8 min-w-0 max-w-full">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
         <div>
@@ -513,7 +513,7 @@ export function StockManager() {
 
       {/* Toolbar */}
       <div className="flex flex-col gap-3 mb-5">
-        <div className="flex flex-col md:flex-row gap-3">
+        <div className="flex flex-col xl:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <Input
@@ -523,7 +523,7 @@ export function StockManager() {
               className="pl-9 h-11 rounded-xl border-zinc-200 bg-zinc-50"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Select value={brandFilter} onValueChange={setBrandFilter}>
               <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[140px]">
                 <SelectValue placeholder="Marca" />
@@ -1302,24 +1302,26 @@ function VehicleFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[92vh] overflow-hidden flex flex-col p-0">
-        <DialogHeader className="p-6 pb-3 border-b">
+      <DialogContent className="max-w-4xl max-h-[92vh] h-[92vh] overflow-hidden flex flex-col p-0">
+        <DialogHeader className="shrink-0 p-6 pb-3 border-b">
           <DialogTitle>{editing ? "Editar veículo" : "Novo veículo"}</DialogTitle>
           <DialogDescription>
             Preencha as informações abaixo. Campos com <span className="text-[#E30613]">*</span> são obrigatórios.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={tab} onValueChange={setTab} className="flex-1 overflow-hidden flex flex-col">
-          <div className="px-6 pt-4 overflow-x-auto">
-            <TabsList className="bg-zinc-100">
-              <TabsTrigger value="basicos">Básicas</TabsTrigger>
-              <TabsTrigger value="valores">Valores</TabsTrigger>
-              <TabsTrigger value="caracteristicas">Características</TabsTrigger>
-              <TabsTrigger value="descricao">Descrição</TabsTrigger>
-              <TabsTrigger value="imagens">Imagens</TabsTrigger>
-              <TabsTrigger value="publicacao">Publicação</TabsTrigger>
-            </TabsList>
+        <Tabs value={tab} onValueChange={setTab} className="min-h-0 flex-1 overflow-hidden flex flex-col">
+          <div className="shrink-0 px-6 pt-4 pb-2 border-b bg-white">
+            <div className="overflow-x-auto scrollbar-hide">
+              <TabsList className="bg-zinc-100 h-auto p-1 inline-flex min-w-max">
+                <TabsTrigger value="basicos" className="px-4 py-2">Básicas</TabsTrigger>
+                <TabsTrigger value="valores" className="px-4 py-2">Valores</TabsTrigger>
+                <TabsTrigger value="caracteristicas" className="px-4 py-2">Características</TabsTrigger>
+                <TabsTrigger value="descricao" className="px-4 py-2">Descrição</TabsTrigger>
+                <TabsTrigger value="imagens" className="px-4 py-2">Imagens</TabsTrigger>
+                <TabsTrigger value="publicacao" className="px-4 py-2">Publicação</TabsTrigger>
+              </TabsList>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto px-6 py-5">
@@ -1410,11 +1412,14 @@ function VehicleFormDialog({
                   </Select>
                 </Field>
                 <Field label="Ano de fabricação" required error={errors.year}>
-                  <Input type="number" value={form.year ?? ""} onChange={(e) => set("year", Number(e.target.value))} className={cn(errors.year && "border-red-400")} />
+                  <Input type="text" inputMode="numeric" value={form.year ?? ""} onChange={(e) => set("year", e.target.value.replace(/\D/g, "") ? Number(e.target.value.replace(/\D/g, "")) : (undefined as any))} className={cn(errors.year && "border-red-400")} />
                 </Field>
-                <Field label="Ano do modelo"><Input type="number" value={form.model_year ?? ""} onChange={(e) => set("model_year", e.target.value ? Number(e.target.value) : null)} /></Field>
+                <Field label="Ano do modelo"><Input type="text" inputMode="numeric" value={form.model_year ?? ""} onChange={(e) => set("model_year", e.target.value.replace(/\D/g, "") ? Number(e.target.value.replace(/\D/g, "")) : null)} /></Field>
                 <Field label="Quilometragem" required error={errors.km}>
-                  <Input type="number" value={form.km ?? ""} onChange={(e) => set("km", e.target.value ? Number(e.target.value) : (undefined as any))} className={cn(errors.km && "border-red-400")} />
+                  <Input type="text" inputMode="numeric" value={form.km != null ? NUM.format(form.km) : ""} onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "");
+                    set("km", val ? Number(val) : (undefined as any));
+                  }} className={cn(errors.km && "border-red-400")} />
                 </Field>
                 <Field label="Cor"><Input value={form.color ?? ""} onChange={(e) => set("color", e.target.value)} /></Field>
                 <Field label="Combustível">
@@ -1444,10 +1449,10 @@ function VehicleFormDialog({
             <TabsContent value="valores" className="mt-0 space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <Field label="Preço atual" required error={errors.price}>
-                  <Input type="number" step="0.01" value={form.price ?? ""} onChange={(e) => set("price", Number(e.target.value))} className={cn(errors.price && "border-red-400")} />
+                  <BRLInput value={form.price ?? 0} onChange={(v) => set("price", v)} className={cn(errors.price && "border-red-400")} />
                 </Field>
                 <Field label="Preço anterior (opcional)">
-                  <Input type="number" step="0.01" value={form.previous_price ?? ""} onChange={(e) => set("previous_price", e.target.value ? Number(e.target.value) : null)} />
+                  <BRLInput value={form.previous_price ?? 0} onChange={(v) => set("previous_price", v || null)} />
                 </Field>
               </div>
               {discount && (

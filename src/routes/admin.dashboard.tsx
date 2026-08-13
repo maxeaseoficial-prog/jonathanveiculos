@@ -354,7 +354,7 @@ function DashboardPage() {
         </aside>
 
         {/* Main */}
-        <main className="flex-1 p-6 md:p-10">
+        <main className="flex-1 min-w-0 w-full max-w-full overflow-x-hidden p-6 md:p-10">
           {/* Mobile tabs */}
           <div className="lg:hidden -mx-6 md:-mx-10 px-6 md:px-10 mb-6 overflow-x-auto">
             <div className="flex gap-2 min-w-max">
