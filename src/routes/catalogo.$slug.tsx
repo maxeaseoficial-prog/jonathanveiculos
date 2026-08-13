@@ -255,7 +255,7 @@ function CatalogoDetalhePage() {
                     <a
                       href={WHATSAPP_URL}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-brand-black text-white text-sm font-medium hover:bg-brand-black/85 transition-colors"
                     >
                       Falar no WhatsApp <ArrowUpRight className="w-4 h-4" />

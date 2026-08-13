@@ -1,3 +1,4 @@
+// REDESIGN COMPLETO DO SITE — JONATHAN VEÍCULOS — PRONTO PARA PRODUÇÃO
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/sections/Hero";

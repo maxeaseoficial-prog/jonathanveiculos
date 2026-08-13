@@ -50,7 +50,7 @@ export function Financing() {
             <motion.a
               href={WHATSAPP_URL}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="mt-12 inline-flex items-center gap-3 px-10 py-5 rounded-full bg-brand-red text-white font-bold text-lg shadow-red-glow transition-all"

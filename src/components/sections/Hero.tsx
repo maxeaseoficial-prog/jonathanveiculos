@@ -61,7 +61,7 @@ export function Hero() {
               <motion.a
                 href={WHATSAPP_URL}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-white text-white font-bold hover:bg-white/10 transition-all"
