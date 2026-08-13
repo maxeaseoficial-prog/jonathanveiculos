@@ -169,30 +169,55 @@ export function SettingsManager() {
     }
   }
 
-  async function handleChangeEmail() {
-    const parsed = emailSchema.safeParse(newEmail);
+  async function handleChangeUsername() {
+    const parsed = usernameSchema.safeParse(newUsername);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
     }
-    if (parsed.data === userEmail) {
-      toast.info("Este já é o seu e-mail atual");
+    if (parsed.data.toLowerCase() === currentUsername.toLowerCase()) {
+      toast.info("Este já é o seu usuário atual");
       return;
     }
-    setSavingEmail(true);
+    setSavingUsername(true);
     try {
-      const { error } = await supabase.auth.updateUser({ email: parsed.data });
-      if (error) throw error;
-      toast.success("Confirme a alteração pelo link enviado ao novo e-mail");
+      const { data: userData } = await supabase.auth.getUser();
+      const user = userData.user;
+      if (!user) throw new Error("Sessão expirada");
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ username: parsed.data, updated_at: new Date().toISOString() })
+        .eq("id", user.id);
+
+      if (error) {
+        if (error.code === "23505") {
+          toast.error("Este usuário já está em uso");
+          return;
+        }
+        throw error;
+      }
+
+      await supabase.auth.updateUser({
+        data: { ...(user.user_metadata ?? {}), username: parsed.data },
+      });
+
+      setCurrentUsername(parsed.data);
+      setNewUsername("");
+      toast.success("Usuário atualizado com sucesso");
     } catch (err) {
-      console.error("[Settings] Falha ao atualizar e-mail", err);
-      toast.error("Erro ao atualizar e-mail");
+      console.error("[Settings] Falha ao atualizar usuário", err);
+      toast.error("Erro ao atualizar usuário");
     } finally {
-      setSavingEmail(false);
+      setSavingUsername(false);
     }
   }
 
   async function handleChangePassword() {
+    if (!currentPassword) {
+      toast.error("Informe sua senha atual");
+      return;
+    }
     const parsed = passwordSchema.safeParse(newPassword);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
@@ -204,8 +229,24 @@ export function SettingsManager() {
     }
     setSavingPassword(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      const { data: userData } = await supabase.auth.getUser();
+      const email = userData.user?.email;
+      if (!email) throw new Error("Sessão expirada");
+
+      // Reautenticação: valida a senha atual antes de qualquer alteração
+      const { error: reauthError } = await supabase.auth.signInWithPassword({
+        email,
+        password: currentPassword,
+      });
+      if (reauthError) {
+        toast.error("Senha atual incorreta.");
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({ password: parsed.data });
       if (error) throw error;
+
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       toast.success("Senha alterada com sucesso");
