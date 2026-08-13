@@ -279,47 +279,58 @@ export function SettingsManager() {
           <h3 className="font-[Sora] text-lg font-semibold text-zinc-900">Conta de acesso</h3>
         </div>
         <p className="text-sm text-zinc-500 mb-5">
-          Altere o e-mail e a senha usados para entrar no painel.
+          Altere o usuário e a senha usados para entrar no painel.
         </p>
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-zinc-500">
-              <Mail className="h-3.5 w-3.5" /> E-mail de login
+              <User className="h-3.5 w-3.5" /> Usuário
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email-atual" className="text-xs text-zinc-500">
-                E-mail atual
+              <Label htmlFor="usuario-atual" className="text-xs text-zinc-500">
+                Usuário atual
               </Label>
-              <Input id="email-atual" value={userEmail} disabled className="bg-zinc-50" />
+              <Input id="usuario-atual" value={currentUsername} disabled className="bg-zinc-50" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email-novo">Novo e-mail</Label>
+              <Label htmlFor="usuario-novo">Novo usuário</Label>
               <Input
-                id="email-novo"
-                type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                placeholder="voce@dominio.com"
+                id="usuario-novo"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+                placeholder="Digite o novo usuário"
+                autoComplete="off"
               />
             </div>
             <Button
-              onClick={handleChangeEmail}
-              disabled={savingEmail}
+              onClick={handleChangeUsername}
+              disabled={savingUsername || !newUsername}
               className="bg-zinc-900 text-white hover:bg-zinc-800"
             >
-              {savingEmail ? (
+              {savingUsername ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
                 <Save className="h-4 w-4 mr-2" />
               )}
-              Atualizar e-mail
+              Atualizar usuário
             </Button>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-zinc-500">
               <KeyRound className="h-3.5 w-3.5" /> Senha
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="senha-atual">Senha atual</Label>
+              <Input
+                id="senha-atual"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Digite sua senha atual"
+                autoComplete="current-password"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="senha-nova">Nova senha</Label>
@@ -343,6 +354,7 @@ export function SettingsManager() {
                 autoComplete="new-password"
               />
             </div>
+
             <Button
               onClick={handleChangePassword}
               disabled={savingPassword || !newPassword}
