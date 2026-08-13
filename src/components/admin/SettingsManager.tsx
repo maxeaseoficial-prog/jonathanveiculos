@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Save, KeyRound, Building2, Mail } from "lucide-react";
+import { Loader2, Save, KeyRound, Building2, User } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -357,7 +357,7 @@ export function SettingsManager() {
 
             <Button
               onClick={handleChangePassword}
-              disabled={savingPassword || !newPassword}
+              disabled={savingPassword || !newPassword || !currentPassword}
               className="bg-[#E30613] text-white hover:bg-[#c40510]"
             >
               {savingPassword ? (
