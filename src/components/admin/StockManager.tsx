@@ -513,8 +513,8 @@ export function StockManager() {
 
       {/* Toolbar */}
       <div className="flex flex-col gap-3 mb-5">
-        <div className="flex flex-col xl:flex-row gap-3">
-          <div className="relative flex-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative w-full lg:w-[360px] shrink-0">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <Input
               value={search}
@@ -525,7 +525,7 @@ export function StockManager() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Select value={brandFilter} onValueChange={setBrandFilter}>
-              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[140px]">
+              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 w-[160px] flex-none">
                 <SelectValue placeholder="Marca" />
               </SelectTrigger>
               <SelectContent>
@@ -536,7 +536,7 @@ export function StockManager() {
               </SelectContent>
             </Select>
             <Select value={yearFilter} onValueChange={setYearFilter}>
-              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[110px]">
+              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 w-[130px] flex-none">
                 <SelectValue placeholder="Ano" />
               </SelectTrigger>
               <SelectContent>
@@ -547,7 +547,7 @@ export function StockManager() {
               </SelectContent>
             </Select>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[140px]">
+              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 w-[160px] flex-none">
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
               <SelectContent>
@@ -558,7 +558,7 @@ export function StockManager() {
               </SelectContent>
             </Select>
             <Select value={filialFilter} onValueChange={setFilialFilter}>
-              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[140px]">
+              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 w-[160px] flex-none">
                 <SelectValue placeholder="Filial" />
               </SelectTrigger>
               <SelectContent>
@@ -569,7 +569,7 @@ export function StockManager() {
               </SelectContent>
             </Select>
             <Select value={sortKey} onValueChange={(v) => setSortKey(v as SortKey)}>
-              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 min-w-[160px]">
+              <SelectTrigger className="h-11 rounded-xl border-zinc-200 bg-zinc-50 w-[170px] flex-none">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
