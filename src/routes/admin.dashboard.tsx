@@ -94,7 +94,7 @@ function DashboardPage() {
   const [authLoading, setAuthLoading] = useState(true);
   const [dataLoading, setDataLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [userEmail, setUserEmail] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
   const [activeTab, setActiveTab] = useState<TabKey>("dashboard");
   const [vehicles, setVehicles] = useState<VehicleRow[]>([]);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -103,21 +103,34 @@ function DashboardPage() {
     let active = true;
 
     async function bootstrap() {
-      logDashboard("Dashboard iniciado (Modo Demo).");
+      logDashboard("Dashboard iniciado.");
       setAuthError(null);
 
-      // Demo session check
-      const demoSession = sessionStorage.getItem("demo_admin_session");
-      if (demoSession !== "true") {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (!active) return;
+
+      if (userError || !userData.user) {
         navigate({ to: "/admin", replace: true });
         return;
       }
 
+      const userId = userData.user.id;
+
+      const [{ data: roleRows }, { data: profile }] = await Promise.all([
+        supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin"),
+        supabase.from("profiles").select("username").eq("id", userId).maybeSingle(),
+      ]);
+
       if (!active) return;
-      
-      setUserEmail("admin@demo.com");
-      setIsAdmin(true);
+
+      setUserName(profile?.username ?? "");
+      setIsAdmin((roleRows ?? []).length > 0);
       setAuthLoading(false);
+
+      if ((roleRows ?? []).length === 0) {
+        setDataLoading(false);
+        return;
+      }
 
       try {
         const { data, error } = await supabase
@@ -140,7 +153,7 @@ function DashboardPage() {
   }, [navigate]);
 
   async function handleLogout() {
-    sessionStorage.removeItem("demo_admin_session");
+    await supabase.auth.signOut();
     toast.success("Sessão encerrada");
     navigate({ to: "/admin", replace: true });
   }
