@@ -60,10 +60,11 @@ export function SettingsManager() {
   const [saving, setSaving] = useState(false);
   const [company, setCompany] = useState<CompanySettings>(EMPTY);
 
-  const [userEmail, setUserEmail] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [savingEmail, setSavingEmail] = useState(false);
+  const [currentUsername, setCurrentUsername] = useState("");
+  const [newUsername, setNewUsername] = useState("");
+  const [savingUsername, setSavingUsername] = useState(false);
 
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
@@ -73,10 +74,15 @@ export function SettingsManager() {
     (async () => {
       try {
         const { data: userData } = await supabase.auth.getUser();
-        if (mounted && userData.user?.email) {
-          setUserEmail(userData.user.email);
-          setNewEmail(userData.user.email);
+        if (mounted && userData.user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("username")
+            .eq("id", userData.user.id)
+            .maybeSingle();
+          if (mounted) setCurrentUsername(profile?.username ?? "");
         }
+
 
         const { data, error } = await supabase
           .from("company_settings")
