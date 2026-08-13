@@ -1691,7 +1691,7 @@ function Field({ label, children, error, required, className }: { label: string;
   );
 }
 
-function BRLInput({ value, onChange, className }: { value: number; onChange: (v: number) => void; className?: string }) {
+function BRLInput({ value, onChange, className }: { value: number; onChange: (v: number | null) => void; className?: string }) {
   const [displayValue, setDisplayValue] = useState("");
 
   const format = (val: number) => {
@@ -1708,8 +1708,8 @@ function BRLInput({ value, onChange, className }: { value: number; onChange: (v:
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");
-    const numericValue = Number(raw) / 100;
-    onChange(numericValue);
+    const numericValue = raw ? Number(raw) / 100 : 0;
+    onChange(numericValue || null);
   };
 
   return (
