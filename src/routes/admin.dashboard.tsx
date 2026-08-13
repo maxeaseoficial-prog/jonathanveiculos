@@ -37,6 +37,7 @@ import { StockManager } from "@/components/admin/StockManager";
 import { CatalogManager } from "@/components/admin/CatalogManager";
 import { SettingsManager } from "@/components/admin/SettingsManager";
 import logoAsset from "@/assets/logo-new.png.asset.json";
+import adminSidebarLogo from "@/assets/admin-sidebar-logo.jpg.asset.json";
 
 const MOTO_CATEGORIES = new Set([
   "Street",
@@ -312,13 +313,13 @@ function DashboardPage() {
       <div className="flex min-h-screen">
         {/* Sidebar */}
         <aside className="hidden lg:flex w-64 flex-col border-r border-zinc-200 bg-white p-4 sticky top-0 h-screen">
-          <div className="px-3 py-4 mb-4">
+          <div className="px-3 py-6 mb-4 flex flex-col items-center border-b border-zinc-100">
             <img
-              src={logoAsset.url}
+              src={adminSidebarLogo.url}
               alt="Jonathan Veículos"
-              className="h-16 w-auto object-contain brightness-0 invert"
+              className="h-24 w-auto object-contain"
             />
-            <div className="mt-2 text-[10px] uppercase tracking-widest text-white/70 font-semibold">Painel Admin</div>
+            <div className="mt-4 text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">Painel Administrativo</div>
           </div>
           <nav className="space-y-1 flex-1">
             {navItems.map((item) => {
