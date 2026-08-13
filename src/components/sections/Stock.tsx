@@ -439,7 +439,7 @@ export function Stock() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.4 }}
-                  onClick={() => setSelectedId(v.id)}
+                  onClick={() => handleOpenDetail(v.id)}
                   className="group relative cursor-pointer"
                 >
                   <div className="relative aspect-square rounded-3xl overflow-hidden bg-surface shadow-card-premium transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1">
@@ -486,6 +486,10 @@ export function Stock() {
 
                     <Button 
                       className="w-full h-12 rounded-xl bg-brand-black text-white hover:bg-brand-red font-bold uppercase tracking-wider text-xs transition-all duration-300 shadow-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenDetail(v.id);
+                      }}
                     >
                       Ver detalhes
                       <ArrowUpRight className="ml-2 w-4 h-4" />
@@ -500,7 +504,7 @@ export function Stock() {
         <VehicleDetailDialog
           vehicleId={selectedId}
           open={!!selectedId}
-          onOpenChange={(open) => !open && setSelectedId(null)}
+          onOpenChange={(open) => !open && handleOpenDetail(null)}
         />
       </div>
     </section>
