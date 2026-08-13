@@ -11,10 +11,19 @@ export const PHONE_TEL = "+5542998266142";
 export const INSTAGRAM_URL = "https://www.instagram.com/jonathanveiculos_/";
 export const INSTAGRAM_HANDLE = "@jonathanveiculos_";
 export const FACEBOOK_URL = "https://www.facebook.com/jonathanveiculos.uva/?locale=pt_BR";
+export const EMAIL = "contato@jonathanveiculos.com.br";
 export const ADDRESS_LINE_1 = "Av. João Pessoa, 2907";
 export const ADDRESS_LINE_2 = "São Pedro, Porto União / SC";
 export const ADDRESS_CEP = "89400-000";
 export const ADDRESS_FULL = "Av. João Pessoa, 2907 - São Pedro, Porto União - SC, 89400-000";
+
+// Bituruna unit
+export const BITURUNA_ADDRESS = "Av. Pref. Farid Abrahão, 546";
+export const BITURUNA_LINE2 = "Bituruna / PR";
+export const BITURUNA_CEP = "84640-000";
+
+export const BUSINESS_HOURS = "Seg a Sex: 08:00 às 18:30\nSáb: 08:00 às 15:00\nDom: Fechado";
+
 export const MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(ADDRESS_FULL)}&output=embed`;
 
 export const vehicles = [
