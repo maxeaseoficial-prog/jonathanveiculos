@@ -2,23 +2,32 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const resolveUsernameInput = z.object({
-  identifier: z.string().trim().min(1),
+  username: z
+    .string()
+    .trim()
+    .min(3)
+    .max(50)
+    .regex(/^[a-zA-Z0-9._-]+$/),
 });
 
+/**
+ * Resolves the internal authentication e-mail for a given username.
+ * The e-mail is never shown in the UI: it is only used to call
+ * supabase.auth.signInWithPassword under the hood.
+ */
 export const resolveUsername = createServerFn({ method: "POST" })
   .inputValidator((data) => resolveUsernameInput.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    
-    // Resolve email from profiles table where username or email matches
+
     const { data: profile, error } = await supabaseAdmin
       .from("profiles")
       .select("email")
-      .or(`username.eq."${data.identifier}",email.eq."${data.identifier}"`)
+      .ilike("username", data.username)
       .maybeSingle();
 
     if (error) {
-      console.error("[Admin Auth] Erro ao resolver identificador:", error);
+      console.error("[Admin Auth] Erro ao resolver usuário:", error);
       return { email: null };
     }
 
