@@ -115,8 +115,8 @@ export function SettingsManager() {
           setCompany({
             name: "Jonathan Veículos",
             phone: fallback.PHONE_DISPLAY,
-            whatsapp: fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || "",
-            whatsapp_porto_uniao: fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || "",
+            whatsapp: (fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || ""),
+            whatsapp_porto_uniao: (fallback.WHATSAPP_URL.split("/").pop()?.replace(/^55/, "") || ""),
             whatsapp_bituruna: "42998266142",
             email: fallback.EMAIL,
             address: fallback.ADDRESS_LINE_1,
