@@ -1,9 +1,10 @@
 # Credenciais Administrativas
 
-Use este arquivo para registrar o usuário e a senha padrão do painel.
-**Atenção:** Estes dados são para seu controle pessoal e não devem ser compartilhados publicamente.
+O acesso ao painel usa **usuário + senha** reais (autenticação segura).
+A senha nunca é armazenada em texto puro nem exibida em nenhuma tela.
 
-- **Usuário:** admin
-- **Senha:** admin
+- **Usuário atual:** maxeaseoficial
+- **Senha:** definida por você (altere em Configurações → Conta de acesso)
 
-*Nota: O primeiro usuário a se cadastrar no sistema ganha automaticamente privilégios de administrador.*
+Para trocar o usuário ou a senha, entre no painel e vá em
+**Configurações → Conta de acesso**. A troca de senha exige a senha atual.
