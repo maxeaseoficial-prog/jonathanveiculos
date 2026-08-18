@@ -6,7 +6,7 @@ import { ArrowUpRight, FolderKanban, Loader2, Car } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/sections/Footer";
 import { supabase } from "@/integrations/supabase/client";
-import { title, SITE_NAME } from "@/lib/site-meta";
+import { title, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/catalogo/")({
   head: () => {

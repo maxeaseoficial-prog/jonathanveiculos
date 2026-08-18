@@ -73,7 +73,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-import { title, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE } from "@/lib/site-meta";
+import { title, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE, SITE_URL } from "@/lib/site-meta";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({

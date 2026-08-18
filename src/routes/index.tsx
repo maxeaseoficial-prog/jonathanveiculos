@@ -10,7 +10,7 @@ import { Financing } from "@/components/sections/Financing";
 
 import { CtaFinal } from "@/components/sections/CtaFinal";
 import { Footer } from "@/components/sections/Footer";
-import { title, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-meta";
+import { title, SITE_DESCRIPTION, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/")({
   component: Index,

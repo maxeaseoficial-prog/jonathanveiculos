@@ -8,7 +8,7 @@ import { Footer } from "@/components/sections/Footer";
 import { VehicleDetailDialog } from "@/components/sections/VehicleDetailDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
-import { title, SITE_NAME } from "@/lib/site-meta";
+import { title, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/catalogo/$slug")({
   head: ({ params }) => {
