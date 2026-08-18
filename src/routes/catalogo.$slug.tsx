@@ -8,7 +8,7 @@ import { Footer } from "@/components/sections/Footer";
 import { VehicleDetailDialog } from "@/components/sections/VehicleDetailDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompanyContact } from "@/hooks/useCompanyContact";
-import { title, SITE_NAME } from "@/lib/site-meta";
+import { title, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/catalogo/$slug")({
   head: ({ params }) => {
@@ -20,10 +20,14 @@ export const Route = createFileRoute("/catalogo/$slug")({
         { name: "description", content: description },
         { property: "og:title", content: pageTitle },
         { property: "og:description", content: description },
+        { property: "og:image", content: `${SITE_URL}${OG_IMAGE}` },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: SITE_NAME },
-        { property: "og:url", content: `/catalogo/${params.slug}` },
+        { property: "og:url", content: `${SITE_URL}/catalogo/${params.slug}` },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: pageTitle },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: `${SITE_URL}${OG_IMAGE}` },
       ],
       links: [{ rel: "canonical", href: `/catalogo/${params.slug}` }],
     };

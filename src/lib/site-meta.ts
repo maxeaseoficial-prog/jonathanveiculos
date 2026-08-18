@@ -5,13 +5,11 @@
 export const SITE_NAME = "Jonathan Veículos";
 export const SITE_TAGLINE = "Encontre o veículo ideal para você";
 export const SITE_DESCRIPTION =
-  "Jonathan Veículos - Concessionária premium com veículos revisados, procedência garantida e as melhores condições de financiamento.";
+  "Jonathan Veículos - Veículos selecionados, revisados e com excelentes condições de negociação. Encontre seu próximo carro.";
 export const SITE_LOCALE = "pt-BR";
-export const SITE_URL = "https://jonathanveiculos.com.br";
+export const SITE_URL = "https://lojajonathanveiculos.com.br";
 
-
-export const OG_IMAGE =
-  "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cf5e83bb-ce9b-491f-883c-40a8ca3227f0/id-preview-805b93ac--fdd09f19-f5bd-4339-874b-7523875a4009.lovable.app-1783953810897.png";
+export const OG_IMAGE = "/og-jonathan-veiculos-2026.jpg";
 
 export function title(pageTitle?: string) {
   return pageTitle ? `${pageTitle} | ${SITE_NAME}` : `${SITE_NAME} | ${SITE_TAGLINE}`;

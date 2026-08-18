@@ -10,7 +10,7 @@ import { Financing } from "@/components/sections/Financing";
 
 import { CtaFinal } from "@/components/sections/CtaFinal";
 import { Footer } from "@/components/sections/Footer";
-import { title, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-meta";
+import { title, SITE_DESCRIPTION, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -20,9 +20,14 @@ export const Route = createFileRoute("/")({
       { name: "description", content: SITE_DESCRIPTION },
       { property: "og:title", content: title() },
       { property: "og:description", content: SITE_DESCRIPTION },
+      { property: "og:image", content: `${SITE_URL}${OG_IMAGE}` },
+      { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: SITE_NAME },
-      { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title() },
+      { name: "twitter:description", content: SITE_DESCRIPTION },
+      { name: "twitter:image", content: `${SITE_URL}${OG_IMAGE}` },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),

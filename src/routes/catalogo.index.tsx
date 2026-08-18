@@ -6,7 +6,7 @@ import { ArrowUpRight, FolderKanban, Loader2, Car } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/sections/Footer";
 import { supabase } from "@/integrations/supabase/client";
-import { title, SITE_NAME } from "@/lib/site-meta";
+import { title, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/site-meta";
 
 export const Route = createFileRoute("/catalogo/")({
   head: () => {
@@ -18,10 +18,14 @@ export const Route = createFileRoute("/catalogo/")({
         { name: "description", content: description },
         { property: "og:title", content: pageTitle },
         { property: "og:description", content: description },
+        { property: "og:image", content: `${SITE_URL}${OG_IMAGE}` },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: SITE_NAME },
-        { property: "og:url", content: "/catalogo" },
+        { property: "og:url", content: `${SITE_URL}/catalogo` },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: pageTitle },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: `${SITE_URL}${OG_IMAGE}` },
       ],
       links: [{ rel: "canonical", href: "/catalogo" }],
     };

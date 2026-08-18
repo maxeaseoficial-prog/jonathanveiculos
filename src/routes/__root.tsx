@@ -73,7 +73,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-import { title, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE } from "@/lib/site-meta";
+import { title, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE, SITE_URL } from "@/lib/site-meta";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -84,13 +84,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: SITE_DESCRIPTION },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: SITE_NAME },
+      { property: "og:url", content: SITE_URL },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: title() },
       { name: "twitter:title", content: title() },
       { property: "og:description", content: SITE_DESCRIPTION },
       { name: "twitter:description", content: SITE_DESCRIPTION },
-      { property: "og:image", content: OG_IMAGE },
-      { name: "twitter:image", content: OG_IMAGE },
+      { property: "og:image", content: `${SITE_URL}${OG_IMAGE}` },
+      { name: "twitter:image", content: `${SITE_URL}${OG_IMAGE}` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
