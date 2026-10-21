@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/restore-lovable-assets.yml"
+      - "src/assets/**/*.asset.json"
   workflow_dispatch:
 
 permissions:
