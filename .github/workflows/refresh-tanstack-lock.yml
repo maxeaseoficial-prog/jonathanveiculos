@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "package.json"
+      - "src/routes/catalogo.$slug.tsx"
+      - ".github/workflows/refresh-tanstack-lock.yml"
 
 permissions:
   contents: read
