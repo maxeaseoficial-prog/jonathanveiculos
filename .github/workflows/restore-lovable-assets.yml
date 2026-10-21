@@ -1,0 +1,94 @@
+name: Restore Lovable-hosted image assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/restore-lovable-assets.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restore-assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: true
+      - name: Download original image bytes from the published Lovable site
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import { spawnSync } from 'node:child_process';
+
+          function listAssets(dir) {
+            return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+              const file = path.join(dir, entry.name);
+              return entry.isDirectory() ? listAssets(file) : (entry.name.endsWith('.asset.json') ? [file] : []);
+            });
+          }
+
+          const originals = [
+            'https://jonathanveiculos.lovable.app',
+            'https://id-preview--75b0517b-63d2-48b4-bdf1-8ae6be4c1f8f.lovable.app',
+          ];
+
+          let restored = 0;
+          const files = listAssets('src/assets');
+          if (files.length === 0) throw new Error('No Lovable asset manifests found');
+
+          for (const manifest of files) {
+            const asset = JSON.parse(fs.readFileSync(manifest, 'utf8'));
+            if (!asset.url?.startsWith('/__l5e/assets-v1/')) {
+              throw new Error('Unrecognized image URL: ' + manifest);
+            }
+            const pathname = asset.url;
+            if (pathname.includes('..') || !pathname.includes('/' + asset.asset_id + '/')) {
+              throw new Error('Unsafe image path: ' + manifest);
+            }
+            const destination = path.join('public', pathname);
+            fs.mkdirSync(path.dirname(destination), { recursive: true });
+
+            let ok = false;
+            for (const origin of originals) {
+              const remote = origin + pathname;
+              console.log('Fetching', manifest, 'from', origin);
+              const response = spawnSync('curl', [
+                '--fail', '--location', '--silent', '--show-error',
+                '--retry', '2', '--connect-timeout', '8', '--max-time', '35',
+                '--output', destination, remote
+              ], { encoding: 'utf8' });
+              if (response.status !== 0) {
+                console.log('Source unavailable:', response.stderr?.trim().slice(0, 350));
+                continue;
+              }
+              const bytes = fs.readFileSync(destination);
+              const png = bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]));
+              const jpeg = bytes.length >= 3 && bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
+              const webp = bytes.length >= 12 && bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP';
+              if (png || jpeg || webp) {
+                console.log('Restored image:', destination, bytes.length, 'bytes');
+                ok = true;
+                break;
+              }
+              console.log('Downloaded content is not a valid image from', origin);
+            }
+            if (!ok) throw new Error('Unable to retrieve original image: ' + manifest);
+            restored++;
+          }
+          console.log('All', restored, 'Lovable images restored.');
+          NODE
+      - name: Save image files to GitHub
+        run: |
+          git add public/__l5e/assets-v1/
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "fix(assets): serve original Lovable images directly from Vercel"
+            git push origin HEAD:main
+          fi
