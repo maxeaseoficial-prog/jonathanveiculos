@@ -33,7 +33,6 @@ export const Route = createFileRoute("/catalogo/$slug")({
     };
   },
   component: CatalogoDetalhePage,
-  notFoundComponent: CatalogNotFound,
   errorComponent: ({ reset }) => (
     <div className="min-h-screen flex items-center justify-center bg-background p-6 text-center">
       <div>
