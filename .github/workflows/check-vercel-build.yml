@@ -36,3 +36,39 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Build for Vercel
         run: bun run build
+      - name: Verify Supabase is reachable and correctly bundled
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from "node:fs";
+          import path from "node:path";
+
+          const projectId = "uaizkvulshnssdhgxyug";
+          const cfg = fs.readFileSync("vite.config.ts", "utf8");
+          const k = cfg.match(/VITE_SUPABASE_PUBLISHABLE_KEY \\|\\|= ("[^"]+")/);
+          if (!k) throw Error("Vercel publishable key configuration missing.");
+          const publishableKey = JSON.parse(k[1]);
+          const url = "https://" + projectId + ".supabase.co";
+          const response = await fetch(url + "/rest/v1/vehicles?select=id&limit=1", {
+            headers: { apikey: publishableKey, Accept: "application/json" }
+          });
+          if (!response.ok) {
+            const body = (await response.text()).slice(0, 300);
+            throw Error("Public Supabase API check failed with HTTP " + response.status + ": " + body);
+          }
+          const vehicles = await response.json();
+          if (!Array.isArray(vehicles)) throw Error("Supabase API response was not an array");
+
+          function containsProjectId(dir) {
+            for (const entry of fs.readdirSync(dir, {withFileTypes:true})) {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory() && containsProjectId(full)) return true;
+              if (entry.isFile() && /\\.(m?js|html)$/.test(entry.name) &&
+                fs.readFileSync(full,"utf8").includes(projectId)) return true;
+            }
+            return false;
+          }
+          if (!containsProjectId(".vercel/output/static")) {
+            throw Error("Built client assets are not pointing at the new Supabase project");
+          }
+          console.log("Public stock API and bundled Supabase project verified; records visible:", vehicles.length);
+          NODE
