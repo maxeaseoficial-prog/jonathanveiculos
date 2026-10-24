@@ -76,10 +76,12 @@ export function Stock() {
     whatsappBiturunaUrl 
   } = useCompanyContact();
   const queryClient = useQueryClient();
-  const { data: vehicles = [], isLoading } = useQuery({
+  const { data: vehicles = [], isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: ["public-stock-vehicles"],
     queryFn: fetchStockVehicles,
     staleTime: 5000,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -417,6 +419,22 @@ export function Stock() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="rounded-[2.5rem] bg-surface aspect-[4/5] animate-pulse" />
             ))}
+          </div>
+        ) : isError ? (
+          <div role="alert" className="rounded-[3rem] border border-black/5 bg-surface px-8 py-16 text-center shadow-card-premium">
+            <h3 className="text-2xl font-bold">Estoque temporariamente indisponível</h3>
+            <p className="mt-4 text-brand-black/60 max-w-lg mx-auto">
+              Não foi possível consultar os veículos no momento. Os registros não foram apagados do site;
+              precisamos restabelecer a conexão com o banco de dados para exibi-los.
+            </p>
+            <Button
+              type="button"
+              disabled={isFetching}
+              onClick={() => { void refetch(); }}
+              className="mt-8 px-8 py-4 rounded-full bg-brand-black text-white font-bold hover:brightness-125"
+            >
+              {isFetching ? "Consultando estoque..." : "Tentar novamente"}
+            </Button>
           </div>
         ) : filtered.length === 0 ? (
           <div className="rounded-[3rem] border border-black/5 bg-surface p-20 text-center shadow-card-premium">
