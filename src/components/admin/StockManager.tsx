@@ -1127,16 +1127,13 @@ function VehicleFormDialog({
         logVehicleFlowError("Upload de imagem", upErr, { vehicleId: vId, storage_path: path });
         throw upErr;
       }
-      const { data: signed, error: signErr } = await supabase.storage
+      // Public bucket: stable URLs avoid expiring signed links in the storefront.
+      const { data: publicImage } = supabase.storage
         .from("vehicle-images")
-        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (signErr) {
-        logVehicleFlowError("Gerar URL assinada da imagem", signErr, { vehicleId: vId, storage_path: path });
-        throw signErr;
-      }
+        .getPublicUrl(path);
       const imagePayload = {
         vehicle_id: vId,
-        url: signed.signedUrl,
+        url: publicImage.publicUrl,
         storage_path: path,
         display_order: i,
         is_primary: p.is_primary,
@@ -1195,17 +1192,16 @@ function VehicleFormDialog({
           .upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type });
         if (upErr) throw upErr;
 
-        const { data: signed, error: signErr } = await supabase.storage
+        const { data: publicImage } = supabase.storage
           .from("vehicle-images")
-          .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-        if (signErr) throw signErr;
+          .getPublicUrl(path);
 
         const isPrimary = images.length === 0 && i === 0;
         const { data: row, error: insErr } = await supabase
           .from("vehicle_images")
           .insert({
             vehicle_id: vehicleId,
-            url: signed.signedUrl,
+            url: publicImage.publicUrl,
             storage_path: path,
             display_order: baseOrder + i,
             is_primary: isPrimary,
