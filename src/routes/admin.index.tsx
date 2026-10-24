@@ -188,11 +188,11 @@ function AdminAuthPage() {
                 <h2 className="text-2xl font-bold mb-6 text-white">Entrar no painel</h2>
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div className="space-y-2">
-                    <Label htmlFor="id">Usuário</Label>
+                    <Label htmlFor="id">Usuário ou e-mail</Label>
                     <Input
                       id="id"
                       autoComplete="username"
-                      placeholder="Digite seu usuário"
+                      placeholder="Digite seu e-mail ou usuário"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       className="bg-white/5 border-white/10 focus:border-brand-red h-12"
@@ -226,6 +226,9 @@ function AdminAuthPage() {
                   >
                     {loading ? <Loader2 className="animate-spin" /> : <><LogIn className="mr-2" size={20} /> <span className="text-white">Entrar no painel</span></>}
                   </Button>
+                  <p className="text-center text-xs leading-relaxed text-white/50">
+                    Contas novas do Supabase podem entrar diretamente pelo e-mail.
+                  </p>
                 </form>
                 <div className="mt-6 pt-6 border-t border-white/10 text-center text-xs text-white/30">
                   Acesso restrito
