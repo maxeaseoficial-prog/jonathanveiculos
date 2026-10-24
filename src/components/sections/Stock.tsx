@@ -424,8 +424,8 @@ export function Stock() {
           <div role="alert" className="rounded-[3rem] border border-black/5 bg-surface px-8 py-16 text-center shadow-card-premium">
             <h3 className="text-2xl font-bold">Estoque temporariamente indisponível</h3>
             <p className="mt-4 text-brand-black/60 max-w-lg mx-auto">
-              Não foi possível consultar os veículos no momento. Os registros não foram apagados do site;
-              precisamos restabelecer a conexão com o banco de dados para exibi-los.
+              Não foi possível consultar os veículos no momento. Isso não significa necessariamente que
+              os cadastros foram apagados. Precisamos restabelecer a conexão com o banco de dados.
             </p>
             <Button
               type="button"
