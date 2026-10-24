@@ -33,6 +33,23 @@ export const ensureAdminAccount = createServerFn({ method: "POST" })
       throw new Error("Não autenticado.");
     }
 
+    // Authorization must be granted by a trusted administrator out of band.
+    // Never assign the admin role based solely on possessing a valid login token.
+    const { data: existingAdminRole, error: authorizationError } = await supabaseAdmin
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (authorizationError) {
+      console.error("[Admin Auth] Falha ao validar permissões:", authorizationError);
+      throw new Error("Não foi possível validar as permissões.");
+    }
+    if (!existingAdminRole) {
+      throw new Error("Acesso restrito a administradores autorizados.");
+    }
+
     const fallbackName = email?.split("@")[0] || "Usuário";
     const fullName = data.fullName?.trim() || fallbackName;
     const username = data.username?.trim() || email?.split("@")[0];
@@ -51,17 +68,6 @@ export const ensureAdminAccount = createServerFn({ method: "POST" })
     if (profileError) {
       console.error("[Admin Auth] Erro ao criar perfil:", profileError);
       throw new Error("Erro ao preparar perfil.");
-    }
-
-    // 2. Grant admin role
-    const { error: roleError } = await supabaseAdmin.from("user_roles").upsert({
-      user_id: userId,
-      role: "admin",
-    });
-
-    if (roleError) {
-      console.error("[Admin Auth] Erro ao conceder admin:", roleError);
-      throw new Error("Erro ao conceder permissão.");
     }
 
     return { ok: true, isAdmin: true };
