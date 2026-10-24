@@ -44,7 +44,7 @@ jobs:
 
           const projectId = "uaizkvulshnssdhgxyug";
           const cfg = fs.readFileSync("vite.config.ts", "utf8");
-          const k = cfg.match(/VITE_SUPABASE_PUBLISHABLE_KEY \\|\\|= ("[^"]+")/);
+          const k = cfg.match(/VITE_SUPABASE_PUBLISHABLE_KEY \|\|= ("[^"]+")/);
           if (!k) throw Error("Vercel publishable key configuration missing.");
           const publishableKey = JSON.parse(k[1]);
           const url = "https://" + projectId + ".supabase.co";
@@ -62,7 +62,7 @@ jobs:
             for (const entry of fs.readdirSync(dir, {withFileTypes:true})) {
               const full = path.join(dir, entry.name);
               if (entry.isDirectory() && containsProjectId(full)) return true;
-              if (entry.isFile() && /\\.(m?js|html)$/.test(entry.name) &&
+              if (entry.isFile() && /\.(m?js|html)$/.test(entry.name) &&
                 fs.readFileSync(full,"utf8").includes(projectId)) return true;
             }
             return false;
