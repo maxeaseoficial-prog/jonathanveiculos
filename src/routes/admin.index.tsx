@@ -72,9 +72,24 @@ function AdminAuthPage() {
       // 1. Check Rate Limit
       await checkRateLimit({ data: { username: result.data.username } });
 
-      const { email } = await resolveUsername({
-        data: { username: result.data.username },
-      }).catch(() => ({ email: null as string | null }));
+      // Email sign-in works directly with Supabase Auth, including when the
+      // optional server-side username resolver is unavailable.
+      let email: string | null = null;
+      if (result.data.username.includes("@")) {
+        email = result.data.username.trim();
+      } else {
+        try {
+          const resolved = await resolveUsername({
+            data: { username: result.data.username },
+          });
+          email = resolved.email;
+        } catch (lookupError) {
+          console.error("[Admin Auth] Falha ao consultar usuário:", lookupError);
+          toast.error("Não foi possível consultar os usuários agora. Tente mais tarde ou entre com seu e-mail.");
+          setLoading(false);
+          return;
+        }
+      }
 
       if (!email) {
         toast.error("Usuário ou senha inválidos.");
@@ -88,13 +103,22 @@ function AdminAuthPage() {
       });
 
       if (error) {
-        toast.error("Usuário ou senha inválidos.");
+        const unavailable =
+          !error.status || error.status >= 500 ||
+          /fetch|network|timeout|failed/i.test(error.message);
+        toast.error(
+          unavailable
+            ? "Serviço de autenticação indisponível. Tente novamente mais tarde."
+            : "Usuário ou senha inválidos.",
+        );
         setLoading(false);
         return;
       }
 
-      // Success - Reset Rate Limit
-      await resetRateLimit({ data: { username: result.data.username } });
+      // Rate-limit cleanup must not invalidate an otherwise valid login.
+      void resetRateLimit({ data: { username: result.data.username } }).catch(
+        (resetError) => console.warn("[Admin Auth] Não foi possível limpar limite:", resetError),
+      );
 
       setSuccessMode(true);
       toast.success("Acesso autorizado!");
