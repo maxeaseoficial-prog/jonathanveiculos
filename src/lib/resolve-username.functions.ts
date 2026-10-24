@@ -27,8 +27,8 @@ export const resolveUsername = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (error) {
-      console.error("[Admin Auth] Erro ao resolver usuário:", error);
-      return { email: null };
+      console.error("[Admin Auth] Erro ao consultar o banco de usuários:", error);
+      throw new Error("Serviço de cadastro temporariamente indisponível.");
     }
 
     return { email: profile?.email || null };
