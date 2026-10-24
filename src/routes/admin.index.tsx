@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
-import { resolveUsername } from "@/lib/resolve-username.functions";
+import { adminUsernameToAuthEmail } from "@/lib/admin-login";
 import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,10 @@ import adminBgAsset from "@/assets/admin-bg.webp.asset.json";
 import { title, SITE_NAME } from "@/lib/site-meta";
 
 const loginSchema = z.object({
-  username: z.string().trim().min(1, "Informe seu usuário"),
+  username: z.string().trim().min(3, "Informe um usuário com pelo menos 3 caracteres").refine(
+    (value) => adminUsernameToAuthEmail(value) !== null,
+    "Use 3 a 32 letras, números, pontos, hífens ou sublinhados, sem espaços",
+  ),
   password: z.string().min(1, "Informe sua senha"),
 });
 
@@ -72,33 +75,17 @@ function AdminAuthPage() {
       // 1. Check Rate Limit
       await checkRateLimit({ data: { username: result.data.username } });
 
-      // Email sign-in works directly with Supabase Auth, including when the
-      // optional server-side username resolver is unavailable.
-      let email: string | null = null;
-      if (result.data.username.includes("@")) {
-        email = result.data.username.trim();
-      } else {
-        try {
-          const resolved = await resolveUsername({
-            data: { username: result.data.username },
-          });
-          email = resolved.email;
-        } catch (lookupError) {
-          console.error("[Admin Auth] Falha ao consultar usuário:", lookupError);
-          toast.error("Não foi possível consultar os usuários agora. Tente mais tarde ou entre com seu e-mail.");
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (!email) {
-        toast.error("Usuário ou senha inválidos.");
+      // Staff never need to provide an email address. The technical identifier
+      // is deterministic and registered beforehand by an administrator.
+      const internalEmail = adminUsernameToAuthEmail(result.data.username);
+      if (!internalEmail) {
+        toast.error("Nome de usuário inválido.");
         setLoading(false);
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
+      const { data: signInData, error } = await supabase.auth.signInWithPassword({
+        email: internalEmail,
         password: result.data.password,
       });
 
@@ -110,6 +97,33 @@ function AdminAuthPage() {
           unavailable
             ? "Serviço de autenticação indisponível. Tente novamente mais tarde."
             : "Usuário ou senha inválidos.",
+        );
+        setLoading(false);
+        return;
+      }
+
+      // A valid password is not enough: authorization stays in user_roles,
+      // protected by Supabase RLS and set by a trusted administrator.
+      const signedInUserId = signInData.user?.id;
+      if (!signedInUserId) {
+        await supabase.auth.signOut();
+        toast.error("Não foi possível validar o acesso.");
+        setLoading(false);
+        return;
+      }
+      const { data: roleRow, error: roleError } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", signedInUserId)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (roleError || !roleRow) {
+        await supabase.auth.signOut();
+        toast.error(
+          roleError
+            ? "Não foi possível verificar a permissão de acesso."
+            : "Este usuário ainda não possui acesso ao painel.",
         );
         setLoading(false);
         return;
@@ -188,11 +202,11 @@ function AdminAuthPage() {
                 <h2 className="text-2xl font-bold mb-6 text-white">Entrar no painel</h2>
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div className="space-y-2">
-                    <Label htmlFor="id">Usuário ou e-mail</Label>
+                    <Label htmlFor="id">Usuário</Label>
                     <Input
                       id="id"
                       autoComplete="username"
-                      placeholder="Digite seu e-mail ou usuário"
+                      placeholder="Digite seu usuário"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       className="bg-white/5 border-white/10 focus:border-brand-red h-12"
@@ -227,7 +241,7 @@ function AdminAuthPage() {
                     {loading ? <Loader2 className="animate-spin" /> : <><LogIn className="mr-2" size={20} /> <span className="text-white">Entrar no painel</span></>}
                   </Button>
                   <p className="text-center text-xs leading-relaxed text-white/50">
-                    Contas novas do Supabase podem entrar diretamente pelo e-mail.
+                    Acesso exclusivo por usuário e senha.
                   </p>
                 </form>
                 <div className="mt-6 pt-6 border-t border-white/10 text-center text-xs text-white/30">
