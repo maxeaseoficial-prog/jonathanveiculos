@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "vite.config.ts"
+      - "src/components/sections/Stock.tsx"
+      - "src/routes/admin.index.tsx"
+      - "src/lib/resolve-username.functions.ts"
       - "vercel.json"
       - "package.json"
       - "bun.lock"
