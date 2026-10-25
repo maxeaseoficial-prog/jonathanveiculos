@@ -1,0 +1,59 @@
+name: Verify current administrative login URL
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-live-admin.yml"
+      - "src/routes/admin.index.tsx"
+      - "src/lib/admin-login.ts"
+      - "vite.config.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-public-urls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Inspect deployed login without using credentials
+        run: |
+          node --input-type=module <<'NODE'
+          const urls = [
+            ["stable", "https://jonathanveiculos.vercel.app/admin/"],
+            ["main", "https://jonathanveiculos-git-main-henriquecastroeditor-5558s-projects.vercel.app/admin/"],
+            ["old", "https://jonathanveiculos-35duc5nj3-henriquecastroeditor-5558s-projects.vercel.app/admin/"],
+            ["custom", "https://lojajonathanveiculos.com.br/admin/"],
+          ];
+          let latestStable = false;
+          for (const [name, url] of urls) {
+            try {
+              const controller = new AbortController();
+              const timeout = setTimeout(() => controller.abort(), 20000);
+              const response = await fetch(url + '?check=' + Date.now(), {
+                signal: controller.signal,
+                headers: { "Cache-Control": "no-cache" },
+                redirect: "follow"
+              });
+              clearTimeout(timeout);
+              const body = await response.text();
+              const old = body.includes("Usuário ou e-mail") || body.includes("Contas novas do Supabase podem entrar diretamente pelo e-mail.");
+              const modern = body.includes("Acesso exclusivo por usuário e senha.") || body.includes("Digite seu usuário");
+              console.log(JSON.stringify({
+                origin: name, status: response.status, contentType: response.headers.get("content-type"),
+                finalUrl: response.url, oldLogin: old, newLogin: modern,
+                length: body.length,
+                cache: response.headers.get("x-vercel-cache")
+              }));
+              if (name === "stable" && response.ok && modern && !old) latestStable = true;
+            } catch(e) {
+              console.log(JSON.stringify({origin:name,error:e.name}));
+            }
+          }
+          if (!latestStable) {
+            console.error("Stable production URL has not been confirmed to show the updated username-only login.");
+            process.exitCode=1;
+          }
+          NODE
