@@ -81,7 +81,8 @@ export function Stock() {
     queryFn: fetchStockVehicles,
     staleTime: 5000,
     retry: 1,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: "always",
+    refetchOnMount: "always",
   });
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -123,15 +124,18 @@ export function Stock() {
   const [tempPriceRange, setTempPriceRange] = useState<[number, number]>([0, 1000000]);
   const [tempYearRange, setTempYearRange] = useState<[number, number]>([1990, new Date().getFullYear() + 1]);
   const [tempKmRange, setTempKmRange] = useState<[number, number]>([0, 500000]);
+  // Slider ranges filter results only after the visitor explicitly changes them.
+  // Otherwise invalid/test values and expensive vehicles must not disappear silently.
+  const [rangeTouched, setRangeTouched] = useState({ price: false, year: false, km: false });
 
   // Applied filters
   const [appliedFilters, setAppliedFilters] = useState({
     brand: "all",
     category: "all",
     sort: "recent",
-    priceRange: [0, 1000000] as [number, number],
-    yearRange: [1990, new Date().getFullYear() + 1] as [number, number],
-    kmRange: [0, 500000] as [number, number]
+    priceRange: null as [number, number] | null,
+    yearRange: null as [number, number] | null,
+    kmRange: null as [number, number] | null
   });
 
   const brands = useMemo(() => {
@@ -156,9 +160,9 @@ export function Stock() {
       if (appliedFilters.category !== "all" && v.category !== appliedFilters.category) return false;
       
       const price = v.price ?? 0;
-      if (price < appliedFilters.priceRange[0] || price > appliedFilters.priceRange[1]) return false;
-      if (v.year < appliedFilters.yearRange[0] || v.year > appliedFilters.yearRange[1]) return false;
-      if ((v.km ?? 0) < appliedFilters.kmRange[0] || (v.km ?? 0) > appliedFilters.kmRange[1]) return false;
+      if (appliedFilters.priceRange && (price < appliedFilters.priceRange[0] || price > appliedFilters.priceRange[1])) return false;
+      if (appliedFilters.yearRange && (v.year < appliedFilters.yearRange[0] || v.year > appliedFilters.yearRange[1])) return false;
+      if (appliedFilters.kmRange && ((v.km ?? 0) < appliedFilters.kmRange[0] || (v.km ?? 0) > appliedFilters.kmRange[1])) return false;
 
       if (!q) return true;
       const hay = `${v.brand} ${v.model} ${v.year}`.toLowerCase();
@@ -191,9 +195,9 @@ export function Stock() {
       brand: tempBrand,
       category: tempCategory,
       sort: tempSort,
-      priceRange: tempPriceRange,
-      yearRange: tempYearRange,
-      kmRange: tempKmRange
+      priceRange: rangeTouched.price ? tempPriceRange : null,
+      yearRange: rangeTouched.year ? tempYearRange : null,
+      kmRange: rangeTouched.km ? tempKmRange : null
     });
   };
 
@@ -202,27 +206,40 @@ export function Stock() {
       brand: "all",
       category: "all",
       sort: "recent",
-      priceRange: [0, maxPrice] as [number, number],
-      yearRange: [minYear, new Date().getFullYear() + 1] as [number, number],
-      kmRange: [0, 500000] as [number, number]
+      priceRange: null as [number, number] | null,
+      yearRange: null as [number, number] | null,
+      kmRange: null as [number, number] | null
     };
+    setRangeTouched({ price: false, year: false, km: false });
     setTempBrand("all");
     setTempCategory("all");
     setTempSort("recent");
     setTempPriceRange([0, maxPrice]);
     setTempYearRange([minYear, new Date().getFullYear() + 1]);
     setTempKmRange([0, 500000]);
-    setAppliedFilters(defaultFilters as any);
+    setAppliedFilters(defaultFilters);
   };
 
   useEffect(() => {
     const channel = supabase
       .channel("public-stock-live-sync")
       .on("postgres_changes", { event: "*", schema: "public", table: "vehicles" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["public-stock-vehicles"] });
+        void queryClient.invalidateQueries({ queryKey: ["public-stock-vehicles"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "vehicle_images" }, () => {
+        void queryClient.invalidateQueries({ queryKey: ["public-stock-vehicles"] });
       })
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const onStorageSync = (event: StorageEvent) => {
+      if (event.key === VEHICLE_SYNC_EVENT) {
+        void queryClient.invalidateQueries({ queryKey: ["public-stock-vehicles"] });
+      }
+    };
+    window.addEventListener("storage", onStorageSync);
+    return () => {
+      void supabase.removeChannel(channel);
+      window.removeEventListener("storage", onStorageSync);
+    };
   }, [queryClient]);
 
   return (
@@ -355,7 +372,10 @@ export function Stock() {
                       </div>
                       <Slider
                         value={tempPriceRange}
-                        onValueChange={(val) => setTempPriceRange(val as [number, number])}
+                        onValueChange={(val) => {
+                          setTempPriceRange(val as [number, number]);
+                          setRangeTouched((prev) => ({ ...prev, price: true }));
+                        }}
                         max={maxPrice}
                         step={5000}
                         minStepsBetweenThumbs={1}
@@ -372,7 +392,10 @@ export function Stock() {
                       </div>
                       <Slider
                         value={tempYearRange}
-                        onValueChange={(val) => setTempYearRange(val as [number, number])}
+                        onValueChange={(val) => {
+                          setTempYearRange(val as [number, number]);
+                          setRangeTouched((prev) => ({ ...prev, year: true }));
+                        }}
                         min={minYear}
                         max={new Date().getFullYear() + 1}
                         step={1}
@@ -390,7 +413,10 @@ export function Stock() {
                       </div>
                       <Slider
                         value={tempKmRange}
-                        onValueChange={(val) => setTempKmRange(val as [number, number])}
+                        onValueChange={(val) => {
+                          setTempKmRange(val as [number, number]);
+                          setRangeTouched((prev) => ({ ...prev, km: true }));
+                        }}
                         max={500000}
                         step={1000}
                         minStepsBetweenThumbs={1}
