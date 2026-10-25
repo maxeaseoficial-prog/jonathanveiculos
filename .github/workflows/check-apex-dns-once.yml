@@ -1,0 +1,45 @@
+name: Diagnose root domain DNS routing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-apex-dns-once.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Compare DNS resolvers and direct HTTP responses (read-only)
+        shell: bash
+        run: |
+          set +e
+          echo "=== CURRENT DATE (UTC) ==="
+          date -u
+          echo "=== AUTHORITATIVE NAMESERVERS ==="
+          dig +noall +answer NS lojajonathanveiculos.com.br
+          echo "=== DNS WITH SYSTEM RESOLVER ==="
+          for domain in lojajonathanveiculos.com.br www.lojajonathanveiculos.com.br; do
+            echo ">>> $domain"
+            for typ in A AAAA CNAME; do dig +noall +answer "$domain" "$typ"; done
+          done
+          echo "=== PUBLIC DNS RESOLVERS ==="
+          for dns in 1.1.1.1 8.8.8.8 9.9.9.9; do
+            echo ">>> RESOLVER $dns root A"
+            dig @"$dns" +time=3 +tries=1 +noall +answer lojajonathanveiculos.com.br A
+            echo ">>> RESOLVER $dns www CNAME"
+            dig @"$dns" +time=3 +tries=1 +noall +answer www.lojajonathanveiculos.com.br CNAME
+          done
+          echo "=== HTTP RESULTS ==="
+          for url in 'http://lojajonathanveiculos.com.br/' 'https://lojajonathanveiculos.com.br/' 'https://www.lojajonathanveiculos.com.br/'; do
+            echo ">>> $url"
+            curl --silent --show-error --location --max-redirs 4 --max-time 20 --output /tmp/check-body.txt --write-out 'status=%{http_code} remote_ip=%{remote_ip} final_url=%{url_effective} redirect_url=%{redirect_url} content_type=%{content_type}\n' "$url"
+            head -c 150 /tmp/check-body.txt | tr '\n' ' '
+            echo
+          done
+          echo "=== FORCE HTTPS DIRECTLY TO VERCEL EXPECTED IPV4 ==="
+          curl --silent --show-error --location --max-redirs 4 --max-time 20 --resolve lojajonathanveiculos.com.br:443:216.198.79.1 --output /dev/null --write-out 'status=%{http_code} final_url=%{url_effective} first_redirect=%{redirect_url}\n' https://lojajonathanveiculos.com.br/
