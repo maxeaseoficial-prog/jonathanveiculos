@@ -9,11 +9,12 @@ const isVercel = Boolean(process.env.VERCEL);
 // Vercel-only public Supabase config. The publishable key is designed for
 // browser use; it grants no admin rights without RLS and user authentication.
 // Keep the Lovable development preview pointing to its original backend.
-// Explicit environment variables configured in Vercel take precedence.
+// Override any obsolete Lovable values still stored in Vercel project settings.
+// Only the PUBLIC Supabase key is embedded; privileged credentials stay private.
 if (isVercel) {
-  process.env.VITE_SUPABASE_URL ||= "https://uaizkvulshnssdhgxyug.supabase.co";
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||= "sb_publishable_J5zvNDC2IygUl6FRGWPisg_EHwvW2dt";
-  process.env.VITE_SUPABASE_PROJECT_ID ||= "uaizkvulshnssdhgxyug";
+  process.env.VITE_SUPABASE_URL = "https://uaizkvulshnssdhgxyug.supabase.co";
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_J5zvNDC2IygUl6FRGWPisg_EHwvW2dt";
+  process.env.VITE_SUPABASE_PROJECT_ID = "uaizkvulshnssdhgxyug";
 }
 
 export default defineConfig({
