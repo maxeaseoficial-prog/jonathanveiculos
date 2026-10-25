@@ -1,0 +1,61 @@
+name: One-time public stock visibility test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/verify-public-stock-once.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Confirm published vehicle is publicly queryable
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from "node:fs";
+          const source=fs.readFileSync("vite.config.ts","utf8");
+          const match=source.match(/VITE_SUPABASE_PUBLISHABLE_KEY = ("[^"]+")/);
+          if (!match) throw Error("Supabase public key configuration not found");
+          const key=JSON.parse(match[1]);
+          const id="86153f36-8b2a-4a85-a1e7-ce0de43ce911";
+          const url="https://uaizkvulshnssdhgxyug.supabase.co/rest/v1/vehicles?select=id,brand,model,year,status&status=eq.ativo&id=eq."+id;
+          const res=await fetch(url,{headers:{apikey:key,Accept:"application/json"}});
+          if (!res.ok) throw Error("Public vehicle query HTTP "+res.status);
+          const items=await res.json();
+          if (!Array.isArray(items)||items.length!==1) throw Error("Test vehicle was not visible via public API");
+          console.log("Supabase public query succeeded; test car year:",items[0].year);
+          NODE
+      - name: Check real production UI via headless Chrome
+        run: |
+          set -e
+          BROWSER=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          if [ -z "$BROWSER" ]; then
+            echo "::error::Chrome/Chromium unavailable to verify the actual public page"
+            exit 1
+          fi
+          echo "Using headless Chrome to check the public page"
+          timeout 45 "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=14000 --dump-dom 'https://www.lojajonathanveiculos.com.br/?public-stock-check=20261025' > /tmp/public-stock-rendered.html 2> /tmp/chrome-stderr.log || true
+          node --input-type=module <<'NODE'
+          import fs from "node:fs";
+          const html=fs.readFileSync("/tmp/public-stock-rendered.html","utf8");
+          const content=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi," ")
+                            .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi," ")
+                            .replace(/<[^>]*>/g," ").replace(/\s+/g," ");
+          const hasTestCar=content.includes("sdfsdf") && content.includes("asds");
+          const showsEmpty=content.includes("Nenhum veículo encontrado");
+          const showsError=content.includes("Estoque temporariamente indisponível");
+          console.log(JSON.stringify({htmlBytes:html.length,testCarVisible:hasTestCar,emptyState:showsEmpty,errorState:showsError}));
+          if (!hasTestCar||showsEmpty||showsError) {
+            console.log("HTML excerpt:",content.slice(content.indexOf("Encontre o seu"),content.indexOf("Encontre o seu")+900));
+            throw Error("Production storefront has not yet displayed the active test vehicle");
+          }
+          console.log("Success: active test vehicle is rendered in the public storefront");
+          NODE
