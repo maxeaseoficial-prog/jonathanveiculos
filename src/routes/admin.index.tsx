@@ -7,7 +7,6 @@ import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
 import { adminUsernameToAuthEmail } from "@/lib/admin-login";
-import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,12 +46,22 @@ function AdminAuthPage() {
   useEffect(() => {
     let active = true;
     (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!active) return;
-      if (data.session) {
-        navigate({ to: "/admin/dashboard", replace: true });
-      } else {
-        setChecking(false);
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (!active) return;
+        if (error) {
+          console.warn("[Admin Auth] Não foi possível restaurar a sessão:", error);
+          setChecking(false);
+          return;
+        }
+        if (data.session) {
+          navigate({ to: "/admin/dashboard", replace: true });
+        } else {
+          setChecking(false);
+        }
+      } catch (error) {
+        console.error("[Admin Auth] Falha ao verificar sessão:", error);
+        if (active) setChecking(false);
       }
     })();
     return () => {
@@ -72,9 +81,6 @@ function AdminAuthPage() {
 
     setLoading(true);
     try {
-      // 1. Check Rate Limit
-      await checkRateLimit({ data: { username: result.data.username } });
-
       // Staff never need to provide an email address. The technical identifier
       // is deterministic and registered beforehand by an administrator.
       const internalEmail = adminUsernameToAuthEmail(result.data.username);
@@ -128,11 +134,6 @@ function AdminAuthPage() {
         setLoading(false);
         return;
       }
-
-      // Rate-limit cleanup must not invalidate an otherwise valid login.
-      void resetRateLimit({ data: { username: result.data.username } }).catch(
-        (resetError) => console.warn("[Admin Auth] Não foi possível limpar limite:", resetError),
-      );
 
       setSuccessMode(true);
       toast.success("Acesso autorizado!");
