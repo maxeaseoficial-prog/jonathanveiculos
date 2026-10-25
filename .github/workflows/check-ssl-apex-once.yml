@@ -1,0 +1,42 @@
+name: Diagnose apex SSL handshake and redirect
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-ssl-apex-once.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Test DNS TLS and HTTP without altering production
+        shell: bash
+        run: |
+          set +e
+          echo '=== DNS ROOT A AAAA CAA DNSSEC ==='
+          for qtype in A AAAA CAA DS; do
+            echo ">>> $qtype"
+            dig +time=3 +tries=1 +noall +answer lojajonathanveiculos.com.br "$qtype"
+          done
+          echo '=== NAMESERVERS AND WWW ==='
+          dig +noall +answer lojajonathanveiculos.com.br NS
+          dig +noall +answer www.lojajonathanveiculos.com.br CNAME
+          echo '=== TLS HANDSHAKE WITH CORRECT SNI DIRECT TO VERCEL ==='
+          for target in 216.198.79.1:443 64.29.17.65:443 216.198.79.65:443; do
+            echo ">>> target $target SNI apex"
+            timeout 12 bash -c "echo | openssl s_client -connect '$target' -servername lojajonathanveiculos.com.br -verify_return_error -brief 2>&1" | head -20
+          done
+          echo '=== TLS HANDSHAKE WWW ==='
+          timeout 12 bash -c 'echo | openssl s_client -connect 64.29.17.65:443 -servername www.lojajonathanveiculos.com.br -verify_return_error -brief 2>&1' | head -20
+          echo '=== HTTP WITHOUT FOLLOWING REDIRECT ==='
+          for url in https://lojajonathanveiculos.com.br/ http://lojajonathanveiculos.com.br/ https://www.lojajonathanveiculos.com.br/; do
+            echo ">>> $url"
+            curl --noproxy '*' -I -sSv --connect-timeout 6 --max-time 12 "$url" 2>&1 | grep -Ei '(HTTP/|location:|SSL connection|SSL certificate|subject:|issuer:|TLSv|Connected to|error|301|302|308|Trying )' | head -20
+          done
+          echo '=== FORCED APEX HTTPS TO VERCEL EDGE ==='
+          curl --noproxy '*' -I -sSv --connect-timeout 6 --max-time 12 --resolve lojajonathanveiculos.com.br:443:216.198.79.1 https://lojajonathanveiculos.com.br/ 2>&1 | grep -Ei '(HTTP/|location:|SSL connection|SSL certificate|subject:|issuer:|TLSv|Connected to|error|301|302|308|Trying )' | head -22
